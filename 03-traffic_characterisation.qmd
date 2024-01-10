@@ -1,0 +1,614 @@
+# Traffic Characterisation
+
+```{r}
+#| label: setup
+#| echo: false
+
+source("_chapter-setup.R")
+```
+
+To facilitate operational comparisons, it is crucial to have a good understanding of the level and composition of air traffic.
+The preceding section provided an overview of the context and organisation of air navigation services in Brazil and Europe.
+This chapter presents some air traffic characteristics for both regions to provide a framework for the observed operational performance in subsequent parts of the report.
+
+## Network Level Air Traffic
+
+```{r}
+#| label: annual-timeline-plot-prep
+
+# set colors
+bra_col <- getElement(bra_eur_colours, "BRA")
+eur_col <- getElement(bra_eur_colours, "EUR")
+
+# Data cleaning processed in Hugos-prep.qmd file (code lines 1627 to 1787) from data in "../2023 Data/Dados Mov_Taxa Pico (1)/Dados Mov_Taxa Pico" . Filtered helicopters only, all airports included. Final data saved in hugo-data-to-check folder in this project. 
+
+# tfc_movts_all <- read_csv("./hugo-data-to-check/tfc_movts_all.csv")
+# tfc_movts_all_no_hel 
+# NOTE - traffic file fixed Hugo/Rainer on 31.10.
+tfc_bra <- 
+  read_csv("./data/tfc_movts_all_no_hel.csv") |> 
+  mutate(DATE = lubridate::as_datetime(DATE)) |> 
+  filter(DATE < max_date)
+
+#------------ BRA ----------------------
+plot_bra_annual_traffic <- 
+#  tfc_movts_all_no_hel  |> 
+  tfc_bra |> 
+    ggplot(aes(x = DATE)) +
+    geom_line(aes(y = MVTS_NORM_ROLLAVG), colour = bra_col) +
+    geom_point(aes(y = DLY_FLTS), colour = bra_col, alpha = 0.2, size = 0.2) +
+    labs(x = NULL, y = NULL,  subtitle = "Brazil Region daily movement (rolling 7-day average)")
+
+#------------EUR ------------------------
+tfc_eur  <- read_csv("./data/PBWG-EUR-region-traffic.csv", show_col_types = FALSE) |> 
+  filter(between(lubridate::year(DATE), 2019, 2022))
+tfc_eur2 <- read_csv("./data/PBWG-EUR-region-traffic-2023.csv", show_col_types = FALSE) |> 
+  filter(lubridate::year(DATE) == 2023, DATE < max_date)
+
+tfc_eur <- bind_rows(tfc_eur, tfc_eur2)
+
+tfc_eur <- tfc_eur |> 
+  mutate( DLY_FLTS = ARRS - ARRS_DOM + DEPS + OVR_FLTS
+         ,MVTS_NORM_ROLLAVG = zoo::rollmean(DLY_FLTS, k = 7, fill = NA))
+
+plot_eur_annual_traffic <- tfc_eur  |> 
+  ggplot(aes(x = DATE)) +
+  geom_line(aes(y = MVTS_NORM_ROLLAVG), colour = eur_col) +
+  geom_point(aes(y = DLY_FLTS), colour = eur_col, alpha = 0.2, size = 0.2) +
+  labs(x = NULL, y = NULL,  subtitle = "European Region daily movement (rolling 7-day average)")
+```
+
+@fig-annual-traffic-timeline shows the regional traffic development in Brazil and Europe.
+In both regions the unprecedented decline in air traffic occurred in March 2020 in the aftermath of the pandemic-declaration by the World Health Organisation.
+However, there is a difference in terms of the overall recovery.
+The European recovery is characterised by two waves, while a single setback is observed in Brazil in second quarter of 2021.
+The European pattern demonstrates the difficulty in the coordination of a joint policy of curbing the pandemic and managing travel related constraints.
+With different states in Europe introducing public health and travel constraints at differnt times, intra-European traffic was affected by the piece-meal approach.
+Brazil - and its policy on air transport - benefitted from single stance on policy implementation.
+
+```{r}
+#| label: fig-annual-traffic-timeline
+#| fig-cap: Regional daily air traffic
+
+plot_bra_annual_traffic / plot_eur_annual_traffic
+```
+
+For Brazil, it is important to remember that @fig-annual-traffic-timeline shows the aggregated movements per airport at the whole network level. The shown total does not necessarily reflect the total number of flights.
+Another important observation related to the data is that Brazil's number of airports served with the TATIC tool (Tower ATC System) has increased.
+Despite raising the processed total daily flight number, this difference is mostly transparent for this study as these additional airports handle only a small number of movements on a day-to-day basis.
+
+The movements already surpassed the 2019 levels for the Brazilian region, confirming some economic recovery in the market.
+According to the CGNA (Brazilian Network Manager) assessment, general aviation is the leading actor in this frame. 
+The share of "Light" aircraft in the fleet mix observed at Brazilian airports and the prevailing airline traffic levels still below the 2019 traffic in the airlines' preferred airports help to confirm this thesis. 
+
+In terms of total network level air traffic, the European region is still lagging behind its pre-pandemic levels.
+Other analyses showed that low-cost carriers recovered more agile than the classical mainline carriers.
+The low-cost sector, thus, shows a higher numbers of operations than pre-pandemic as their financial model allowed for a more agile reaction in terms of staffing/crewing/servicing flights.
+The higher share can also be explained by a side-effect of the national support measures for some of the mainline carriers.
+These measures included freeing slots at major hubs and the reduction of domestic / short-haul operations.
+Accordingly, the European network is characterised by a change in the level of connectivity and frequency of services between the different airports. 
+
+```{r}
+plot_timeline_per_year <- function(.df, .fake_year = 666){
+  df <- .df |> mutate(DATE2 = DATE)
+  lubridate::year(df$DATE2) = .fake_year
+  df <- df |> 
+    mutate( YEAR = lubridate::year(DATE)
+           ,ALPHA = case_when(
+              lubridate::year(DATE) == min(lubridate::year(DATE)) ~ 0.8
+             ,lubridate::year(DATE) == max(lubridate::year(DATE)) ~ 1,
+             .default = 0.6
+           )
+    )
+  
+  df |> 
+    ggplot(aes(x = DATE2, y = MVTS_NORM_ROLLAVG)) +
+    geom_line(aes(group = YEAR, colour = as.factor(YEAR), alpha = ALPHA)) +
+    scale_x_datetime(labels = scales::date_format("%b")) +
+    scale_alpha(guide = "none") +
+    labs(x = NULL, y = NULL, colour = NULL) + 
+    theme(legend.position = "top")
+}
+```
+
+```{r}
+# column layout currently works not for embedding figures with
+# knitr::include_graphics()
+# there is also an issue with alignment ==> use bullet points
+# THUS
+# 1. prepare viz and save it as png
+# 2. embedd it with link notation: ![figure caption](file-path){#fig-caption}
+# 3. to avoid text being centered in pdf, use bullet points
+
+# ------ prepare figure for 2 col layout
+p_bra <- tfc_bra |>
+  plot_timeline_per_year() +
+  labs(subtitle = "Brazil")
+ggsave("./figures/traffic-bra-2023.png", dpi = 320, height = 5, width = 8, bg="white")
+
+p_eur <- tfc_eur |> plot_timeline_per_year() + labs(subtitle = "Europe")
+ggsave("./figures/traffic-eur-2023.png", dpi = 320, height = 5, width = 8, bg="white")
+```
+
+::: {layout="[55,45]"}
+![Brazil - network traffic in 2023](figures/traffic-bra-2023.png){#fig-bra-tfc-2023}
+
+-   For Brazil, traffic in the first half of 2023 exceeded the pre-pandemic traffic level (@fig-bra-tfc-2023)
+:::
+
+::: {layout="[55,45]"}
+![Europe - network traffic evolution in 2023](figures/traffic-eur-2023.png){#fig-eur-tfc-2023}
+
+-   On a network level, the continual recovery of the traffic is on-going in Europe.
+-   The first half of 2023 saw traffic levels at about 90-95% of the pre-pandemic network traffic and started following a classical *seasonal* pattern (c.f. @fig-eur-tfc-2023). However, traffic recovery in Europe is not at the same level for each pre-pandemic service/connection. The recovery also resulted in a light modification of network connectivity. The Russian invasion of Ukraine resulted in the closure of a significant portion of the airspace (about 20%). However, the overall impact of the closure on air traffic - on a network level - was relatively small.
+:::
+
+This high-level network perspective shows that traffic in both regions is comparable to pre-pandemic levels.
+It will be interesting to observe the further evolution and growth of air traffic.
+
+## Airport Level Air Traffic
+
+The previous section showed the air traffic development on the network level.
+As airports represent nodes in this overall network, changes to the overall traffic situation will ripple down to the airport level.
+This demand on terminal and airport air navigation services forms a substantial input to understand how the operational performance measures in this report developed over time for the selected study airports.
+This reports looks in particular at the performance levels observed at 10 key airports in each region (c.f. scope)
+
+```{r}
+#Airport Level Study
+# Cleaning/prep process in Hugos-prep.qmd file(code lines 1826 to 1881)
+
+study_apt_lvl <- read_csv("./data/study_apt_lvl.csv")
+
+study_apt_lvl <- study_apt_lvl |>  
+  mutate(YEAR = as.character(YEAR))
+
+options(scipen = 999)  
+
+ p_study1 <- study_apt_lvl  |>
+   filter(!(YEAR == "2023")) |> 
+   ggplot() +
+   geom_col(aes(x = ICAO, y = TOT_FLTS_YEAR, fill = YEAR)
+            , position = position_dodge()
+            ) + 
+   labs(x = NULL, y = NULL,  title = "Brazil Airports Annual Movement") 
+
+ p_study2 <- study_apt_lvl |>  filter(!(YEAR == "2023")) |> 
+  group_by(YEAR) |> 
+  summarise(ALL_TOT_FLTS_YR = sum(TOT_FLTS_YEAR)) |> 
+  ggplot() +
+  geom_col(aes(x = YEAR, y = ALL_TOT_FLTS_YR, fill = YEAR)) +
+   labs(x = NULL, y = NULL,) 
+
+  p_study1 / p_study2 
+```
+
+```{r}
+tfc_apts_eur <- arrow::read_parquet(
+  "./data/traffic_counts_airport_daily.parquet") |> 
+  filter(REG == "EUR", DATE < lubridate::ymd("2023-01-01"))
+
+tfc_apts_eur_2023 <- arrow::read_parquet(
+  "./data/traffic_counts_airport_daily_partial2023.parquet") |> 
+  select(REG, ICAO, DATE, ARRS, DEPS
+         , HEAVY = H, MED = M, LIGHT = L
+         , ARRS_DOM = ARRS_REG, DEPS_DOM = DEPS_REG) |> 
+  filter(between(DATE, lubridate::ymd("2023-01-01"), max_date))
+
+tfc_apts_eur <- bind_rows(tfc_apts_eur, tfc_apts_eur_2023) |> 
+  filter(ICAO %in% eur_apts)
+```
+
+```{r}
+annual_tfc_apt <- tfc_apts_eur |> 
+  #------- filter to 2022 and eur_apts
+  filter(ICAO %in% eur_apts, DATE < lubridate::ymd("2023-01-01")) |> 
+  #-----------------------------------
+  mutate(TOT_FLTS = ARRS + DEPS) |> 
+  group_by(REG, ICAO, YEAR = lubridate::year(DATE)) |> 
+  summarise(N = n(), TOT_FLTS_YEAR = sum(TOT_FLTS), .groups = "drop") |> 
+  filter(between(YEAR, 2019, 2023)) |> 
+  mutate(YEAR = as.factor(YEAR))
+
+p1_eur <- annual_tfc_apt  |>   ggplot() +
+   geom_col(aes(x = ICAO, y = TOT_FLTS_YEAR, fill = YEAR)
+            , position = position_dodge(preserve = "single")
+            ) + 
+   labs(x = NULL, y = NULL,  title = "European Airports Annual Movement") 
+
+p2_eur <- annual_tfc_apt |>  filter(!(YEAR == "2023")) |> 
+  group_by(YEAR) |> 
+  summarise(ALL_TOT_FLTS_YR = sum(TOT_FLTS_YEAR)) |> 
+  ggplot() +
+  geom_col(aes(x = YEAR, y = ALL_TOT_FLTS_YR, fill = YEAR)) +
+   labs(x = NULL, y = NULL,) 
+
+p1_eur / p2_eur
+```
+
+```{=html}
+<!--
+###### CHECK WHAT IS HAPPENING HERE --------------------------------------
+tmp_bra <- annual_tfc_apt |> mutate(REG = "BRA") |> 
+  filter(between(YEAR, 2019, 2022)) |> 
+  rename(TOT_FLTS = TOT_FLTS_YEAR)
+tmp_eur <- tfc_apts_eur |> mutate(YEAR = lubridate::year(DATE)) |> 
+  filter(ICAO %in% eur_apts, between(YEAR, 2019, 2022)) |> 
+  mutate(TOT_FLTS = ARRS + DEPS) |> 
+  group_by(REG, ICAO, YEAR) |> summarise(TOT_FLTS = sum(TOT_FLTS), .groups = "drop")
+
+tmp_ann_apt <- bind_rows(tmp_bra, tmp_eur)
+
+tmp_ann_apt |> 
+  ggplot() +
+  geom_col(aes(x = REG, y = TOT_FLTS, fill = YEAR)) +
+  scale_y_continuous(position = position_dodge())
+-->
+```
+
+Analyzing the movement of the leading Brazilian airports, it is evident that they were not responsible for the return to 2019 levels, considering that only Campinas - SBKP and Santos Dumont - SBRJ slightly exceeded 2019 levels.
+This phenomenon can be explained by the greater difficulty of airlines in resuming activity in contrast to general/business aviation. This last share is an essential component of the Brazilian air movement but is a rare user of main airports.
+
+```{r}
+p_study3_bra <- study_apt_lvl |>
+  filter(YEAR == "2022") |>
+  ggplot() + 
+  geom_col(aes(x = reorder(ICAO, TOT_FLTS_YEAR), y = TOT_FLTS_YEAR
+                           , fill = I("#52854C"))
+           , width = 0.9) +
+  coord_flip() +
+   scale_y_continuous(labels = scales::comma, limits = c(NA, 450000)) +
+  labs(x = NULL,  y = "2022") +
+  theme(legend.position = "none")
+
+
+ann_var_bra <- study_apt_lvl %>% 
+  filter(YEAR %in% c("2019", "2022")) |> 
+  mutate(YEAR = as.numeric(YEAR)) |>
+  tidyr::pivot_wider( id_cols = "ICAO"
+                     ,names_from ="YEAR", names_prefix = "YR"
+                     ,values_from="TOT_FLTS_YEAR") %>% 
+  mutate(YR_DIFF = YR2022 - YR2019, YR_DIFF_P = YR_DIFF / YR2019) %>% 
+  mutate(COL = case_when(YR_DIFF_P < 0 ~ "#D61A46", TRUE ~"#98CA32"))
+
+p_study4_bra <- ggplot() + 
+  geom_col( data = ann_var_bra
+           ,mapping=aes(x = reorder(ICAO, YR2022), y = YR_DIFF_P, fill = I(COL))
+           ,width = 0.9) +
+  coord_flip() +
+  labs(x = NULL, y = NULL) +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 1)
+                     , limits = c(-0.5, 0.2)) +
+  theme( legend.position = "none"
+        ,axis.text.y=element_blank())
+
+# p_study3_bra + p_study4_bra + 
+#   plot_layout(widths = c(3, 1))
+```
+
+```{r}
+p_study3 <- annual_tfc_apt |>
+  filter(YEAR == "2022") |>
+  ggplot() + 
+  geom_col(aes(x = reorder(ICAO, TOT_FLTS_YEAR), y = TOT_FLTS_YEAR
+                           , fill = I(getElement(bra_eur_colours, "EUR")))
+           , width = 0.9) +
+  coord_flip() +
+  scale_y_continuous(labels = scales::comma, limits = c(NA, 450000)) +
+  labs(x = NULL,  y = "2022") +
+  theme(legend.position = "none")
+
+
+ann_var_eur <- annual_tfc_apt %>%
+  filter( YEAR %in% c("2019", "2022")
+         ,ICAO %in% eur_apts) |>
+  mutate(YEAR = as.character(YEAR), YEAR = as.numeric(YEAR)) |>
+  tidyr::pivot_wider( id_cols = "ICAO"
+                     ,names_from ="YEAR", names_prefix = "YR"
+                     ,values_from="TOT_FLTS_YEAR") %>%
+  mutate(YR_DIFF = YR2022 - YR2019, YR_DIFF_P = YR_DIFF / YR2019) %>%
+  mutate(COL = case_when(YR_DIFF_P < 0 ~ "#D61A46", TRUE ~"#98CA32"))
+
+p_study4 <- ggplot() +
+  geom_col( data = ann_var_eur
+           ,mapping=aes(x = reorder(ICAO, YR2022), y = YR_DIFF_P, fill = I(COL))
+           ,width = 0.9) +
+  coord_flip() +
+  labs(x = NULL, y = "2022 vs 2019") +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 1)
+                     , limits = c(-0.5, 0.2)) +
+  theme( legend.position = "none"
+        ,axis.text.y=element_blank())
+```
+
+```{r}
+#| label: fig-apt-annual-change
+#| fig-cap: Annual traffic at study airports in 2022 and variation 2022/2019
+#| fig-pos: H
+combo_bra <- (p_study3_bra + labs(x = NULL, y = NULL)) + 
+  p_study4_bra + 
+  plot_layout(widths = c(3, 1))
+  
+
+combo_eur <- 
+  (p_study3 + labs(y = "annual traffic 2022")) + 
+  (p_study4 + labs(y = "annaul variation 2022/2019")) +
+  plot_layout(widths = c(3, 1))
+
+combo_bra / combo_eur
+```
+
+@fig-apt-annual-change shows the annual change of the traffic served at the study airports in 2022 and the associated change of the traffic levels comparing 2022 and 2019.
+
+With Campinas (SBKP) and Rio de Janeiro (SBRJ), there are two study airports in Brazil that serviced a higher level of traffic in 2022 than in 2019.
+Both airports are key nodes for the domestic traffic in Brazil.
+Salvador (SBSV) ranged at the pre-pandemic level.
+The other Brazilian airports have seen - on average - a decrease of 10-20% of traffic.
+This suggests that the observed network level increase in movements is distributed across the Brazilian network and not focussed on the airports covered in this study.
+
+The European airport level traffic - on average - ranged at 20% below the pre-pandemic levels.
+Munich (EDDM) and Rome (LIRF) observed higher reductions.
+With an overall weaker recovery of the air traffic demand across Europe in 2022, a similar pattern emerged.
+The increased network level traffic (ranging about 10% under the pre-pandemic level) is distributed across the European network and other aerodrome connections.
+
+## Peak Day Traffic
+
+While the annual traffic provides insights in the total air traffic volume and the associated demand, it does not provide insights on the upper bound of achievable daily movement numbers.
+The latter depends on demand, operational procedures and/or associated constraints, and the use of the runway system infrastructure.
+The peak day traffic is determined as the 99th percentile of the total number of daily movements (arrivals and departures).
+The measure represents thus an upper bound for comparison purposes.
+
+```{r}
+peak_day_from_counts <- function(.counts, .pct = 0.99){
+  peak <- .counts %>% 
+    mutate( YEAR = lubridate::year(DATE)
+           ,TOT  = ARRS + DEPS) %>% 
+    group_by(ICAO, YEAR) %>% 
+    summarise(PEAK_DAY_PCT = quantile(TOT, probs = .pct), .groups = "drop")
+}
+
+add_nbr_rwy <- function(.pdfc){
+  peak <- .pdfc %>% 
+    mutate(RWY = case_when(
+       ICAO == "EHAM" ~ 6
+      ,ICAO %in% c("EDDF","LFPG","LEMD","LIRF") ~ 4
+      ,ICAO %in% c("LEBL","LSZH") ~ 3
+      ,ICAO %in% c("EGLL","EDDM","SBGR","SBSP","SBGL","SBBR","SBRJ","SBSV","SBCT") ~ 2
+      ,ICAO %in% c("EGKK","SBKP","SBCF","SBPA") ~ 1
+      ,TRUE ~ as.numeric(NA)
+    ))
+}
+
+tfc_apts_bra <- read_csv("./data/BRA-airport-traffic-2019-2023-Q1+2-fix.csv", show_col_types = F)
+# 
+# peak_day_bra <- tfc_apts_bra |> 
+#   peak_day_from_counts() |> 
+#   add_nbr_rwy() |> 
+#   mutate(REGION = "BRA")
+peak_day_bra <- read_csv("./data/BRA-airport-tfc-peakday-fix.csv", show_col_types = FALSE) |> 
+  add_nbr_rwy() |> 
+  mutate(REGION = "BRA") |> 
+  rename(PEAK_DAY_PCT = PK_DAY)
+
+peak_day_eur <- tfc_apts_eur |> 
+  peak_day_from_counts() |> 
+  add_nbr_rwy() |> 
+  mutate(REGION = "EUR")
+
+peak_day_comb <- bind_rows(peak_day_bra, peak_day_eur)
+```
+
+```{r}
+#| label: fig-peak-day
+#| fig-cap: Airport peak daily traffic 
+
+plot_peak_day_tfc <- function(.df, .year, ...){
+  viz <- ggplot() + 
+     geom_col(
+        data = .df %>% filter(YEAR == .year)
+       ,mapping = aes(x = PEAK_DAY_PCT, y = reorder(ICAO, PEAK_DAY_PCT)
+                      , fill = REGION)
+       ) +
+     scale_fill_manual(values = bra_eur_colours) + 
+     facet_grid(RWY ~., as.table = FALSE, switch = "y", scales = "free", space = "free") +
+    # my_own_theme_bw +
+     labs(x = paste0("peak day traffic (", .year,")"), y = NULL, fill = "Region") +
+     theme(legend.position = c(0.9, 0.15)
+          ,axis.ticks = element_blank()
+          )
+  return(viz)
+}
+
+peak_day_comb |> plot_peak_day_tfc(2022)
+```
+
+@fig-peak-day shows the peak day traffic in 2022 for the study airports with reference to the number of runways.
+A varied picture can be seen for Europe.
+For European with more than 2 runways it needs to be noted that the runway system does not support independent operations of all available runways.
+Thus, the serviced peak traffic is also impacted by the runway system configuration.
+
+The measure signals the use of the available runway system.
+
+```{r}
+#| label: fig-change-peak-day
+#| fig-cap: Change of peak day traffic 2019 to 2022
+
+plot_slope_peak_day <- function(.pkday, .base_year = 2019, .current_year = 2022){
+  
+  tmp <- .pkday |> 
+      filter(YEAR %in% c(2019, 2022)) |> 
+      mutate(YEAR = as.character(YEAR))
+  
+  viz <- ggplot(
+    data = tmp
+    ,aes(x = YEAR, y = PEAK_DAY_PCT)) + 
+    #--------- main slope graph
+    geom_path(aes(group = ICAO)) + 
+    geom_point() +
+    #--------- labels on left hand side
+    geom_text_repel(data = tmp |> filter(YEAR == "2019")
+                    ,aes(label = ICAO)
+                    ,hjust = "left"
+                    ,nudge_x = -0.2
+                    ) +
+    #--------- labels on right hand side
+    geom_text_repel(data = tmp |> filter(YEAR == "2022")
+                    ,aes(label = ICAO)
+                    ,hjust = "right"
+                    ,nudge_x = +0.2
+                    ) +
+    #--------- beautify
+    labs(x = NULL, y = NULL) +
+    facet_wrap(.~REGION)
+  viz
+}
+
+peak_day_comb |> plot_slope_peak_day()
+```
+
+```{r}
+min_year <- 2019
+max_year <- 2023
+peak_day_comb |> filter(between(YEAR, min_year, max_year)) |> 
+  ggplot(mapping = aes(x = YEAR, y = PEAK_DAY_PCT
+                       , group = ICAO, colour = ICAO)) +
+  geom_line() +
+  geom_text_repel(mapping = aes(x = max(YEAR), label = ICAO , colour = ICAO) 
+                  #, nudge_x = 0.5
+                  #, point.padding = 0.5 , na.rm = TRUE
+                  , xlim = c(max_year-2, NA)
+                  , force = 10, segment.colour = "grey50"
+                  , size = 3
+) +
+  facet_wrap(.~REGION) + 
+ # my_own_theme_minimal +
+  scale_color_discrete(l = 30, c = 100, guide = FALSE) +
+  labs(x = NULL, y = "peak day movements") 
+#+
+#  xlim(min_year-0.5, max(tmp$YEAR)+0.5)
+```
+
+The year-to-year change of the peak day traffic between 2019 and 2022 is shown in @fig-change-peak-day.
+For the European study airports, Frankfurt (EDDF), Munich (EDDM), Paris (LFPG), and Rome (LIRF) experienced a higher drop of the daily peak traffic in comparison to 2019.
+Despite the not yet fully recovered demand situation at London Gatwick (EGKK) and Zurich (LSZH) showed a moderate reduction of the daily peak traffic in 2022.
+This suggest that airports with limited airport runway capacity managed
+
+## Fleet Mix
+
+```{r}
+fleet_mix_from_counts <- function(.counts, .reg){
+  fm <- .counts %>% 
+    mutate(YEAR = lubridate::year(DATE)
+           ,TOT = ARRS + DEPS) %>% 
+    group_by(ICAO, YEAR) %>% 
+    summarise(
+        TOT    = sum(ARRS) + sum(DEPS)
+      , H_PERC = sum(HEAVY)/TOT
+      , M_PERC = sum(MED) / TOT
+      , L_PERC = sum(LIGHT)/TOT
+      , .groups = "drop") %>% 
+    mutate(REGION = .reg) %>%
+    tidyr::pivot_longer(
+       cols     = c(H_PERC, M_PERC, L_PERC)
+      ,names_to = "WTC"
+      ,values_to= "SHARE") %>%
+    mutate(WTC = factor(WTC
+                        ,levels = c("L_PERC","M_PERC","H_PERC")
+                        ,labels = c("Light" ,"Medium","Heavy"))
+           )
+}
+
+fm_apts_bra <- tfc_apts_bra |> 
+  rename(HEAVY = H, MED = M, LIGHT = L) |> 
+  fleet_mix_from_counts("BRA")
+
+fm_apts_eur <- tfc_apts_eur |> fleet_mix_from_counts("EUR")
+```
+
+```{r}
+#| label: fig-fleet-mix
+#| fig-cap: Fleet mix observed at the study airports in 2022
+
+key_year <- 2022
+fm_apts <- bind_rows(fm_apts_bra, fm_apts_eur)
+
+ggplot( data    = fm_apts %>% filter(YEAR == key_year)
+      , mapping = aes(x = ICAO, y = SHARE, fill = WTC)) +
+  geom_col(position = "stack", width = 0.9)  +
+  scale_fill_manual(values = c("#56B4E9", "#009E73","#F0E442")) +
+  coord_flip() +
+  facet_wrap(.~REGION, scales = "free_y") + 
+  scale_y_continuous(labels = scales::percent) +
+#  my_own_theme_minimal +
+  theme( legend.position = "top"
+        ,legend.title    = element_text(size = 8) 
+        ,legend.text     = element_text(size = 8)
+        ,legend.key.size = unit(0.3, "cm")) +
+  labs(x = NULL, y = NULL, caption = paste0("Note: key-year ", key_year))
+```
+
+@fig-fleet-mix depicts the observed share of different wake turbulence categories (WTC) across the study airports in `r key_year`.
+In both regions, "medium" aircraft types are the predominant aircraft type.
+The fleet mix - and in particular the separation requirements between the different aircraft types - is an important influencing factor for the capacity and observed (and achievable) throughput.
+In general, a larger proportions of heavy aircraft or aircraft with longer runway occupancy times may result in lower throughput due to the required larger wake turbulence separation or time spent on the runway.
+The locally defined capacity values may therefore differ based on the predominant fleet mix and operational characteristics, and ultimately result in different observed peak movement numbers or influence surface and terminal operations.
+
+In Brazil, a significant number of "light" types operated in 2022.
+For example Salvador (SBSV) serviced about 20% of "light" types.
+The major hubs, i.e.
+São Paulo Guarulhos (SBGR), Rio de Janeiro Galeão (SBGL), and Campinas (SBKP) observed a share of 15-20% of "heavy" aircraft.
+These airports serve also as destinations for international long-haul flights.
+
+With the exception of Zurich (LSZH), the share of "light" types is negligible at the European study airport in 2022.
+London Heathrow (EGLL), Paris Charles de Gaule (LFPG), and Frankfurt (EDDF) observed the highest shares of "heavy" types.
+
+Within the European region - and its multitude of national hubs - a significant number of international long-haul flights is operated at the chosen study airports.
+In Brazil, the highlighted airports, Guarulhos (SBGR), Galeão (SBGL), and Campinas (SBKP), play a major role in terms of international connectivity.
+It follows that medium and light types are used predominantly for inter-reginal connections.
+Based on the selected study airports, the underlying decentralised structure of the European network becomes more visible.
+Due to the geo-political composition, airports serving capitals or representing a main national hub are more frequent in Europe.
+This is in contrast to Brazil, where the international and heavy air traffic appears more centralised at 2-3 pre-dominant hubs.
+
+```{r}
+#| label: fig-fleetmix-timeline
+#| fig-cap: Fleet mix change over time observed at study airports
+plot_fleetmix_timeline <- function(.fleetmix){ 
+  viz <- .fleetmix |> 
+    ggplot(aes(x = YEAR, y = SHARE, group = WTC, color = WTC)) +
+  geom_path( ) +
+  geom_point() +
+  scale_color_manual(values = c("#56B4E9", "#009E73","#F0E442")) +
+  scale_y_continuous(labels = scales::percent, limits = c(0,1)) +
+  facet_wrap(.~ICAO, ncol = 2) + 
+  labs(x = NULL, y = "share [% movements]", color = NULL)
+  return(viz)
+}
+
+p_bra <- fm_apts_bra |> plot_fleetmix_timeline()
+p_eur <- fm_apts_eur |> 
+  filter(between(YEAR, min_year, max_year)) |> plot_fleetmix_timeline() +
+  labs(y = NULL)
+
+p_bra + p_eur + plot_layout(guides = "collect") & theme(legend.position = "top")
+```
+
+On average, @fig-fleetmix-timeline shows that the fleetmix remained fairly stable over the years.
+It is interesting to observe that the unprecedented decline in air transport during the pandemic phase did not substantially break this pattern.
+This suggests that the contraction of the traffic volume hit all segments at a similar rate [^03-traffic_characterisation-1].
+
+[^03-traffic_characterisation-1]: It must be noted that conceptually, the number of aircraft remained unchanged in the both regions.
+    The higher utilisation of "heavy" aircraft for logistical support appeared to have offset the lower number international / long-haul passenger flights.
+    For the first six month of 2023, this pattern is continued
+
+## Summary
+
+This chapter described the overall evolution of air traffic in Brazil and Europe on the network and study airport level.
+Air traffic observed an unprecedented decline in both regions in response to COVID19.
+However, the recovery path in both regions differed.
+Overall, the Brazilian demand recovered substantially smoother than the European.
+As national governments varied in their assessments and introduction of public health measures, including travel restrictions, intra-European air connectivity observed several setbacks.
+On a network level, air traffic in Brazil exceeded the pre-pandemic level, whereas European traffic reaches about 5-10% below the pre-pandemic level.
+
+In 2022, medium aircraft types were predominant in both regions across the studied airports. Brazil hosted proportionally more light aircraft, notably in Salvador (SBSV). At the same time, major hubs like São Paulo Guarulhos (SBGR) and Campinas (SBKP) handled substantial shares of heavy aircraft. Conversely, European airports, except Zurich (LSZH), had minimal shares of light types, with London Heathrow (EGLL), Paris Charles de Gaule (LFPG), and Frankfurt (EDDF) witnessing higher shares of heavy types. The European network demonstrated a decentralized structure with numerous international long-haul flights, while Brazil's international and heavy air traffic was centralized in 3 primary hubs. Despite pandemic-induced declines in air transport, data suggests a stable fleet mix, indicating a consistent impact across traffic segments.
+
+The overall air traffic demand situation is a key driver for the performance of air navigation services.
+The observed differences may impact - inter alia - separation and synchronisation of air traffic, and influence the observed performance reported in the other chapters of this report.

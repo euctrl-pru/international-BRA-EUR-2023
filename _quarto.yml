@@ -16,8 +16,8 @@ book:
   - 00-executive-summary.qmd
   - 01-intro.qmd
   - 02-system_overview.qmd
-#- 03-traffic_characterisation.qmd
-#- 04-predictability.qmd
+  - 03-traffic_characterisation.qmd
+  - 04-predictability.qmd
 #- 05-capacity_and_throughput.qmd
 #- 06-efficiency.qmd
 # - 07-environment.qmd
@@ -48,6 +48,7 @@ format:
       text: |
         \usepackage{pdfpages}
         \pagenumbering{gobble}
+        \usepackage{float}
 
   docx:
     toc: true
