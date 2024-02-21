@@ -18,10 +18,10 @@ book:
   - 02-system_overview.qmd
   - 03-traffic_characterisation.qmd
   - 04-predictability.qmd
-#- 05-capacity_and_throughput.qmd
+#  - 05-capacity_and_throughput.qmd
 #- 06-efficiency.qmd
 # - 07-environment.qmd
-  - 08-conclusions.qmd
+#  - 08-conclusions.qmd
   - 99-references.qmd
 appendices:
   - A1-appendix.qmd
@@ -48,7 +48,11 @@ format:
       text: |
         \usepackage{pdfpages}
         \pagenumbering{gobble}
-        \usepackage{float}
+        \usepackage{fancyhdr}
+        \pagestyle{fancy}
+        \fancyhead[L]{\leftmark}
+        \fancyhead[R]{}
+        \fancyfoot[L]{}
 
   docx:
     toc: true

@@ -1,5 +1,5 @@
 ---
-title: "Air Navigation System Characterization"
+title: "Air Navigation System Characterisation"
 editor: visual
 ---
 
@@ -71,8 +71,8 @@ Yet, Brazil, with lower traffic density related to airspace use, finds probably 
 In comparison, the European region faces more considerable challenges in coordinating efforts to avoid congestion due to a higher density.
 
 ```{r}
-#| label: fig-Apt_Rank_Comparison2022
-#| fig-cap: Airport Rank Comparison 2022
+#| label: fig-Apt-Rank-Comparison2022
+#| fig-cap: "Airport Rank Comparison 2022"
 #| out-width: 90%
 
 knitr::include_graphics("./figures/p_cumsum_tot.png")
@@ -85,11 +85,11 @@ Recently, technological feasibility modified this logic with the possibility of 
 
 Still, a closer look at the dynamics of these routes and potential connectivity between sites may indicate the potential for capacity to be exploited by the aviation community or that idle capacity is installed without reasonable prospects for use.
 
-In @fig-Apt_Rank_Comparison2022, we see the distribution of commercial departures for 2022 in both regions.
+In @fig-Apt-Rank-Comparison2022, we see the distribution of commercial departures for 2022 in both regions.
 Note that the concentration is proportionally slightly higher on the Brazilian side, with less than 50 airports handlinging 80% of the commercial take-offs that year.
 In comparison, the European system distributed the same percentage over approximately 100 airports.    
 For both regions, the aforementioned share of air traffic is centralised in a small subset of airports.
-On the other hand, the cumulative charts in @fig-Apt_Rank_Comparison2022 show that a high number of airports service under 1% of the regional air traffic volume.
+On the other hand, the cumulative charts in @fig-Apt-Rank-Comparison2022 show that a high number of airports service under 1% of the regional air traffic volume.
 In both systems, this represents more than half of the airports that serve commercial flights.
 In Europe, approximately 486 airports handle only 1% of the movements, while in Brazil, there are 210 for the same percentage.    
 Despite being an already historically established distribution and somewhat expected, the aviation sector agents must revisit this data constantly to verify the use of deployed resources and capacity. 
