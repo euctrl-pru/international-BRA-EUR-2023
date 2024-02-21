@@ -130,18 +130,34 @@ p_eur <- tfc_eur |> plot_timeline_per_year() + labs(subtitle = "Europe")
 ggsave("./figures/traffic-eur-2023.png", dpi = 320, height = 5, width = 8, bg="white")
 ```
 
-::: {layout="[55,45]"}
-![Brazil - network traffic in 2023](figures/traffic-bra-2023.png){#fig-bra-tfc-2023}
+<!-- ::: {layout="[55,45]"} -->
+:::: {layout-ncol=2}
 
--   For Brazil, traffic in the first half of 2023 exceeded the pre-pandemic traffic level (@fig-bra-tfc-2023)
+:::{.column}
+![Brazil - network traffic in 2023](figures/traffic-bra-2023.png){#fig-bra-tfc-2023}
 :::
 
-::: {layout="[55,45]"}
+::: {.column}
+
+* For Brazil, traffic in the first half of 2023 exceeded the pre-pandemic traffic level (@fig-bra-tfc-2023)
+
+:::
+
+:::{.column}
+
 ![Europe - network traffic evolution in 2023](figures/traffic-eur-2023.png){#fig-eur-tfc-2023}
 
--   On a network level, the continual recovery of the traffic is on-going in Europe.
--   The first half of 2023 saw traffic levels at about 90-95% of the pre-pandemic network traffic and started following a classical *seasonal* pattern (c.f. @fig-eur-tfc-2023). However, traffic recovery in Europe is not at the same level for each pre-pandemic service/connection. The recovery also resulted in a light modification of network connectivity. The Russian invasion of Ukraine resulted in the closure of a significant portion of the airspace (about 20%). However, the overall impact of the closure on air traffic - on a network level - was relatively small.
 :::
+
+::: {.column}
+
+* On a network level, the continual recovery of the traffic is on-going in Europe.
+* The first half of 2023 saw traffic levels at about 90-95% of the pre-pandemic network traffic and started following a classical *seasonal* pattern (c.f. @fig-eur-tfc-2023). However, traffic recovery in Europe is not at the same level for each pre-pandemic service/connection. The recovery also resulted in a light modification of network connectivity. The Russian invasion of Ukraine resulted in the closure of a significant portion of the airspace (about 20%). However, the overall impact of the closure on air traffic - on a network level - was relatively small.
+
+:::
+
+::::
+
 
 This high-level network perspective shows that traffic in both regions is comparable to pre-pandemic levels.
 It will be interesting to observe the further evolution and growth of air traffic.
