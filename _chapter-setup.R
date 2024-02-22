@@ -10,7 +10,8 @@ library(lubridate)
 library(ggrepel)
 library(patchwork)
 #-------- supporting packages
-library(flextable)
+#library(flextable)
+library(gt)
 library(zoo)
 library(magrittr)
 library(purrr)
@@ -26,6 +27,7 @@ library(arrow)
 ggplot2::theme_set(theme_minimal())
 
 #============== flextable stuff ===============================================
+#-------- deprecated when moving to {gt} -------------------------------------
 # set flextable font to surpress warning about used Latex engine
 flextable::set_flextable_defaults(
   fonts_ignore = TRUE    # ignore waring of Latex engine
@@ -34,6 +36,7 @@ flextable::set_flextable_defaults(
 
 # set flextable border properties
 ft_border = flextable::fp_border_default(width = 0.5)
+
 
 
 # define standard theme aspects for Brazil and Europe =========================
