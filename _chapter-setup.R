@@ -49,4 +49,4 @@ my_own_theme_minimal <- theme_minimal() + theme(axis.title = element_text(size =
 my_own_theme_bw <- theme_bw() + theme(axis.title = element_text(size = 9))
 
 # max_date
-max_date <- lubridate::ymd("2023-07-01")
+max_date <- lubridate::ymd("2023-12-31")

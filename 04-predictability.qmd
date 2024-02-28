@@ -31,6 +31,14 @@ punc_bra <- read_csv("./data/BRA-punc.csv.gz") |>
   summarise(across(.cols = `(-INF,-60]`:`[60,INF)`, .fns = sum), .groups = "drop") |> 
   add_dly_early_late_groupings()
 
+#------- DATA UPDATE -------------
+punc_bra2 <- arrow::read_parquet("./data/bra-PUNC-analytic-2022-2023.parquet") |>  
+    dplyr::mutate(YEAR = lubridate::year(DATE), REGION = "BRA") |> 
+    dplyr::summarise(
+           dplyr::across(.cols = c(N_VALID, `(-INF,-60]`:`[60,INF)`), .fns = sum)
+        , .by = c(REGION, APT, PHASE, YEAR)
+        ) |> 
+  add_dly_early_late_groupings()
 
 # prepare European punctuality
 punc_eur <- arrow::read_parquet("./data/PBWG-EUR-punctuality-daily-2019-20230630.parquet") |> 
@@ -101,6 +109,7 @@ prepare_punc_plot_data <- function(.punc, .phase, .year){
 #| fig-subcap: 
 #|   - "Arrival punctuality 2019"
 #|   - "Arrival punctuality 2022"
+#|   - "Arrival punctuality 2023"
 #| layout-nrow: 2
 
 # debugging delay contributions
@@ -132,9 +141,34 @@ p_2022 <- punc |> prepare_punc_plot_data("ARR",2022) |>
   labs(caption = "arrival punctuality 2022") +
   theme(legend.position = "none")
 
+p_2023 <- punc |> prepare_punc_plot_data("ARR",2023) |> 
+  punc_plot(.debug = debug_arrs) +
+  labs(caption = "arrival punctuality 2023") +
+  theme(legend.position = "none")
+
+
 p_2019 & labs(caption = NULL)
 p_2022 & labs(caption = NULL)
+p_2023 & labs(caption = NULL)
 ```
+
+```{r}
+punc <- bind_rows(punc_bra2, punc_eur)
+
+p_2022 <- punc |> prepare_punc_plot_data("ARR",2022) |> 
+  punc_plot(.debug = debug_arrs) +
+  labs(caption = "arrival punctuality 2022") +
+  theme(legend.position = "none")
+
+p_2023 <- punc |> prepare_punc_plot_data("ARR",2023) |> 
+  punc_plot(.debug = debug_arrs) +
+  labs(caption = "arrival punctuality 2023") +
+  theme(legend.position = "none")
+
+p_2022
+p_2023
+```
+
 
 @fig-arrival-punc shows the evolution of arrival punctuality for the select airports in Brazil and Europe.
 When comparing both regions in 2019 and 2022, Brazil's share of early arrivals (earlier than 15 minutes before the scheduled arrival) is significantly higher than the same European portion.
@@ -181,6 +215,7 @@ plot_early_vs_late <- function(.early_vs_late, .phase, .year
       , breaks =         pretty_breaks
       , labels = paste0( pretty_breaks|> abs() *100, "%")
       ) +
+    scale_fill_manual(values = c("tomato2", "lightgreen")) +  # c("#CCEEFF", "#FFDDDD")) +
     labs(x = NULL, y = NULL, fill = NULL
          ,caption = my_cap ) +
      theme( legend.position = "top"
@@ -200,6 +235,11 @@ p2_bra_earlylate <- punc_bra |>
   filter(SLOT %in% c("EARLY", "LATE")) |> 
   plot_early_vs_late("ARR", 2022)
 
+p3_bra_earlylate <- punc_bra2 |> 
+  prepare_punc_plot_data("ARR", 2023) |> 
+  filter(SLOT %in% c("EARLY", "LATE")) |> 
+  plot_early_vs_late("ARR", 2023)
+
 p1_eur_earlylate <- punc_eur |> 
   prepare_punc_plot_data("ARR", 2019) |> 
   filter(SLOT %in% c("EARLY", "LATE")) |> 
@@ -210,17 +250,53 @@ p2_eur_earlylate <- punc_eur |>
   filter(SLOT %in% c("EARLY", "LATE")) |> 
   plot_early_vs_late("ARR", 2022)
 
+p3_eur_earlylate <- punc_eur |> 
+  prepare_punc_plot_data("ARR", 2023) |> 
+  filter(SLOT %in% c("EARLY", "LATE")) |> 
+  plot_early_vs_late("ARR", 2023)
+
 p2019 <- p1_bra_earlylate + p1_eur_earlylate
 p2022 <- p2_bra_earlylate + p2_eur_earlylate
+p2023 <- p3_bra_earlylate + p3_eur_earlylate
 ```
 
 ```{r}
 #| label: fig-early-vs-late-arrivals
 #| fig-cap: Change of share of early and late arrivals (2019 vs 2022)
 
-(p2019 / p2022) + plot_layout(guides = "collect") & 
+(p2019 / p2022 / p2023) + plot_layout(guides = "collect") & 
   theme(legend.position = 'top')
 ```
+
+# | fig-subcap:
+# |   - "Arrival punctuality 2019"
+# |   - "Arrival punctuality 2022"
+# |   - "Arrival punctuality 2023"
+
+```{r}
+#| label: fig-early-vs-late-arrivals2
+#| fig-cap: Change of share of early and late arrivals (2019 vs 2022)
+#| fig-height: 2.5
+#| layout-nrow: 3
+
+p2019 + plot_layout(guides = "collect") & 
+  theme(legend.position = 'top')
+p2022
+p2023 
+```
+
+::: {#fig-myplot layout-ncol=1}
+
+```{r}
+#| fig-height: 2.5
+p2019 + plot_layout(guides = "collect") & 
+  theme(legend.position = 'top')
+p2022
+p2023 
+```
+
+main caption
+:::
 
 @fig-early-vs-late-arrivals compares the share of early and late arrivals at each study airport in 2019 and 2022.
 From a high-level perspective, air traffic tends to arrive well ahead of schedule in Brazil, while Europe observes a higher share of delayed arrivals.
