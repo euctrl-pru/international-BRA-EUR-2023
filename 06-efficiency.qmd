@@ -544,7 +544,10 @@ eur_asma <- ggplot(
   scale_fill_brewer(palette = "GnBu") +
   scale_x_continuous(limits = c(0,7))
 
-(bra_asma | eur_asma) + plot_layout(guides = "collect") & theme(legend.position = "top") & labs(x = NULL, y = NULL, color = NULL , fill = NULL )
+(bra_asma | eur_asma) + 
+  plot_layout(guides = "collect") & 
+      theme(legend.position = "top") & 
+      labs(x = NULL, y = NULL, color = NULL , fill = NULL )
 ```
 
 @fig-asma compares the annual average of additional times in terminal airspace across the study airports.

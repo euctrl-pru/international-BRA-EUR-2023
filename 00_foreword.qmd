@@ -1,0 +1,40 @@
+# Foreword {.unnumbered}
+
+... add a bit of whitespace here
+
+$$\\[1in]$$
+
+:::: {.columns}
+
+::: {.column width="70%"}
+Brazilian foreword text. Column width currently 70%. TBD
+:::
+
+::: {.column width="10%"}
+<!-- empty column to create gap -->
+:::
+
+::: {.column width="20%"}
+Headshot of DECEA Brigadier
+
+More text
+:::
+
+::::
+
+:::: {.columns}
+
+::: {.column width="20%"}
+Headshot of Peter WHYSALL
+:::
+
+::: {.column width="10%"}
+<!-- empty column to create gap -->
+:::
+
+::: {.column width="70%"}
+
+EUR foreword text here. Let's see whether this looks nice.
+:::
+
+::::

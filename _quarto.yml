@@ -13,12 +13,13 @@ book:
   date: 5. December 2023
   chapters:
   - index.qmd
+  - 00_foreword.qmd
   - 00-executive-summary.qmd
   - 01-intro.qmd
   - 02-system_overview.qmd
   - 03-traffic_characterisation.qmd
   - 04-predictability.qmd
-#  - 05-capacity_and_throughput.qmd
+  - 05-capacity_and_throughput.qmd
   - 06-efficiency.qmd
 # - 07-environment.qmd
 #  - 08-conclusions.qmd
@@ -58,6 +59,7 @@ format:
     toc: true
     number-sections: true
     highlight-style: github
+    fig-dpi: 320
 
   # epub:
   #    cover-image: cover.png

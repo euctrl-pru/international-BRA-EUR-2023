@@ -1,0 +1,10 @@
+---
+title: "Environment"
+editor: visual
+---
+
+The aviation community has institutionally embraced the assessment of its environment impact.
+During the 40th ICAO Assembly in 2019, two global aspirational goals were agreed upon to mitigate the impact of the international aviation sector.
+These goals entail an annual fuel efficiency improvement of 2% until 2050 and achieving carbon-neutral growth from 2020 onwards (as outlined in ICAO (2019b)).
+Nations worldwide have set ambitious political targets to address the effects of climate change.
+For instance, the European Union introduced its Green Deal (European Commission (2019)) and the Fit-for-55 initiative, which aims to reduce net greenhouse gas emissions by at least 55% by 2030 compared to 1990 levels (as stated in the European Commission (2021)).
