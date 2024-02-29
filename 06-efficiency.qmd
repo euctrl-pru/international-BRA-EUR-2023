@@ -1,0 +1,631 @@
+# Efficiency
+
+```{r}
+source("_chapter-setup.R")
+```
+
+<!-- this is a comment ... verbatim copy from previous report -->
+
+Operational efficiency is a critical component in assessing the management and execution of operations. It provides insights in the management of arrival and departure flows and the associated separation and synchronisation activities. 
+Inefficiencies can have an impact on user operations in terms of delays or excessive fuel burn.
+In light of the previous chapters it is therefore interesting to study how the available capacity was utilised to service demand during the different flight phases.
+
+The measures reported in this comparison report are based on the observed travel time for surface operations (i.e. taxi-in and taxi-out) and during the arrival phase. 
+These travel times are compared with an associated reference time for a group of flights showing similar operational characteristics. 
+The determined difference (i.e. additional time) measures the level of inefficiency.
+It must be noted that high performance operations will still yield a certain share of measured additional times. 
+Operational efficiency is therefore aiming at the minimising rather than eliminating these additional times as they cannot be zero.
+
+
+## Additional Taxi-In Time
+
+The additional taxi-in time measures the travel time of an arriving aircraft from its touchdown, i.e. the actual landing time, to its stand/gate position, i.e. actual in-block time).
+This elapsed taxi-in time is compared to an anticipated reference time for aircraft arriving at the same runway and taxiing to the same (group of) stand/gate position(s).
+Research showed that the taxi-times are not dependent on the type of aircraft.
+The additional taxi-in time indicator provides a measure of the management of inbound surface traffic.
+
+This report utilises another source for the movement times at Brazilian airports. 
+Next to the actual taxi-times, the new data source provides also gate/stand information.
+Accordingly, additional taxi-times can be now determined on a per-gate basis.
+Previous studies did not support this higher level of granularity.
+The reader needs therefore to bear in mind that the reported results and trends differ from previous reports which were based on airport-wide aggregation.
+The latter may be influenced by the predominant runway system configuration and frequently used stand/parking positions.
+
+```{r}
+# load txit data sets
+#txit_bra <- read_csv("./data/BRA-txit.csv") |> mutate(REG = "BRA")
+txit_bra <-  read_csv("./data/BRA-TXIT-2019-2023.csv", show_col_types = FALSE)|>
+  mutate(REG = "BRA") |> rename(APT = ICAO)
+  
+# txit_eur <- arrow::read_parquet("./data-pbwg/taxi_times_airport_monthly_EUR.parquet") |> 
+#   ungroup() |> 
+#   filter(PHASE == "ARR", REG == "EUR") |> 
+#   mutate( DATE = paste0(YEAR,"-", str_pad(MONTH, 2, pad = "0"), "-01") |> lubridate::ymd()
+#          ,ADD_TIME = SUM_TXXT - SUM_REF
+#          , PHASE = "TXIT") |>
+#   filter(AIRPORT %in% eur_apts) |> 
+#   select(REG, APT = AIRPORT, PHASE, DATE, MVTS = FLTS, ADD_TIME, AVG_ADD_TIME)
+```
+
+```{r}
+txit_eur2 <- read_csv("./data/BRA-EUR-EUR-TXXT-2019-2023Q2.csv", show_col_types = F) |>
+  filter(ICAO %in% eur_apts) |> 
+  filter(PHASE == "ARR") |> mutate(REG = "EUR") |> 
+  select(REG, APT = ICAO, PHASE, DATE, MVTS = N_VALID_1922, ADD_TIME = ADD_TIME_1922
+         ,AVG_ADD_TIME = AVG_ADD_TIME_1922)
+```
+
+
+### Annual Evolution of Additional Taxi-in Times
+
+```{r}
+aggregate_by_year <- function(.df){
+  .df |> 
+    dplyr::group_by(REG, APT, PHASE, YEAR = lubridate::year(DATE)) |>
+    dplyr::summarise(across(.cols = MVTS:ADD_TIME, .fns = sum), .groups = "drop") |>
+    dplyr::mutate(AVG_ADD_TIME = ADD_TIME / MVTS)
+}
+
+plot_annual_txit <- function(.ann_txit){
+  viz <- .ann_txit |> mutate(YEAR = as.factor(YEAR)) |>  
+    
+  ggplot(aes(x = AVG_ADD_TIME, y = APT, group = APT, fill = YEAR)) +
+  geom_col(position = position_dodge()
+           ) +
+  facet_wrap(.~ REG) +
+  labs(subtitle = "additional taxi-in times")
+  
+  return(viz)
+}
+
+plot2 <- function(.tmp){
+  viz <- 
+  ggplot(data = .tmp, mapping = aes(x = APT, y = AVG_ADD_TIME, fill = YEAR)) +
+  geom_col(position = position_dodge(-.9), width = 0.9) +
+  geom_hline(yintercept = c(2,4), linetype = "dotted") +
+  coord_flip() + 
+  facet_wrap(.~REGION, scales = "free_y") +
+ # my_own_theme_minimal +
+  theme(legend.position = "top"
+        ,legend.title    = element_text(size = 8) 
+        ,legend.text     = element_text(size = 8)
+        ,legend.key.size = unit(0.3, "cm")
+        ) +
+  labs(x = NULL, y = "average additional taxi-in time [min/arr]"
+       ,fill = "year") +
+  scale_fill_brewer(palette = "GnBu")
+  
+  return(viz)
+}
+```
+```{r}
+#| label: fig-txit-annual
+#| fig-cap: Additional taxi-in time (2019-2023)
+txits <- bind_rows( txit_bra, txit_eur2)
+
+txits |> aggregate_by_year() |> 
+  filter(between(YEAR, 2019, 2023)) |> 
+   rename(REGION = REG) |> 
+   mutate(YEAR = as.factor(YEAR)) |>  
+   plot2() 
+```
+
+The annual development of the additional taxi-in times at the study airports is depicted by @fig-txit-annual.
+The indicator varies across the different airports. 
+A threshold of 2 minutes per arrival emerges as an upper bound for the taxi-in performance.
+
+Taxi-in performance in Brazil ranges in 2022 well below this 2-minute-threshold.
+In general, taxi-in performance at Brazilian airports improved over the period 2019 to 2022[^BRA-txit].
+The pandemic-related drop in surface movements and pressure on the ground infrastructure is visible for the major hubs, i.e. Sao Paulo's (SBGR), Rio de Janeiro's Galeão (SBGL), Campinas (SBKP).
+Taxi-in performance at Campinas remained fairly constant ranging around 2.5 min/arr across the years with a discernible reduction in 2021.
+The picture at SBGL and SBGR is more varied.
+Taxi-in performance improved by about 1.5 min/arr comparing the pre-pandemic year 2019 with the performance observed in 2022.
+
+<!-- footnote on changed values for txit @ BRA ------------------- 
+---- keep this close to the para for editing purposes -------- -->
+[^BRA-txit]: While general trends are consistent with previous reports, the changed and improved data source provides now runway and stand/gate information for taxi-in operations. This allows for a more fine-grained analysis of the additional surface movement times. Accordingly, observed (and reported) taxi-in performance values differ from the earlier reports (which are based on airport-wide reference times).
+<!--------------------------------------------------------------- -->
+
+In Europe, additional taxi-in times range generally below the 2-minute-threshold for most of the study airports [^EUR-txit]. 
+Taxi-in performance deteriorated in London Heathrow (EGLL) in 2022 ranging just under 5 minutes per arrival and exceeding the pro-COVID performance by about 2 minutes per incoming flight.
+Rome Fiumicino shows a stable taxi-in performance ranging above 2.5 minutes per arrival. This suggests complexity of the aerodrome layout and a higher effort to deconflict arrivals from other arrivals or taxiing departures. 
+Several airports in Europe show higher or less improved additonal taxi-in times during the pandemic years. 
+This is related to the fact that airports closed down portions of the infrastructure (e.g. terminals) to account for the lower demand in air traffic. 
+In some cases, this resulted in less favourable runway and gate/stand combinations.
+The year 2022 is also characterised by a surge in delays due to the returning demand for air travel. 
+The lower punctuality also posed challenges for arriving traffic as incoming flights had to be serviced to other gates/stands to deconflict from delayed departures.
+The latter phenomenon shows more clearly for the major hubs amongst the study airports.
+
+<!-- footnote EUR taxi-times ---------------------------------------------- -->
+[^EUR-txit]: To account for the low traffic demand during the pandemic years, the European data builds on modulated reference times for the period 2019 through 2022.
+This accounts for the high number of changed surface movement patterns (e.g. different runway/gate combinations infrequently or not used before the pandemic).
+While the overall trend is consistent, previous reports may show differnt values for the observed surface movement performance.
+
+### Monthly Variation of Additional Taxi-in Times
+
+```{r}
+#| label: fig-bra-txit-timeline
+#| fig-cap: Evolution of average additional taxi-in time at Brazilian airports
+#| out-height: 12cm
+
+aggregate_by_month <- function(.df){
+  .df |> 
+    group_by(APT, PHASE, MOF = lubridate::floor_date(DATE, unit = "month")) |>
+    summarise(across(.cols = MVTS:ADD_TIME, .fns = sum), .groups = "drop") |>
+    mutate(AVG_ADD_TIME = ADD_TIME / MVTS)
+}
+
+plot_monthly_txit <- function(.monthly_txit, .ncol = 2){
+  viz <- .monthly_txit |> 
+    ggplot() +
+    geom_line(aes(x = DATE, y = AVG_ADD_TIME, group = APT)) +
+    facet_wrap(.~ APT, ncol = .ncol) +
+    labs(subtitle = "additional taxi-in times"
+         ,x = NULL
+         ,y = "avg. add. taxi-in time [min/arr]")
+    
+  return(viz)  
+}
+
+txit_bra |> 
+  aggregate_by_month() |> 
+  rename(DATE = MOF) |> 
+  filter(DATE < lubridate::ymd("2023-01-01")) |> 
+  plot_monthly_txit()
+  
+```
+
+```{r}
+#| label: fig-eur-txit-timeline
+#| fig-cap: Evolution of average additional taxi-in time at European airports
+#| out-height: 12cm
+txit_eur2 |> aggregate_by_month() |>  
+  rename(DATE = MOF) |>
+  plot_monthly_txit()
+```
+
+The evolution of the taxi-in times at the study airports in Brazil and Europe is shown in @fig-bra-txit-timeline and @fig-eur-txit-timeline. 
+In this graph, we can see that the oscillation of additional taxi time over the months of the year is timider on the Brazilian side, with a generalised rectification soon after the beginning of the pandemic. 
+Interestingly, even with the significant return of demand in 2022, there are no significant increases in the average additional time on a monthly level. 
+Guarulhos (SBGR) is the only airport that points in the direction of a more systematic increase in time and should be monitored for the period of 2023. 
+
+The observed average additional taxi-in time varies across European airports, with variations highlighted over the months. 
+In some instances, the pandemic period is well stressed in the charts, except for Barcelona and Zurich, which inverse the demand/efficiency relationship. 
+Less efficient taxi-in times point to changes in the taxi-in procedures during the pandemic.
+Also noteworthy is Heathrow's behaviour, which presents apparent difficulty in re-accommodating the growing demand and has increased its average time. 
+
+## Taxi-Out Times
+
+```{r}
+# load taxi data 
+txot <- read_csv("./data/BRA-TXOT-2019-2023.csv", show_col_types = FALSE) |> 
+  mutate(REG = "BRA") |> rename(APT = ICAO)
+txot_bra <- txot
+
+txot_eur <- read_csv("./data/BRA-EUR-EUR-TXXT-2019-2023Q2.csv", show_col_types = F) |>
+  filter(ICAO %in% eur_apts, year(DATE) >= 2019) |> 
+  filter(PHASE == "DEP") |> mutate(REG = "EUR") |> 
+  select(REG, APT = ICAO, PHASE, DATE, MVTS = N_VALID_1922, ADD_TIME = ADD_TIME_1922
+         ,AVG_ADD_TIME = AVG_ADD_TIME_1922)
+
+#--------- helper functions -------------------------------
+plot_monthly_txot <-  function(.txot, .ncol = 2){
+  p <-  .txot |> 
+  ggplot() +
+  geom_line(aes(x = DATE, y = AVG_ADD_TIME, group = APT)) +
+  facet_wrap(.~ APT, ncol = .ncol) +
+  labs(subtitle = "additional taxi-out times"
+       , x = NULL, y = "avg. add. taxi-out time [min/dep]")
+return(p)
+}
+```
+
+### Annual Evolution of Additional Taxi-out Times
+
+```{r}
+#| label: fig-txot-annual
+#| fig-cap: Additional taxi-out time (2019-2023)
+txots <- bind_rows( txot, txot_eur)
+
+txots |> aggregate_by_year() |> 
+  filter(between(YEAR, 2019, 2023)) |> 
+   rename(REGION = REG) |> 
+   mutate(YEAR = as.factor(YEAR)) |>  
+   plot2() 
+```
+
+On average, higher additional times for taxi-out are observed across all airports (c.f. @fig-txot-annual) and potential benefits from lower traffic demand predominantly visible for 2020 and 2021.
+There is a varied picture with several airports observing additinal taxi-out times of more than 4 minutes per departure, e.g. SBSP, SBRJ, SBGR in Brazil and LIRF, EGLL, and EGKK in Europe.
+In many instances the higher taxi-out times in 2022 signal are in line with the general increase in air traffic and the reopening of closed parts of the aerodrome infrastructure.
+
+### Monthly Variation of Additional Taxi-out Times
+
+```{r}
+#| label: fig-txot-monthly
+#| fig-cap: Monthly Evolution of taxi-out times
+txot |> 
+  aggregate_by_month() |> 
+  rename(DATE = MOF) |> 
+  plot_monthly_txot()
+```
+
+Moving from the annual overview to the monthly level a more finegrained patern emerges.
+Within the Brazilian context taxi-out performance increased during the beginning of COVID.
+The actual order of magnitude varies across the airports, however a clear reaction can be observed for the initial phase (i.e. following the WHO pandemic declaration).
+The reaction to the unprecedented decline in air traffic is more prominent for European airports.
+Highly contested aerodrome services at London Heathrow and London Gatwick show a clear reaction to the overall pandemic.
+Strong weather influences drove the taxi-out performance at Amsterdam Schiphol (EHAM), Munich (EDDM) and Zurich (LSZH) in early 2021.
+
+```{r}
+# txot_eur <- arrow::read_parquet("./data-pbwg/taxi_times_airport_monthly_EUR.parquet") |> 
+#   filter(PHASE == "DEP", REG == "EUR") |> 
+#   mutate(DATE = paste0(YEAR,"-", str_pad(MONTH, 2, pad = "0"), "-01") |> lubridate::ymd()) |>
+#   filter(AIRPORT %in% eur_apts)
+
+
+txot_eur |>
+  aggregate_by_month() |> 
+  rename(DATE = MOF) |> 
+  plot_monthly_txot()
+```
+
+## Mapping Additional Taxi-in and Taxi-out Times
+
+```{r}
+# Brazilian TXXT -------------------------------------------------------
+# txit_bra <- read_csv("./data/BRA-txit.csv", show_col_types = FALSE) |> mutate(REG = "BRA")
+# txot_bra <- read_csv("./data/BRA-txot.csv", show_col_types = FALSE) |> mutate(REG = "BRA")
+#------------- loaded above already --- consistency
+
+txit_bra_ann <- txit_bra |> 
+  group_by(REG, APT, PHASE, YEAR = lubridate::year(DATE)) |> 
+  summarise(across(.cols = c("MVTS", "ADD_TIME"), .fns = sum), .groups = "drop") |> 
+  mutate(AVG_ADD_TIME = ADD_TIME / MVTS)
+
+txot_bra_ann <- txot_bra |> 
+  group_by(REG, APT, PHASE, YEAR = lubridate::year(DATE)) |> 
+  summarise(across(.cols = c("MVTS", "ADD_TIME"), .fns = sum), .groups = "drop") |> 
+  mutate(AVG_ADD_TIME = ADD_TIME / MVTS)
+
+# European TXXT --------------------------------------------------------
+# txit_eur <- arrow::read_parquet("./data-pbwg/taxi_times_airport_monthly_EUR.parquet") |> 
+#   filter(PHASE == "ARR", REG == "EUR") |> 
+#   mutate(DATE = paste0(YEAR,"-", str_pad(MONTH, 2, pad = "0"), "-01") |> lubridate::ymd())
+# 
+# txot_eur <- arrow::read_parquet("./data-pbwg/taxi_times_airport_monthly_EUR.parquet") |> 
+#   filter(PHASE == "DEP", REG == "EUR") |> 
+#   mutate(DATE = paste0(YEAR,"-", str_pad(MONTH, 2, pad = "0"), "-01") |> lubridate::ymd())
+#============ first fix
+# txit_eur <- read_csv("./data-pbwg/PBWG-EUR-TXIT-TXOT.csv", show_col_types = F) |> filter(PHASE == "ARR") |> mutate(REG = "EUR")
+# txot_eur <- read_csv("./data-pbwg/PBWG-EUR-TXIT-TXOT.csv", show_col_types = F) |> filter(PHASE == "DEP") |> mutate(REG = "EUR")
+
+txit_eur_ann <- txit_eur2 |>
+  aggregate_by_year()
+
+txot_eur_ann <- txot_eur |> 
+  aggregate_by_year()
+
+#----------------- combine data sets ---------------------------------------------
+txot_bra_ann_comb <- txot_bra_ann |> select(REG, APT, PHASE, YEAR, AVG_ADD_TIME)
+txit_bra_ann_comb <- txit_bra_ann |> select(REG, APT, PHASE, YEAR, AVG_ADD_TIME)
+
+# txot_eur_ann_comb <- txot_eur_ann |> select(REG, APT = AIRPORT, PHASE, YEAR, AVG_ADD_TIME) |> 
+#   mutate(PHASE = "TXOT", YEAR = as.numeric(YEAR))
+# txit_eur_ann_comb <- txit_eur_ann |> select(REG, APT = AIRPORT, PHASE, YEAR, AVG_ADD_TIME) |> 
+#   mutate(PHASE = "TXIT", YEAR = as.numeric(YEAR))
+txit_eur_ann_comb <- txit_eur_ann |> select(REG, APT, PHASE, YEAR, AVG_ADD_TIME) |> 
+  mutate(PHASE = "TXIT")
+txot_eur_ann_comb <- txot_eur_ann |> select(REG, APT, PHASE, YEAR, AVG_ADD_TIME) |> 
+  mutate(PHASE = "TXOT")
+
+tmp_1922 <- bind_rows(
+   txot_bra_ann_comb, txit_bra_ann_comb
+  ,txot_eur_ann_comb, txit_eur_ann_comb
+) |> 
+  filter(YEAR %in% c(2019, 2022))
+
+tmp_1923 <- bind_rows(
+   txot_bra_ann_comb, txit_bra_ann_comb
+  ,txot_eur_ann_comb, txit_eur_ann_comb
+) |> 
+  filter(YEAR %in% c(2019, 2023))
+```
+
+```{r}
+#| label: fig-txot-txit-mapping
+#| fig-cap: Mapping of additional taxi-in and taxi-out times
+  
+plot_mapping_year1_year2 <- function(.tmp_map){
+  
+  my_mapping <- .tmp_map |> 
+    tidyr::pivot_wider(  id_cols     = c("REG","APT","YEAR")
+                , names_from  = "PHASE"
+                , values_from = "AVG_ADD_TIME") |> 
+    dplyr::mutate(YEAR = as.character(YEAR), LABEL = ifelse(YEAR == 2019, APT, NA)) |> 
+    
+    ggplot2::ggplot(aes(x = TXOT, y = TXIT)) + 
+    ggplot2::geom_abline(intercept = 0, slope = 1, linetype = "dashed", colour = "grey60") +
+    #coord_equal() +
+    #geom_abline()
+    ggplot2::geom_path(aes(group = APT), colour = "grey70") + 
+    ggplot2::geom_point(aes(shape = YEAR, colour = YEAR), size = 2) + 
+    ggplot2::scale_colour_manual(values = c("lightblue","blue")) +
+    ggrepel::geom_label_repel(aes(label = LABEL)
+                     , nudge_x = 1
+                     , force = 20
+                     , max.overlaps = Inf
+                     , box.padding = 1
+                     , na.rm = TRUE
+                     , colour = "red", segment.colour = "red") + 
+    ggplot2::scale_x_continuous(limits = c(0,NA)) +
+    ggplot2::scale_y_continuous(limits= c(0, NA)) +
+    ggplot2::facet_grid(. ~REG) +
+   # my_own_theme_minimal +
+    ggplot2::theme(legend.position = "top"
+          ,legend.title    = ggplot2::element_text(size = 8) 
+          ,legend.text     = ggplot2::element_text(size = 8)
+          ,legend.key.size = ggplot2::unit(0.3, "cm")
+    ) +
+    ggplot2::labs(   x = "average additional taxi-out time [min/dep]"
+          , y = "average additional taxi-in time [min/arr]"
+          ,fill = "year") #+
+    #scale_fill_brewer(palette = "GnBu")
+  return(my_mapping)
+}
+
+tmp_1922 |> plot_mapping_year1_year2()
+tmp_1923 |> plot_mapping_year1_year2()
+```
+
+This analysis builds on the previous sections. 
+@fig-txot-txit-mapping compares the relationship between the taxi-in and taxi-out performance observed pre-pandemic (i.e. 2019) with the observed performance in 2022.
+It also shows that on average taxi-out operations accrued more additional time than taxi-in operations (data points range below the dotted unit line).
+For most of the airports, the overall performance shows a reduction in additional taxi-out times (i.e. characterised by a leftshift along the x-axis).
+This indicates that in 2022 the overall demand was still lower than pre-pandemic.   
+A significant improvement in taxi-in performance can be obsered in Brazil across all study airports (i.e. decreasing trend along y-axis). 
+This is contrasted by the behaviour in Europe. The majority of European airports observed no significant change in their taxi-in performance (i.e. no vertical trend).
+The noteworthy exemption is London Heathrow (EGLL). EGLL faced a significant increase in average additional taxi-in time in 2022 in comparison to the pre-pandemic performance level observed in 2019.
+The lower performance in terms of taxi-in is observed in @fig-eur-txit-timeline which shows a strong increase in the second half of 2022. 
+
+## Evolution of Additional Taxi-Times in early 2022
+
+```{r}
+#txits_bra <- read_csv("./data/bra_txits_corrected.csv")
+# trim data
+txits_bra <- txit_bra %>% 
+  filter(DATE < lubridate::ymd("2023-07-01")) |> 
+  aggregate_by_month()
+```
+
+```{r}
+plot_monthly_txits <- function(.df, .subtitle = NULL){
+  myplot <- .df %>% 
+  ggplot() +
+  geom_line(aes(x = lubridate::month(MOF), y = AVG_ADD_TXIT, color = as.factor(lubridate::year(MOF)), group = lubridate::year(MOF))) +
+  geom_point(aes(x = lubridate::month(MOF), y = AVG_ADD_TXIT, color = as.factor(lubridate::year(MOF)))) +
+  scale_x_continuous(breaks = c(1,4,7,10), labels = month.abb[c(1,4,7,10)],
+                     minor_breaks = 1:12) +
+  scale_y_continuous(limits = c(0, NA)) +
+  scale_colour_brewer(palette = "Blues") +
+  facet_wrap(.~ICAO) +
+  theme(panel.spacing.x = unit(4, "mm")
+        ,legend.position = "top") +
+  labs(x = NULL, y = "additional taxi-in time [min/arr.]"
+       ,subtitle = .subtitle
+       ,color = NULL)
+  return(myplot)
+}
+```
+
+```{r monthly-txits-bra, fig.cap="(ref:monthly-txits-bra)"}
+#| label: fig-monthly-txits-bra
+#| fig-cap: Evolution of monthly average additional taxi-in times at Brazilian study airports
+
+p <- txits_bra |> rename(AVG_ADD_TXIT = AVG_ADD_TIME, ICAO = APT) |> 
+  plot_monthly_txits()
+p
+```
+
+@fig-monthly-txits-bra shows the monthly evolution of the average additional taxi-in times in Brazil.
+On average, the average monthly additional taxi-in times showed a smoother behaviour in 2020, 2021, and the first half of 2022 than in comparison to 2019.
+In particular, a higher level of variation and share of additional taxi-in times were observed in 2019 at Galeão (SBGL), São Paulo/Guarulhos (SBGR), São Paulo (SBSP), and for the first part of the year in Salvador (SBSV).
+For the beginning of 2022 arriving flights in Brazil accrued additional taxi-in times of 2 minutes or less.
+This evidences that incoming flights are not subject to higher constraints while taxiing in.
+
+```{}
+# txots_bra <- read_csv("./data/bra_txots_corrected.csv") 
+# trim data
+txots_bra <- txot_bra %>% 
+  filter(DATE < lubridate::ymd("2023-07-01")) |> 
+  aggregate_by_month() |> 
+  #fix spike SBSP
+  #mutate(AVG_ADD_TXOT = ifelse(AVG_ADD_TXOT > 7.5, 2.1, AVG_ADD_TXOT))
+  mutate(AVG_ADD_TIME = ifelse(AVG_ADD_TIME > 7.5, 2.1, AVG_ADD_TIME))
+```
+
+```{}
+plot_monthly_txots <- function(.df, .subtitle = NULL){
+  myplot <- .df %>% 
+  ggplot() +
+  geom_line(aes(x = lubridate::month(MOF), y = AVG_ADD_TXOT
+                , color = as.factor(lubridate::year(MOF))
+                , group = lubridate::year(MOF))) +
+  geom_point(aes(x = lubridate::month(MOF), y = AVG_ADD_TXOT
+                 , color = as.factor(lubridate::year(MOF)))) +
+  scale_x_continuous(breaks = c(1,4,7,10), labels = month.abb[c(1,4,7,10)]
+                     , minor_breaks = 1:12) +
+  scale_y_continuous(limits = c(0, NA)) +
+  scale_colour_brewer(palette = "Blues") +
+  facet_wrap(.~ICAO) +
+  theme(panel.spacing.x = unit(4, "mm")
+        ,legend.position = "top") +
+  labs(x = NULL, y = "additional taxi-out time [min/dep.]"
+       ,subtitle = .subtitle
+       ,color = NULL)
+  return(myplot)
+}
+```
+
+```{}
+#| label: fig-monthly-txots-bra
+#| fig-cap: Evolution of monthly average additional taxi-out times at Brazilian study airports
+
+p <- txots_bra |> 
+  rename(AVG_ADD_TXOT = AVG_ADD_TIME, ICAO = APT) |> 
+  plot_monthly_txots() 
+p
+```
+
+```{}
+#| label: fig-monthly-txits-eur
+#| fig-cap: Evolution of monthly average additional taxi-in times at European study airports
+txit_eur2 |> 
+  filter(DATE < lubridate::ymd(max_date)) |> 
+  aggregate_by_month() |> 
+  rename(ICAO = APT, AVG_ADD_TXIT = AVG_ADD_TIME) |>  
+  
+  plot_monthly_txits()
+```
+
+On average, the observed average additional taxi-in times at European airports shows similar seasonal patterns across the years.
+It is noteworthy to highlight the additional taxi-out time at London  Gatwick (EGKK), London Heathrow (EGLL), and Rome Fiumincino (LIRF).
+Services at these airports accrued a discernible higher additional time and the performance in 2023 seems to be decoupled from the underlying seasonal trends.
+
+```{}
+#| label: fig-monthly-txots-eur
+#| fig-cap: Evolution of monthly average additional taxi-out times at European study airports
+txot_eur |> 
+  filter(DATE < lubridate::ymd(max_date)) |> 
+  aggregate_by_month() |> 
+  rename(ICAO = APT, AVG_ADD_TXOT = AVG_ADD_TIME) |>  
+  
+  plot_monthly_txots()
+```
+
+
+## Additional Time in Terminal Airspace
+
+The additional time in terminal airspace is calculated as the difference of the actual flying time from entering the sequencing area (i.e. 100NM radius around the airport) to the actual landing time.
+Previous research and guidance suggests that reference time can be build for flights sharing similar operational characteristics (entry sector, aircraft class, and landing runway).
+
+```{r}
+#BRA asma times
+#asma_2019_2022_hugo <- read_csv("./hugo-data-to-check/asma_2019_2022_hugo.csv")
+asma_2019_2022_hugo <- read_csv("./data//asma_2019_2022_hugo.csv", show_col_types = FALSE)
+
+# EUR ASMA times =============================
+asma_2019_2022_eur <- read_csv("./data/BRA-EUR-EUR-ASMA-EUR.csv") |> 
+  select(AIRPORT = ICAO, DATE = DOF, ARRS = ARRS100, A100 = TOT_A100, REF = TOT_REF100) |> 
+  filter(AIRPORT %in% eur_apts)
+
+ann_asma_eur <- asma_2019_2022_eur |> 
+  group_by(AIRPORT, YEAR = year(DATE)) |> 
+  summarise(across(.cols = ARRS:REF, .fns = ~ sum(.x, na.rm = TRUE))
+            ,.groups = "drop") |> 
+  filter(between(YEAR, 2019, 2022)) |> 
+  mutate(AVG_ADD_TIME = (A100 - REF) / ARRS) |> 
+  filter(! (AIRPORT == "LEBL" & YEAR == 2022) )
+``` 
+
+```{r}
+#| label: fig-asma
+#| fig-cap: Additional time in terminal airspace
+#| 
+bra_asma <- ggplot(data = asma_2019_2022_hugo, mapping = aes(y = AIRPORT, x = AVG_ADD_ASMA, fill = as.factor(YEAR))) +
+geom_col(position = position_dodge(-.9), width = 0.9) + 
+  geom_vline(xintercept = c(2,4), linetype = "dotted") + scale_fill_brewer(palette = "GnBu") +
+  scale_x_continuous(label = ~ scales::comma(.x, accuracy = 1), limits = c(0,7))  
+
+eur_asma <- ggplot(
+    data = ann_asma_eur
+  , mapping = aes(y = AIRPORT, x = AVG_ADD_TIME, fill = as.factor(YEAR))) +
+  geom_col(position = position_dodge(-.9), width = 0.9) + 
+  geom_vline(xintercept = c(2,4), linetype = "dotted") + 
+  scale_fill_brewer(palette = "GnBu") +
+  scale_x_continuous(limits = c(0,7))
+
+(bra_asma | eur_asma) + plot_layout(guides = "collect") & theme(legend.position = "top") & labs(x = NULL, y = NULL, color = NULL , fill = NULL )
+```
+
+@fig-asma compares the annual average of additional times in terminal airspace across the study airports.
+On average, the arrival flows at European airports are less constraint than in Brazil.
+
+At London Heathrow (EGLL) a change in the operational concept helped to reduce the excessive additional ASMA times observed pre-COVID.
+It must be noted that the minimal results for both London airports (Heathrow and Gatwick) in 2021 are a data artefact. 
+The reference times for this study are build on the basis of the performance observed in 2019.
+The lower traffic levels resulted in more efficient and shorter terminal sequencing operations. Compared to the 2019 reference times yields therefore minimal additional times.
+Although there are improvements across the operations at European airports in comparison to 2019, it appears that with higher demand, procedural aspects applied before the pandmic are being reintroduced.
+
+During the pandemic, Brazilian aviation authorities relieved regulations for general aviation in the São Paulo Congonhas (SBSP) airport. 
+As this relief was still in force during the recovery in 2021 and 2022, balancing demand was difficult and caused higher additional time as the traffic increased back. 
+For example, in May 2022, the lack of slots, associated with the gradual increase in demand, impacted the operations of Congonhas airport (SBSP). 
+From June 2022, the need for slot for General aviation returned in force, but in October operations were again impacted by the amount of storms above expected for the season. 
+
+For future reports, the data for for the assessment of the additional time in terminal airspace will be complemented for Brazil. 
+This will allow to better investigate the changes observed across the years. [^BRA-asma]
+
+[^BRA-asma]: The assessment of the additional time in terminal airspace  for Brazil is based on a data set starting in 2021. This may also result in reasonable small reference times and increase the measured values for Brazil. With a complemented dataset and a change of the base year for future reports, these data phenomena will be addressed.
+
+```{r}
+#| label: fig-asma-vs-traffic-volume
+#| fig-cap: Comparison of additional time in terminal airspace
+
+
+comp_asma_bra <- asma_2019_2022_hugo |> 
+  filter(YEAR %in% c(2019, 2022)) |> 
+  select(AIRPORT, REG = REGION, YEAR, N_VALID, AVG_ADD_TIME = AVG_ADD_ASMA)
+
+comp_asma_eur <- ann_asma_eur |> mutate(REG = "EUR") |> 
+  filter(YEAR %in% c(2019, 2022)) |> 
+  select(AIRPORT, REG, YEAR, N_VALID = ARRS, AVG_ADD_TIME)
+
+comp_asma <- bind_rows(comp_asma_bra, comp_asma_eur)
+
+
+asma_tfc <- comp_asma %>% 
+  ggplot() +
+  geom_point(aes(x = N_VALID, y = AVG_ADD_TIME, color = REG))  +
+  scale_y_continuous(limits = c(0, NA)) +
+  scale_colour_manual(values = bra_eur_colours, labels = c("BRA","EUR")) +
+
+  geom_text_repel(aes(x = N_VALID, y = AVG_ADD_TIME, label = AIRPORT)
+           # , nudge_x = -1, nudge_y = 1
+            #, point.padding = 0.5, box.padding = 1
+           ) +
+
+  geom_hline(yintercept = c(3.5, 6), linetype = "longdash", color = "grey") +
+  geom_vline(xintercept = c(125000, 175000), linetype = "dashed", color = "grey") +
+  facet_wrap(.~YEAR, ncol = 1) +
+  labs(x = "(valid) annual arrivals", y = "average additional time [min/arrival]"
+       ,color = "Region") +
+  my_own_theme_minimal
+
+asma_tfc
+```
+
+@fig-asma-vs-traffic-volume depicts the change in terms of the average additional time in terminal airspace comparing 2019 and 2022.
+It must be noted that with respect to traffic, the Brazilian data set does not comprise all arriving traffic (c.f. traffic figures reported in earlier chapters).
+
+The comparison shows the effect of the decline of air traffic on the performance in the European region. 
+The contraction of demand resulted in lower observed additional times accrued by the arriving traffic.
+For some airports in the Brazil region it can be observed how procedural aspects influence the additional time in terminal airspace.
+For example, despite the variation of the traffic levels considered, the additional time remained fairly stable at SBGR comparing pre- and post-pandemic years.
+
+
+## Summary
+
+Operational efficiency provides an insight in terms of available benefit pools that can be exploited. 
+In light of the ongoing climate change discussion, improvements in operational efficiency are directly linked with the aircraft flying time and can help to reduce unnecessary emissions.
+
+Comparing the surface movement performance in Brazil and Europe shows similar trends.
+On average, taxi-in operations are less constraint than taxi-out movements. 
+The latter observed higher additional times. 
+This may be subject to deconfliction of the traffic during the taxi-out phase, the establishment of the departure sequence, and holding at/close to the runway to maximise the runway utilisation.
+
+The analysis of the additional time in terminal airspace on the basis of the new data set for Brazil confirmed previous trends.
+On average, arrival sequencing in combination with the lower capacity result in higher additional times within the terminal airspace. 
+It must be noted that Brazil undertook a major airspace redesign project in 2021 that influences the interface between the terminal airspace and the enroute network.
+In the European region, the reduced level of air traffic resulted in lower pressure on the sequencing of arrivals.
+However, the step increase between 2021 and 2022 for several airports suggests that constraints and more sequencing may come back with the increasing demand.
+
+It will be interesting to study in future iterations of this comparison report to what extent arrival managment concepts deployed in the different regions contribute to the observed additional times.
