@@ -44,7 +44,7 @@ Subsequently, the NMOC implements the relevant flow management initiatives as re
 
 ## High Level System Comparison
 
-@fig-HLC2022 summarises the key characteristics of the Brazilian and European air navigation system for 2022.
+@tbl-HLC2022 summarises the key characteristics of the Brazilian and European air navigation system for 2022.
 Comparing the high-level numbers, Brazil utilised an increased number of Air Traffic Controllers (ATCOs) even during the pandemic period.
 In contrast, the European system showed a reduction of total ATCOs in service.
 The different behaviour suggests a difference in work force flexibility between the systems.
@@ -54,8 +54,8 @@ In Europe, there exists a mix of organisational models and labour contracts rang
 En gros, European providers were able to react to the lower demand levels by delaying/stopping recruitment/training and offering early retirement packages. 
 
 ```{r}
-#| label: fig-HLC2022
-#| fig-cap: High Level Comparison 2022
+#| label: tbl-HLC2022
+#| tbl-cap: High Level Comparison 2022
 
 knitr::include_graphics("./figures/First-table-2022.png")
 ```

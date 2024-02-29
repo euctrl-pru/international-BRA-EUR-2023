@@ -3,12 +3,13 @@
 The Performance Section of the Brazilian Department of Airspace Control and the Performance Review Unit of EUROCONTROL jointly developed this third edition of the Brazil-Europe comparison of Air Navigation System Performance. 
 This edition of the bi-regional report builds on the previous comparison reports using commonly agreed metrics and definitions to compare, understand, and improve the performance of air navigation services. 
 This report and previous editions are available at 
+
 * <https://ansperformance.eu/global/brazil> or 
 * <https://performance.decea.mil.br/>.
 
-This report revises the assessment of both the Brazilian and European air navigation systems, extending the time frame and incorporating additional analyses. 
+This report updates the earlier editions and assessment of both the Brazilian and European air navigation systems, extending the time frame and incorporating additional analyses. 
 The report focuses on a subset of the eleven Key Performance Areas identified by the ICAO Global Air Navigation Plan. 
-The focus of this report is on operational air navigation system performance, in particular Predictability, Capacity and Efficiency.
+The focus of this report is on operational air navigation system performance, in particular  Predictability, Capacity and Efficiency.
 
 ```{r}
 #| label: fig-scope-KPAs-KPIs
@@ -22,10 +23,10 @@ The comparison shows similarities and differences in the air navigation service 
 
 -   The close collaboration between DECEA and EUROCONTROL is highlighted sharing insights and experiences with the international aviation communities, thus assisting in advancing ATM performance management worldwide.
 -   Brazil saw a rise in the ATCOs number, whereas Europe observed a considerable decrease, highlighting a substantial contrast in the systems' responsiveness to the challenges of COVID/re-emerging demand for air traffic.
--   In 2022, the commercial flight distribution reveals that a smaller number of airports manage 80% of commercial takeoffs, with Brazil showing a slightly greater concentration compared to Europe. <!-- that sounds weird: Nevertheless, the majority of airports facilitating commercial flights account for only 1% of the total movement in both systems. -->
--   Regarding punctuality, unique trends were evident in both regions, not solely attributable to the extent of traffic resurgence. In Brazil, a consistently higher proportion of flights arrived significantly early, a pattern largely unaffected when comparing 2019 to 2022. Conversely, the documented challenges of European airports in coping with the recovering traffic demand in 2022 highlighted the repercussions of their lower preparedness levels.
+-   In 2022/2023, the commercial flight distribution reveals that a smaller number of airports manage 80% of commercial takeoffs, with Brazil showing a slightly greater concentration compared to Europe. <!-- that sounds weird: Nevertheless, the majority of airports facilitating commercial flights account for only 1% of the total movement in both systems. -->
+-   Regarding punctuality, unique trends were evident in both regions, not solely attributable to the extent of traffic resurgence. In Brazil, a consistently higher proportion of flights arrived significantly early, a pattern largely unaffected when comparing 2019 to 2022/2023. Conversely, the documented challenges of European airports in coping with the recovering traffic demand in 2022 highlighted the repercussions of their lower preparedness levels.
 -   The recorded throughput at Brazilian airports exhibited less variability amid the pandemic, indicating a sustained demand concentration during peak operational hours. In the European context, innovative operational ideas present the most substantial potential for growth, considering the existing runway systems and associated capacities, which set an upper limit.
--   The fresh dataset for Brazil reaffirmed past patterns regarding the extra time spent in terminal airspace. Typically, arrival sequencing and limited capacity lead to extended times during the arrival phase. In Europe, reduced air traffic translated to less strain on arrival sequencing. Yet, the notable rise from 2021 to 2022 in multiple airports implies that constraints and heightened sequencing might resurface as demand increases.
+-   The expanded dataset for Brazil reaffirmed past patterns regarding the extra time spent in terminal airspace. Typically, arrival sequencing and limited capacity lead to extended times during the arrival phase. In Europe, reduced air traffic translated to less strain on arrival sequencing. Yet, the notable rise of the additional time from 2021 to 2022/2023 in multiple airports implies that operational constraints and a higher level of sequencing resurface as demand increases.
 
 ```{=html}
 <!-- last edition findings 
@@ -56,6 +57,9 @@ heavy aircraft operations - showed a higher contribution to the overall emission
 benefit pool.
 ---------------------         -->
 ```
-This report will be updated throughout the coming years under the umbrella of the DECEA-EUROCONTROL memorandum of cooperation. It is also planned to establish a web-based rolling monitoring updated on a regular basis.
 
-Future editions will complement the data time series and support the development of further use-case analyses. The lessons learnt of this joint project will be coordinated with the multi-national Performance Benchmarking Working Group (PBWG) and the ICAO GANP Study sub-group concerned with the further development of the GANP Key Performance Indicators (KPIs).
+This report will be updated throughout the coming years under the umbrella of the DECEA-EUROCONTROL memorandum of cooperation. 
+It is also planned to establish a web-based rolling monitoring updated on a regular basis.
+
+Future editions will complement the data time series and support the development of further use-case analyses. 
+The lessons learnt of this joint project will be coordinated with the multi-national Performance Benchmarking Working Group and the ICAO GANP Study sub-group concerned with the further development of the GANP Key Performance Indicators.
