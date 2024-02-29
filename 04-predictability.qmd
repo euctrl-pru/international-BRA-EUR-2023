@@ -335,8 +335,14 @@ p_2022 <- punc |> prepare_punc_plot_data("DEP",2022) |>
   labs(caption = "departure punctuality 2022") +
   theme(legend.position = "none")
 
+p_2023 <- punc |> prepare_punc_plot_data("DEP",2023) |> 
+  punc_plot(.debug = debug_deps) +
+  labs(caption = "departure punctuality 2022") +
+  theme(legend.position = "none")
+
 p_2019 
 p_2022
+p_2023
 ```
 
 The preceding section highlighted how the general traffic conditions in the previous years influenced the dependability of arrival schedules.
@@ -366,6 +372,11 @@ p2_bra_earlylate <- punc_bra |>
   filter(SLOT %in% c("EARLY", "LATE")) |> 
   plot_early_vs_late("DEP", 2022, better_limits)
 
+p3_bra_earlylate <- punc_bra |> 
+  prepare_punc_plot_data("DEP", 2023) |> 
+  filter(SLOT %in% c("EARLY", "LATE")) |> 
+  plot_early_vs_late("DEP", 2023, better_limits)
+
 p1_eur_earlylate <- punc_eur |> 
   prepare_punc_plot_data("DEP", 2019) |> 
   filter(SLOT %in% c("EARLY", "LATE")) |> 
@@ -376,8 +387,14 @@ p2_eur_earlylate <- punc_eur |>
   filter(SLOT %in% c("EARLY", "LATE")) |> 
   plot_early_vs_late("DEP", 2022, better_limits)
 
+p3_eur_earlylate <- punc_eur |> 
+  prepare_punc_plot_data("DEP", 2023) |> 
+  filter(SLOT %in% c("EARLY", "LATE")) |> 
+  plot_early_vs_late("DEP", 2023, better_limits)
+
 p2019 <- p1_bra_earlylate + p1_eur_earlylate
 p2022 <- p2_bra_earlylate + p2_eur_earlylate
+p2023 <- p3_bra_earlylate + p3_eur_earlylate
 ```
 
 ```{r}
