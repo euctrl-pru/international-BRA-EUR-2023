@@ -5,6 +5,10 @@
 
 /.quarto/
 
+# local temp files
+*_files/*
+
 # RQ tests
 x-*
 _extensions/*
+figures/~*
