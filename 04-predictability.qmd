@@ -103,87 +103,6 @@ prepare_punc_plot_data <- function(.punc, .phase, .year){
 
 ## Arrival Punctuality
 
-```{r}
-#| label: fig-arrival-punc
-#| fig-cap: Evolution of arrival punctuality at study airports (2019 vs 2022)
-#| fig-subcap: 
-#|   - "Arrival punctuality 2019"
-#|   - "Arrival punctuality 2022"
-#|   - "Arrival punctuality 2023"
-#| layout-nrow: 2
-
-# debugging delay contributions
-debug_arrs <- FALSE
-# combine both punctuality data
-punc <- bind_rows(punc_bra, punc_eur)
-
-# punc |> 
-#   filter(PHASE == "ARR") |> 
-#   select( AIRPORT = APT, YEAR, N_VALID
-#          , EARLY, EARLY_1505 = EARLY_M15M05
-#          , WITHIN_5 = WITHIN_M05P05
-#          , LATE_0515 = LATE_P05P15, LATE
-#          , REGION) |> 
-#   pivot_longer(cols = EARLY:LATE, names_to = "SLOT", values_to = "SHARE") |> 
-#   mutate(
-#     SLOT = factor(
-#           SLOT
-#         , levels = c("LATE","LATE_0515","WITHIN_5","EARLY_1505","EARLY")
-#         )
-#    ,LABEL = paste0(SLOT, "\n", round(SHARE, 2))) |> filter(YEAR == 2019) |> 
-
-p_2019 <- punc |> prepare_punc_plot_data("ARR",2019) |> 
-  punc_plot(.debug = debug_arrs) +
-  labs(caption = "arrival punctuality 2019")
-
-p_2022 <- punc |> prepare_punc_plot_data("ARR",2022) |> 
-  punc_plot(.debug = debug_arrs) +
-  labs(caption = "arrival punctuality 2022") +
-  theme(legend.position = "none")
-
-p_2023 <- punc |> prepare_punc_plot_data("ARR",2023) |> 
-  punc_plot(.debug = debug_arrs) +
-  labs(caption = "arrival punctuality 2023") +
-  theme(legend.position = "none")
-
-
-p_2019 & labs(caption = NULL)
-p_2022 & labs(caption = NULL)
-p_2023 & labs(caption = NULL)
-```
-
-```{r}
-#| label: fig-punc-test
-#| fig-cap: just plot them
-punc <- bind_rows(punc_bra2, punc_eur)
-
-p_2022 <- punc |> prepare_punc_plot_data("ARR",2022) |> 
-  punc_plot(.debug = debug_arrs) +
-  labs(caption = "arrival punctuality 2022") +
-  theme(legend.position = "none")
-
-p_2023 <- punc |> prepare_punc_plot_data("ARR",2023) |> 
-  punc_plot(.debug = debug_arrs) +
-  labs(caption = "arrival punctuality 2023") +
-  theme(legend.position = "none")
-
-p_2022
-p_2023
-```
-<<<<< ADD ON TO SHOW EVOLUtion
-
-```{r}
-punc_bra |> 
-  filter(PHASE == "ARR") |> 
-  select(APT, PHASE, YEAR, WITHIN_M15P15) |> 
-  ggplot() + 
-  geom_line(aes(x = YEAR, y = WITHIN_M15P15, group = APT, color = APT)) +
-  geom_point(aes(x = YEAR, y = WITHIN_M15P15, group = APT, color = APT)) +
-  labs(caption = "Graph developed by Rafael")
-```
-
-
-
 @fig-arrival-punc shows the evolution of arrival punctuality for the select airports in Brazil and Europe.
 When comparing both regions in 2019 and 2022, Brazil's share of early arrivals (earlier than 15 minutes before the scheduled arrival) is significantly higher than the same European portion.
 The share of early arrivals accounts for 20-25% across all Brazilian airports.
@@ -195,13 +114,112 @@ Built in buffer times help to achieve a high "on-time-performance" record and ap
 Furthermore, both regions have regulations for passenger compensation in place which are triggered in the case of arrival delays.
 DECEA has already established a forum with the air operator regulator to discuss and propose solutions.
 
-European airports saw their share of punctual flights in 2022 decrease broadly compared to 2019, even with a more proportional distribution than the Brazilian system.
-For European operators, there were two primary factors contributing the the lower performance in 2022. 
+European airports saw their share of punctual flights in 2022 and 2023 decrease broadly compared to 2019, even with a more proportional distribution than the Brazilian system.
+For European operators, there were two primary factors contributing the the lower performance in the past two years. 
 The most significant is the cumulative effect, showing that the network of flights has little ability to absorb the delay of one specific delayed flight.
 The knock-on effect was amplified by the local resource constraints in terms of passenger and turn-around facilitation. 
 The incrasing traffic demand posed challenges at many airports in Europe. Delayed arrivals accumulated further reactionary delay and ultimately passed the delay systematically on to next flights.
 Further constraints were linked to air space and flow restrictions resulting from the geo-political conflict surrounding the Russian invasion in Ukraine.
 On average, arrival delays of 15 minutes or more compared to the schedule ranged between 25-35% across the Europen study airports in 2022.
+
+```{r}
+#| label: data-prep-plot-arr-punc
+#| 
+debug_arrs <- FALSE
+
+punc <- bind_rows(punc_bra, punc_eur)
+
+p_2019 <- punc |> prepare_punc_plot_data("ARR",2019) |> 
+  punc_plot(.debug = debug_arrs) +
+  labs(caption = "arrival punctuality 2019") +
+  theme(legend.position = "none")
+
+# use update punc data for Brazil
+punc <- bind_rows(punc_bra2, punc_eur)
+
+p_2023 <- punc |> prepare_punc_plot_data("ARR",2023) |> 
+  punc_plot(.debug = debug_arrs) +
+  labs(caption = "arrival punctuality 2023") +
+  theme(legend.position = "none")
+```
+
+::: {#fig-arrival-punc layout-ncol=1}
+
+```{r}
+#| fig-height: 6
+
+(p_2019 / p_2023)  + plot_layout(guides = "collect") & 
+  theme(legend.position = 'top')
+
+```
+Evolution of arrival punctuality at study airports (2019 vs 2023)
+
+:::
+
+
+```{r}
+#| label: fig-evolution-ARR-punc
+#| fig-caption: Evolution of arrival punctuality window
+
+
+tmp <-  punc_bra |> bind_rows(punc_eur) |> filter(PHASE == "ARR")
+
+# get color order
+tmp_col <- tmp |> 
+  filter(YEAR == 2019) |> select(REGION, APT, N_VALID) |> 
+  arrange(REGION, desc(N_VALID)) |> 
+  mutate(COL_SORT = 1:10, .by = REGION)
+
+# position airport labels
+tmp2 <-  tmp |> 
+  left_join(tmp_col, by = join_by(APT, REGION)) |> 
+  mutate( COL_SORT = as.character(COL_SORT))
+
+lbl_df <- tmp2 |> 
+  mutate( LBL_YR = 2023  # default - end of line
+         ,LBL_YR = case_when(
+            APT == "SBGR" ~ 2021
+          , APT == "SBBR" ~ 2022
+          , APT == "SBCF" ~ 2021
+          , APT == "SBRJ" ~ 2021
+          , APT == "SBCT" ~ 2022
+          , APT == "SBKP" ~ 2022
+          , APT == "SBSP" ~ 2020
+          , APT == "SBPA" ~ 2020
+           , APT == "LEMD" ~ 2020
+          , APT == "LSZH" ~ 2020
+          , APT == "EDDF" ~ 2020
+            , APT == "LFPG" ~ 2020
+           , APT == "EHAM" ~ 2021
+          ,.default = LBL_YR
+         )
+         ) |> 
+  filter(LBL_YR == YEAR) |> select(REGION, APT, LBL_YR, WITHIN_M15P15, COL_SORT)
+
+tmp2 |> 
+  
+    ggplot() + 
+    geom_line(aes(x = YEAR, y = WITHIN_M15P15, group = APT, color = COL_SORT)) +
+    geom_point(aes(x = YEAR, y = WITHIN_M15P15, group = APT, color = COL_SORT)) +
+    geom_label_repel(
+          data = lbl_df
+        , aes(x = LBL_YR, y = WITHIN_M15P15, color = COL_SORT, label = APT)
+        , vjust = 0.6, hjust = 0.8
+        ) +
+    scale_color_brewer(palette = "Paired") +
+    scale_y_continuous(
+                limits = c(0.4, 0.8)
+              , labels = scales::percent_format(scale = 100)
+              ) +
+    facet_wrap(. ~ REGION) +
+    labs(x = NULL, y = "arrival punctuality -/+15 min") +
+    theme(legend.position = "none")
+```
+
+
+
+On average, the share of flights arriving within -/+ 15 minutes of their scheduled time varies wider amongst the European study airports (c.f @fig-evolution-ARR-punc). 
+The observed punctuality (and associated predictability) within the Brazilian system shows a more homogenuous pattern with a general trend towards 60% or more over the past two years.
 
 ```{r}
 plot_early_vs_late <- function(.early_vs_late, .phase, .year
@@ -277,35 +295,11 @@ p2023 <- p3_bra_earlylate + p3_eur_earlylate
 ```{r}
 #| label: fig-early-vs-late-arrivals
 #| fig-cap: Change of share of early and late arrivals (2019 vs 2022)
+#| fig-height: 6
 
 (p2019 / p2022 / p2023) + plot_layout(guides = "collect") & 
   theme(legend.position = 'top')
 ```
-
-```{r}
-#| label: fig-early-vs-late-arrivals2
-#| fig-cap: Change of share of early and late arrivals (2019 vs 2022)
-#| fig-height: 2.5
-#| layout-nrow: 3
-
-p2019 + plot_layout(guides = "collect") & 
-  theme(legend.position = 'top')
-p2022
-p2023 
-```
-
-::: {#fig-myplot layout-ncol=1}
-
-```{r}
-#| fig-height: 2.5
-p2019 + plot_layout(guides = "collect") & 
-  theme(legend.position = 'top')
-p2022
-p2023 
-```
-
-main caption
-:::
 
 @fig-early-vs-late-arrivals compares the share of early and late arrivals at each study airport in 2019 and 2022.
 From a high-level perspective, air traffic tends to arrive well ahead of schedule in Brazil, while Europe observes a higher share of delayed arrivals.
@@ -325,15 +319,34 @@ However, the aforementioned reactionary effect was the main driver of knock-on d
 ## Departure Punctuality
 
 ```{r}
-#| label: fig-departure-punc
-#| fig-cap: Evolution of departure punctuality at study airports (2019 vs 2022)
-#| layout-nrow: 2
-#| fig-subcap: 
-#|   - Departure punctuality 2019
-#|   - Departure punctuality 2022
+# data prep
+punc_dep_bra <- read_csv("./data/BRA-punc.csv.gz") |>  
+  mutate(REGION = "BRA")  |> 
+  group_by(APT, PHASE, YEAR = lubridate::year(DATE), REGION, N_VALID) |> 
+  summarise(across(.cols = `(-INF,-60]`:`[60,INF)`, .fns = sum), .groups = "drop") |> 
+  filter(PHASE == "DEP", YEAR < 2022) |> 
+  add_dly_early_late_groupings() 
 
+#------- DATA UPDATE -------------
+punc_dep_bra2 <- arrow::read_parquet("./data/bra-PUNC-analytic-2022-2023.parquet") |>     filter(PHASE == "DEP") |>
+    dplyr::mutate(YEAR = lubridate::year(DATE), REGION = "BRA") |> 
+   
+    dplyr::summarise(
+           dplyr::across(.cols = c(N_VALID, `(-INF,-60]`:`[60,INF)`), .fns = sum)
+        , .by = c(REGION, APT, PHASE, YEAR)
+        ) |> 
+  add_dly_early_late_groupings()
+
+punc_dep_bra <- punc_dep_bra |> bind_rows(punc_dep_bra2)
+```
+
+
+```{r}
+#| label: data-prep-punc-dep
 # set debug mode for checking delay components
 debug_deps <- FALSE
+
+punc <- bind_rows(punc_eur, punc_dep_bra)
 
 p_2019 <- punc |> prepare_punc_plot_data("DEP",2019) |> 
   punc_plot(.debug = debug_deps) +
@@ -346,13 +359,23 @@ p_2022 <- punc |> prepare_punc_plot_data("DEP",2022) |>
 
 p_2023 <- punc |> prepare_punc_plot_data("DEP",2023) |> 
   punc_plot(.debug = debug_deps) +
-  labs(caption = "departure punctuality 2022") +
+  labs(caption = "departure punctuality 2023") +
   theme(legend.position = "none")
-
-p_2019 
-p_2022
-p_2023
 ```
+
+::: {#fig-departure-punc layout-ncol=1}
+
+```{r}
+#| fig-height: 6
+
+(p_2019 / p_2023)  + plot_layout(guides = "collect") & 
+  theme(legend.position = 'top')
+
+```
+
+Evolution of departure punctuality at study airports (2019 vs 2023)
+
+:::
 
 The preceding section highlighted how the general traffic conditions in the previous years influenced the dependability of arrival schedules.
 In this section, we assess the degree of departure punctuality measured as the difference between the scheduled (i.e. planned) departure versus the observed actual off-block time.
@@ -368,6 +391,80 @@ Some inefficiency in the coordination between Tower and Apron or divergence at t
 Departure punctuality appeared slightly higher in Brazil in 2022 in comparison to 2019 and outperforms the punctuality levels observed in Europe. 
 It is also notworthy, that in Brazil there is a higher share of flights blocking off between 15 to 5 minutes before their scheduled time.
 Further research may help to clarify the factors driving this phenomenon.
+
+```{r}
+tmp <-  punc <- bind_rows(punc_eur, punc_dep_bra) |> ungroup() |> 
+  filter(PHASE == "DEP")
+
+# get color order
+tmp_col <- tmp |>
+  filter(YEAR == 2019) |> select(REGION, APT, N_VALID) |>
+  arrange(REGION, desc(N_VALID)) |>
+  mutate(COL_SORT = 1:10, .by = REGION)
+
+# position airport labels
+tmp2 <-  tmp |> 
+  left_join(tmp_col, by = join_by(APT, REGION)) |> 
+  mutate( COL_SORT = as.character(COL_SORT))
+
+lbl_df <- tmp2 |> 
+  mutate( LBL_YR = 2023  # default - end of line
+         ,LBL_YR = case_when(
+             APT == "SBSP" ~ 2020
+            ,APT == "SBGL" ~ 2021
+          , APT == "SBGR" ~ 2022
+          , APT == "SBSV" ~ 2021
+          , APT == "SBRJ" ~ 2021
+           , APT == "SBBR" ~ 2022
+           , APT == "SBKP" ~ 2020
+#           , APT == "SBSP" ~ 2020
+#           , APT == "SBPA" ~ 2020
+#            , APT == "LEMD" ~ 2020
+#           , APT == "LSZH" ~ 2020
+           , APT == "EGKK" ~ 2021
+           , APT == "EGLL" ~ 2021
+            , APT == "EDDF" ~ 2022
+            , APT == "LFPG" ~ 2021
+#            , APT == "EHAM" ~ 2021
+         ,.default = LBL_YR  )
+          ) |> 
+   filter(LBL_YR == YEAR) |> 
+  select(REGION, APT, LBL_YR, WITHIN_M15P15, COL_SORT)
+```
+
+```{r}
+#| label: fig-evolution-DEP-punc
+#| fig-caption: Evolution of arrival punctuality window
+
+ tmp2 |> select(REGION, APT, YEAR, PHASE, WITHIN_M15P15, COL_SORT ) |> 
+    ggplot() + 
+    geom_line(aes(x = YEAR, y = WITHIN_M15P15, group = APT, color = COL_SORT)) +
+    geom_point(aes(x = YEAR, y = WITHIN_M15P15, group = APT, color = COL_SORT)) +
+    geom_label_repel(
+          data = lbl_df
+        , aes(x = LBL_YR, y = WITHIN_M15P15, color = COL_SORT, label = APT)
+        , vjust = 0.6, hjust = 0.8
+        ) +
+
+    scale_color_brewer(palette = "Paired") +
+    scale_y_continuous(
+        limits = c(0.4, 1)
+        , labels = scales::percent_format(scale = 100)
+    ) +
+    facet_wrap(. ~ REGION) +
+    labs(x = NULL, y = "departure punctuality -/+15 min") +
+    theme(legend.position = "none")
+```
+
+@fig-evolution-DEP-punc shows the evolution of the departure punctuality window within 15 minutes of the scheduled departure time. 
+On average, the predictability of departing traffic is higher than for the arrival (c.f. @fig-evolution-ARR-punc).
+The Brazilian study airports show a decrease of the predictability trend in line with the lower pressure on the system and airports during the pandemic phase and increased traffic levels post-pandemic.
+
+On the European side, punctuality levels show a sharp decrease post-COVID and are driven by the system-wide disruptions in 2022. 
+For most of the European study airports, departure predictability remained constant of improved in 2023 versus 2022. 
+This still indicates that there exists constraints regarding the turnaround of aircraft.
+However, departure punctuality performance broadly coincides with the pre-pandemic levels. It is noteworthy to recall that also 2019 has seen major restrictions in the European system.
+
 
 ```{r}
 better_limits <- c(-.03, .48)
@@ -427,8 +524,9 @@ Strong distortions of the schedule will ultimately ripple down into reactionary 
 Turnaround distortions affect therefore the planning accuracy of air navigation services and may lead to unwanted side-effects (e.g. longer sequencing and holding in the terminal airspace, passenger inconvenience due to longer taxi-times/blocked gates).
 
 Distinct patterns were observed in both regions that cannot only be explained by the level of traffic recovery. 
-On average, a higher share of flights arrives well ahead of schedule in Brazil. This pattern is largely unchanged when comparing 2019 and 2022. 
-The ripple effect of the low preparedness level of European airports to address the returning traffic in 2022 is well documented.
+On average, a higher share of flights arrives well ahead of schedule in Brazil. This pattern is largely unchanged when comparing 2019 and 2023. 
+The ripple effect of the low preparedness level of European airports to address the returning traffic in 2022 is well documented. It also appears that there are prevailing resource constraints for servicing the demand in 2023.
 This yielded a significant low performance in terms of departure punctuality exceeding levels observed in Brazil by a factor of 2-3.
+
 Distortions of the local schedule can have knock-on effects on the air navigation service provision, both in terms of surface movement and arrival sequencing.
 More research is needed to investigate and understand the underlying drivers and to what extent regional connectivity influences the observed patterns. 
