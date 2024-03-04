@@ -30,12 +30,19 @@ tfc_bra <-
   mutate(DATE = lubridate::as_datetime(DATE)) |> 
   filter(DATE < max_date)
 
+bra_tfc_switch <- lubridate::date("2023-07-25")
 tfc_bra2 <- list.files(here::here("data"), pattern = "bra-network-tfc-2022", full.names = TRUE) |> 
   read_csv() |> 
   rename(DATE = DOF, DLY_FLTS = TOT) |> 
-  mutate(MVTS_NORM_ROLLAVG = zoo::rollmean(DLY_FLTS, k = 7, fill = NA))
+  mutate(MVTS_NORM_ROLLAVG = zoo::rollmean(DLY_FLTS, k = 7, fill = NA)) |> 
+  #------ trimmed to 01.10.
+  filter(DATE >= bra_tfc_switch ) |> 
+  mutate(MVTS_NORM_ROLLAVG = 0.92 * MVTS_NORM_ROLLAVG)
+
+tfc_bra <- tfc_bra |> bind_rows(tfc_bra2)
 
 #------------ BRA ----------------------
+
 plot_bra_annual_traffic <- 
 #  tfc_movts_all_no_hel  |> 
   tfc_bra |> mutate(DATE = as.Date(DATE)) |> 
@@ -44,21 +51,31 @@ plot_bra_annual_traffic <-
     geom_point(aes(y = DLY_FLTS), colour = bra_col, alpha = 0.2, size = 0.2) +
     labs(x = NULL, y = NULL,  subtitle = "Brazil Region daily movement (rolling 7-day average)")
 
-plot_bra_annual_traffic <- 
-  plot_bra_annual_traffic +
-  geom_line(data = tfc_bra2, aes(y = MVTS_NORM_ROLLAVG), color = "blue")
+# visual check of updated timeline - deactivated
+# plot_bra_annual_traffic <- 
+#   plot_bra_annual_traffic +
+#   geom_line(data = tfc_bra2, aes(y = MVTS_NORM_ROLLAVG), color = "blue")
 
 #------------EUR ------------------------
 tfc_eur  <- read_csv("./data/PBWG-EUR-region-traffic.csv", show_col_types = FALSE) |> 
   filter(between(lubridate::year(DATE), 2019, 2022))
 tfc_eur2 <- read_csv("./data/PBWG-EUR-region-traffic-2023.csv", show_col_types = FALSE) |> 
   filter(lubridate::year(DATE) == 2023, DATE < max_date)
+#------- check with Quinten - some flights missing
+tfc_eur3 <- read_csv("./data/EUR-network-tfc-2023.csv", show_col_types = FALSE) |> 
+  filter(lubridate::year(DATE) == 2023, DATE < max_date) |> 
+  mutate(DLY_FLTS = FLIGHTS, 
+         MVTS_NORM_ROLLAVG = zoo::rollmean(DLY_FLTS, k = 7, fill = NA)
+         ,VERSION = "2024")
+  
 
-tfc_eur <- bind_rows(tfc_eur, tfc_eur2)
+tfc_eur <- bind_rows(tfc_eur, tfc_eur2) |> mutate(VERSION = "2023")
 
 tfc_eur <- tfc_eur |> 
   mutate( DLY_FLTS = ARRS - ARRS_DOM + DEPS + OVR_FLTS
-         ,MVTS_NORM_ROLLAVG = zoo::rollmean(DLY_FLTS, k = 7, fill = NA))
+         ,MVTS_NORM_ROLLAVG = zoo::rollmean(DLY_FLTS, k = 7, fill = NA)) |> 
+  #--- add on for 2023
+  bind_rows(tfc_eur3)
 
 plot_eur_annual_traffic <- tfc_eur  |> 
   ggplot(aes(x = DATE)) +
@@ -133,48 +150,36 @@ plot_timeline_per_year <- function(.df, .fake_year = 666){
 # 2. embedd it with link notation: ![figure caption](file-path){#fig-caption}
 # 3. to avoid text being centered in pdf, use bullet points
 
-# ------ prepare figure for 2 col layout
-tmp <- tfc_bra2 |> 
-  mutate(DATE = lubridate::as_datetime(DATE)
-        ,DATE = DATE %m+% years(2) )
-tfc_bra <- tfc_bra |> bind_rows(tmp)
+
+# ------- check and merge differnt data sets for Brazil ---------
+# tmp <- tfc_bra2 |> 
+#   mutate(DATE = lubridate::as_datetime(DATE)
+#         ,DATE = DATE %m+% years(2) )
+# tfc_bra <- tfc_bra |> bind_rows(tmp)
+# ------ issue in first/older data set -- remove year 2023
 
 p_bra <- tfc_bra |>
   plot_timeline_per_year() +
   labs(subtitle = "Brazil")
-ggsave("./figures/traffic-bra-2023.png", dpi = 320, height = 5, width = 8, bg="white")
+# ggsave("./figures/traffic-bra-2023.png", dpi = 320, height = 5, width = 8, bg="white")
 
 p_eur <- tfc_eur |> plot_timeline_per_year() + labs(subtitle = "Europe")
-ggsave("./figures/traffic-eur-2023.png", dpi = 320, height = 5, width = 8, bg="white")
+# ggsave("./figures/traffic-eur-2023.png", dpi = 320, height = 5, width = 8, bg="white")
 ```
 
-<!-- ::: {layout="[55,45]"} -->
-:::: {layout-ncol=2}
+```{r}
+#| label: fig-annual-network
+#| fig-cap: Evolution of annual network traffic
 
-:::{.column}
-![Brazil - network traffic in 2023](figures/traffic-bra-2023.png){#fig-bra-tfc-2023}
-:::
+p_bra / p_eur + plot_layout(guides = "collect") & theme(legend.position = "top")
+```
 
-::: {.column}
 
-* For Brazil, traffic in the first half of 2023 exceeded the pre-pandemic traffic level (@fig-bra-tfc-2023)
 
-:::
-
-:::{.column}
-
-![Europe - network traffic evolution in 2023](figures/traffic-eur-2023.png){#fig-eur-tfc-2023}
-
-:::
-
-::: {.column}
-
+* For Brazil, traffic in the first half of 2023 exceeded the pre-pandemic traffic level
 * On a network level, the continual recovery of the traffic is on-going in Europe.
-* The first half of 2023 saw traffic levels at about 90-95% of the pre-pandemic network traffic and started following a classical *seasonal* pattern (c.f. @fig-eur-tfc-2023). However, traffic recovery in Europe is not at the same level for each pre-pandemic service/connection. The recovery also resulted in a light modification of network connectivity. The Russian invasion of Ukraine resulted in the closure of a significant portion of the airspace (about 20%). However, the overall impact of the closure on air traffic - on a network level - was relatively small.
+* The first half of 2023 saw traffic levels at about 90-95% of the pre-pandemic network traffic and started following a classical *seasonal* pattern. However, traffic recovery in Europe is not at the same level for each pre-pandemic service/connection. The recovery also resulted in a light modification of network connectivity. The Russian invasion of Ukraine resulted in the closure of a significant portion of the airspace (about 20%). However, the overall impact of the closure on air traffic - on a network level - was relatively small.
 
-:::
-
-::::
 
 
 This high-level network perspective shows that traffic in both regions is comparable to pre-pandemic levels.
@@ -188,21 +193,63 @@ This demand on terminal and airport air navigation services forms a substantial 
 This reports looks in particular at the performance levels observed at 10 key airports in each region (c.f. scope)
 
 ```{r}
-#Airport Level Study
+# plot functions -------------------------------------------
+p_share_of_network <- function(.annual_share_of_network_df){
+  p_share <- .annual_share_of_network_df |> 
+    ggplot(aes(x = YEAR, y = SHARE)) + 
+    geom_point() + geom_line(aes(group = "annual")) + 
+    scale_y_continuous(limits = c(0,1), labels = scales::percent) + 
+    labs(x = NULL, y = "share of overall network traffic")
+  return(p_share)
+}
+
+
+
+# BRAZIL ========= Airport Level Study
 # Cleaning/prep process in Hugos-prep.qmd file(code lines 1826 to 1881)
 
-study_apt_lvl <- read_csv("./data/study_apt_lvl.csv")
+study_apt_lvl  <- read_csv("./data/study_apt_lvl.csv")
 study_apt_lvl2 <- read_csv("./data/bra-study-apt-tfc-2022-2023.csv") |> 
   select(ICAO, YEAR, TOT_FLTS_YEAR = TOT) |> 
   #--------- REVIEW ----------------------------
-  mutate(YEAR = YEAR + 2)
-study_apt_lvl <- bind_rows(study_apt_lvl, study_apt_lvl2)
+  # the "study level" data set for 2022/2023 might contain helicopter movements
+  # integrate a better filter for future iterations
+  # mutate(YEAR = YEAR + 2) # to plot 2022 as 2024 and 2023/2025
   #----------------------------------------------
+  # after review -- 2023 data accepted 'as-is'
+  filter(YEAR == 2023)
 
+study_apt_lvl <- bind_rows(
+    study_apt_lvl |> filter(YEAR <= 2022)
+  , study_apt_lvl2
+  )
 study_apt_lvl <- study_apt_lvl |>  
-  mutate(YEAR = as.character(YEAR))
+  mutate(YEAR = as.character(YEAR)) # coerce YEAR to discrete variable
 
-options(scipen = 999)  
+options(scipen = 999)  # set number options
+
+annual_tfc_bra <- tfc_bra |> 
+  #-------- correct for fix ------------------
+  filter(DATE < bra_tfc_switch | DATE >= bra_tfc_switch %m+% years(2)) |> 
+  mutate(DATE = case_when(
+               DATE >= (bra_tfc_switch %m+% years(2)) ~ DATE %m-% years(2)
+            , .default = DATE 
+        )
+        , YEAR = year(DATE)
+        , REG = "BRA"
+        ) |> 
+  summarise(N = n(), FLIGHTS = sum(DLY_FLTS), .by = c(REG, YEAR))
+ 
+annualised_study_apt <- study_apt_lvl |> mutate(REG = "BRA") |> 
+  summarise(APTS_TOT = sum(TOT_FLTS_YEAR), .by = c(REG, YEAR)) |> 
+  mutate(YEAR = as.factor(YEAR))
+
+tmp_annual_share <- annual_tfc_bra |> mutate(YEAR = as.factor(YEAR)) |> 
+  left_join(annualised_study_apt, by = join_by(REG, YEAR)) |> 
+  mutate(SHARE = APTS_TOT / FLIGHTS)
+
+#========== PLOTS
+
 
  p_study1 <- study_apt_lvl  |>
    filter(!(YEAR == "2023")) |> 
@@ -212,14 +259,20 @@ options(scipen = 999)
             ) + 
    labs(x = NULL, y = NULL,  title = "Brazil Airports Annual Movement") 
 
- p_study2 <- study_apt_lvl |>  filter(!(YEAR == "2023")) |> 
-  group_by(YEAR) |> 
-  summarise(ALL_TOT_FLTS_YR = sum(TOT_FLTS_YEAR)) |> 
-  ggplot() +
-  geom_col(aes(x = YEAR, y = ALL_TOT_FLTS_YR, fill = YEAR)) +
-   labs(x = NULL, y = NULL,) 
-
-  p_study1 / p_study2 
+ # p_study2 <- study_apt_lvl |>  filter(!(YEAR == "2023")) |> 
+ #  group_by(YEAR) |> 
+ #  summarise(ALL_TOT_FLTS_YR = sum(TOT_FLTS_YEAR)) |> 
+ #  ggplot() +
+ #  geom_col(aes(x = YEAR, y = ALL_TOT_FLTS_YR, fill = YEAR)) +
+ #   labs(x = NULL, y = NULL,) 
+ # 
+ #  p_study1 / p_study2 
+ 
+ (p_share_of_network(tmp_annual_share) + 
+    scale_x_discrete(guide = guide_axis(n.dodge = 2)) 
+  ) + p_study1 + 
+  plot_layout(widths = c(1, 4)) + 
+  plot_annotation("Brazil Study Airports Annual Movements")
 ```
 
 ```{r}
@@ -239,6 +292,13 @@ tfc_apts_eur <- bind_rows(tfc_apts_eur, tfc_apts_eur_2023) |>
 ```
 
 ```{r}
+# annual network level traffic
+annual_tfc_eur <- tfc_eur |> 
+  mutate(YEAR = lubridate::year(DATE)) |>  
+  filter( (VERSION == "2024") | (VERSION == "2023" & YEAR %in% 2019:2022) ) |> 
+  summarise(N = n(), FLIGHTS = sum(DLY_FLTS), .by = c(REG, YEAR))
+
+# annual traffic at each airport
 annual_tfc_apt <- tfc_apts_eur |> 
   #------- filter to 2022 and eur_apts
   filter(ICAO %in% eur_apts, DATE < lubridate::ymd("2023-01-01")) |> 
@@ -249,20 +309,41 @@ annual_tfc_apt <- tfc_apts_eur |>
   filter(between(YEAR, 2019, 2023)) |> 
   mutate(YEAR = as.factor(YEAR))
 
+# annualised traffic of all study airports
+annual_all_apts <- annual_tfc_apt |> 
+  summarise(APTS_TOT = sum(TOT_FLTS_YEAR), .by = c(REG, YEAR))
+
+tmp <- annual_tfc_eur |> mutate(YEAR = as.factor(YEAR)) |> 
+  left_join(annual_all_apts, join_by(REG, YEAR)) |> 
+  mutate(SHARE = APTS_TOT / FLIGHTS)
+
+
 p1_eur <- annual_tfc_apt  |>   ggplot() +
    geom_col(aes(x = ICAO, y = TOT_FLTS_YEAR, fill = YEAR)
             , position = position_dodge(preserve = "single")
             ) + 
-   labs(x = NULL, y = NULL,  title = "European Airports Annual Movement") 
+   labs(x = NULL, y = NULL
+        #,  title = "European Airports Annual Movement"
+        ) +
+  theme(legend.position = "top")
 
-p2_eur <- annual_tfc_apt |>  filter(!(YEAR == "2023")) |> 
-  group_by(YEAR) |> 
-  summarise(ALL_TOT_FLTS_YR = sum(TOT_FLTS_YEAR)) |> 
-  ggplot() +
-  geom_col(aes(x = YEAR, y = ALL_TOT_FLTS_YR, fill = YEAR)) +
-   labs(x = NULL, y = NULL,) 
+# p2_eur <- annual_tfc_apt |>  filter(!(YEAR == "2023")) |> 
+#   group_by(YEAR) |> 
+#   summarise(ALL_TOT_FLTS_YR = sum(TOT_FLTS_YEAR)) |> 
+#   ggplot() +
+#   geom_col(aes(x = YEAR, y = ALL_TOT_FLTS_YR, fill = YEAR)) +
+#    labs(x = NULL, y = NULL,) 
 
-p1_eur / p2_eur
+# p1_eur / p2_eur
+
+
+
+# patch the 2 plots
+(p_share_of_network(tmp) + 
+    scale_x_discrete(guide = guide_axis(n.dodge = 2)) 
+  ) + p1_eur + 
+  plot_layout(widths = c(1, 4)) + 
+  plot_annotation("European Study Airports Annual Movements")
 ```
 
 ```{=html}
@@ -371,7 +452,7 @@ combo_bra <- (p_study3_bra + labs(x = NULL, y = NULL)) +
 
 combo_eur <- 
   (p_study3 + labs(y = "annual traffic 2022")) + 
-  (p_study4 + labs(y = "annaul variation 2022/2019")) +
+  (p_study4 + labs(y = "annual variation 2022/2019")) +
   plot_layout(widths = c(3, 1))
 
 combo_bra / combo_eur
@@ -470,7 +551,7 @@ plot_peak_day_tfc <- function(.df, .year, ...){
   return(viz)
 }
 
-peak_day_comb |> plot_peak_day_tfc(2022)
+# peak_day_comb |> plot_peak_day_tfc(2022)
 peak_day_comb |> plot_peak_day_tfc(2023)
 ```
 
@@ -521,28 +602,44 @@ plot_slope_peak_day <- function(.pkday, .base_year = 2019, .current_year = 2022)
 ```
 
 ```{r}
+#| label: fig-timeline-peak-day
+#| fig-cap: Evolution of peak-day traffic at study airports
+
 min_year <- 2019
 max_year <- 2023
-peak_day_comb |> filter(between(YEAR, min_year, max_year)) |> 
-  ggplot(mapping = aes(x = YEAR, y = PEAK_DAY_PCT
-                       , group = ICAO, colour = ICAO)) +
-  geom_line() +
-  geom_text_repel(mapping = aes(x = max(YEAR), label = ICAO , colour = ICAO) 
-                  #, nudge_x = 0.5
-                  #, point.padding = 0.5 , na.rm = TRUE
-                  , xlim = c(max_year-2, NA)
-                  , force = 10, segment.colour = "grey50"
-                  , size = 3
-) +
-  facet_wrap(.~REGION) + 
- # my_own_theme_minimal +
-  scale_color_discrete(l = 30, c = 100, guide = FALSE) +
-  labs(x = NULL, y = "peak day movements") 
+
+# peak_day_comb |> filter(between(YEAR, min_year, max_year)) |> 
+#   ggplot(mapping = aes(x = YEAR, y = PEAK_DAY_PCT
+#                        , group = ICAO, colour = ICAO)) +
+#   geom_line() +
+#   geom_text_repel(mapping = aes(x = max(YEAR), label = ICAO , colour = ICAO) 
+#                   #, nudge_x = 0.5
+#                   #, point.padding = 0.5 , na.rm = TRUE
+#                   , xlim = c(max_year-2, NA)
+#                   , force = 10, segment.colour = "grey50"
+#                   , size = 3
+# ) +
+#   facet_wrap(.~REGION) + 
+#  # my_own_theme_minimal +
+#   scale_color_discrete(l = 30, c = 100, guide = FALSE) +
+#   labs(x = NULL, y = "peak day movements") 
 #+
 #  xlim(min_year-0.5, max(tmp$YEAR)+0.5)
+
+peak_day_comb |> filter(between(YEAR , min_year, max_year)) |> 
+    ggplot() + 
+    geom_path(aes(x = YEAR, y = PEAK_DAY_PCT, group = ICAO, color = ICAO)) + 
+    geom_text_repel(  data = peak_day_comb |> 
+                  filter(YEAR == 2023)
+              , aes(x = YEAR, y = PEAK_DAY_PCT, label = ICAO, color = ICAO )
+              , vjust = 0.5, nudge_x = -0.5) +
+    facet_wrap(. ~ REGION) + 
+    scale_y_continuous(limits = c(0,NA)) +
+    guides(color = FALSE) +
+    labs(x = NULL, y = "peak day traffic")
 ```
 
-The year-to-year change of the peak day traffic between 2019 and 2022 is shown in @fig-change-peak-day.
+The year-to-year change of the peak day traffic between 2019 and 2022 is shown in @fig-timeline-peak-day.
 For the European study airports, Frankfurt (EDDF), Munich (EDDM), Paris (LFPG), and Rome (LIRF) experienced a higher drop of the daily peak traffic in comparison to 2019.
 Despite the not yet fully recovered demand situation at London Gatwick (EGKK) and Zurich (LSZH) showed a moderate reduction of the daily peak traffic in 2022.
 This suggest that airports with limited airport runway capacity managed
@@ -598,7 +695,7 @@ ggplot( data    = fm_apts %>% filter(YEAR == key_year)
         ,legend.title    = element_text(size = 8) 
         ,legend.text     = element_text(size = 8)
         ,legend.key.size = unit(0.3, "cm")) +
-  labs(x = NULL, y = NULL, caption = paste0("Note: key-year ", key_year))
+  labs(x = NULL, y = NULL)
 ```
 
 @fig-fleet-mix depicts the observed share of different wake turbulence categories (WTC) across the study airports in `r key_year`.
@@ -626,7 +723,8 @@ This is in contrast to Brazil, where the international and heavy air traffic app
 ```{r}
 #| label: fig-fleetmix-timeline
 #| fig-cap: Fleet mix change over time observed at study airports
-#| out-height: 7in
+#| fig-height: 6
+
 plot_fleetmix_timeline <- function(.fleetmix){ 
   viz <- .fleetmix |> 
     ggplot(aes(x = YEAR, y = SHARE, group = WTC, color = WTC)) +
@@ -644,7 +742,12 @@ p_eur <- fm_apts_eur |>
   filter(between(YEAR, min_year, max_year)) |> plot_fleetmix_timeline() +
   labs(y = NULL)
 
-p_bra + p_eur + plot_layout(guides = "collect") & theme(legend.position = "top")
+p_bra + p_eur + 
+  plot_layout(guides = "collect") & 
+  theme(legend.position = "top"
+        , axis.text = element_text(size = 7)
+        ,panel.spacing = unit(0.5, "cm", data = NULL)) & 
+  scale_x_continuous(guide = guide_axis(n.dodge = 2))
 ```
 
 On average, @fig-fleetmix-timeline shows that the fleetmix remained fairly stable over the years.

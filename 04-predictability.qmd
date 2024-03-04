@@ -153,6 +153,8 @@ p_2023 & labs(caption = NULL)
 ```
 
 ```{r}
+#| label: fig-punc-test
+#| fig-cap: just plot them
 punc <- bind_rows(punc_bra2, punc_eur)
 
 p_2022 <- punc |> prepare_punc_plot_data("ARR",2022) |> 
@@ -168,6 +170,18 @@ p_2023 <- punc |> prepare_punc_plot_data("ARR",2023) |>
 p_2022
 p_2023
 ```
+<<<<< ADD ON TO SHOW EVOLUtion
+
+```{r}
+punc_bra |> 
+  filter(PHASE == "ARR") |> 
+  select(APT, PHASE, YEAR, WITHIN_M15P15) |> 
+  ggplot() + 
+  geom_line(aes(x = YEAR, y = WITHIN_M15P15, group = APT, color = APT)) +
+  geom_point(aes(x = YEAR, y = WITHIN_M15P15, group = APT, color = APT)) +
+  labs(caption = "Graph developed by Rafael")
+```
+
 
 
 @fig-arrival-punc shows the evolution of arrival punctuality for the select airports in Brazil and Europe.
@@ -267,11 +281,6 @@ p2023 <- p3_bra_earlylate + p3_eur_earlylate
 (p2019 / p2022 / p2023) + plot_layout(guides = "collect") & 
   theme(legend.position = 'top')
 ```
-
-# | fig-subcap:
-# |   - "Arrival punctuality 2019"
-# |   - "Arrival punctuality 2022"
-# |   - "Arrival punctuality 2023"
 
 ```{r}
 #| label: fig-early-vs-late-arrivals2

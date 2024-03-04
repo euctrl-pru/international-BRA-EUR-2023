@@ -10,7 +10,7 @@ warning: false
 book:
   title: "Operational Comparison of ANS Performance"
   author: "DECEA Performance Section, EUROCONTROL Performance Review Unit"
-  date: 5. December 2023
+  date: 1. March 2024
   chapters:
   - index.qmd
   - 00_foreword.qmd
@@ -22,7 +22,7 @@ book:
   - 05-capacity_and_throughput.qmd
   - 06-efficiency.qmd
 # - 07-environment.qmd
-#  - 08-conclusions.qmd
+  - 08-conclusions.qmd
   - 99-references.qmd
 appendices:
   - A1-appendix.qmd
