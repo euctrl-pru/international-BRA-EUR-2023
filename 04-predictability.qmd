@@ -1,9 +1,9 @@
 # Predictability
 
-The preceding sections have demonstrated that both systems exhibit unique reactions to the broader developments in air transport.
+The preceding sections have demonstrated that both air navigation systems exhibit unique reactions to the broader developments in air transport.
 Predictability plays a crucial role in these systems, impacting their functioning during both the strategic phase, where airline schedules are formulated, and the operational phase, where Air Navigation Service Providers (ANSPs) and stakeholders manage the delicate balance between demand and capacity.
 Enhanced predictability stands to be advantageous for ANSPs, mainly when serving airspace users, as it contributes to highly efficient operations, even during periods of peak demand.
-This chapter focuses on arrival and departure punctuality as crucial predictability indicators.
+This chapter focuses on arrival and departure punctuality observed at the study airports as a driving factor for predictability.
 
 ```{r}
 source("_chapter-setup.R")
@@ -103,22 +103,24 @@ prepare_punc_plot_data <- function(.punc, .phase, .year){
 
 ## Arrival Punctuality
 
-@fig-arrival-punc shows the evolution of arrival punctuality for the select airports in Brazil and Europe.
-When comparing both regions in 2019 and 2022, Brazil's share of early arrivals (earlier than 15 minutes before the scheduled arrival) is significantly higher than the same European portion.
+@fig-arrival-punc shows the evolution of arrival punctuality for the study airports in Brazil and Europe.
+When comparing both regions in 2019 and 2023, Brazil's share of early arrivals (earlier than 15 minutes before the scheduled arrival) is significantly higher than the same European portion.
 The share of early arrivals accounts for 20-25% across all Brazilian airports.
 In Europe, flights tend not to arrive significantly earlier than their scheduled time. 
-On average, early arrival range between 8-15% in Europe in 2019.
+On average, early arrival ranges between 8-15% in Europe in 2019.
 Recent studies conducted by the CGNA/DECEA show that air operators in Brazil declare flight times significantly longer than observed.
-Similar behaviour is also observed in Europe.
-Built in buffer times help to achieve a high "on-time-performance" record and appeal to passengers favouring a timely arrival performance.
+A similar behaviour is also observed in Europe.
+Built-in buffer times help to achieve a high "on-time-performance" record and appeal to passengers favouring a timely arrival performance.
 Furthermore, both regions have regulations for passenger compensation in place which are triggered in the case of arrival delays.
 DECEA has already established a forum with the air operator regulator to discuss and propose solutions.
 
 European airports saw their share of punctual flights in 2022 and 2023 decrease broadly compared to 2019, even with a more proportional distribution than the Brazilian system.
-For European operators, there were two primary factors contributing the the lower performance in the past two years. 
-The most significant is the cumulative effect, showing that the network of flights has little ability to absorb the delay of one specific delayed flight.
-The knock-on effect was amplified by the local resource constraints in terms of passenger and turn-around facilitation. 
-The incrasing traffic demand posed challenges at many airports in Europe. Delayed arrivals accumulated further reactionary delay and ultimately passed the delay systematically on to next flights.
+For European operators, there were two primary factors contributing the the lower performance in these two years. 
+The most significant is the returning and steadily growing demand, showing that the network of flights has little ability to absorb the delay of one specific delayed flight.
+A pattern already observed pre-pandemic and requiring to investigate how to increase capacity across the operational aviation value chain.
+The knock-on effect was amplified by local resource constraints in terms of passenger and turn-around facilitation. 
+The incrasing traffic demand posed challenges at many airports in Europe.
+Delayed arrivals accumulated further reactionary delay and ultimately passed the delay systematically on to next flights.
 Further constraints were linked to air space and flow restrictions resulting from the geo-political conflict surrounding the Russian invasion in Ukraine.
 On average, arrival delays of 15 minutes or more compared to the schedule ranged between 25-35% across the Europen study airports in 2022.
 
@@ -382,13 +384,13 @@ In this section, we assess the degree of departure punctuality measured as the d
 @fig-departure-punc shows the overall departure punctuality at Brazilian and European airports in 2019 compared to 2022.
 Despite traffic levels in 2022 still ranging below their 2019 pre-pandemic levels, the departure punctuality in 2022 was - on average - lower than before COVID.
 
-The difference in departure and arrival punctuality between 2022 and 2019 was significantly more pronounced for Europe indicating an increased strain on the turnaround processes.
+The difference in departure and arrival punctuality between 2023 and 2019 was significantly more pronounced for Europe indicating an increased strain on the turnaround processes.
 There has been a significant increase in poor performance days, with departure punctuality falling below 50% and arrival punctuality dropping below 60%, occurring more frequently than in 2019.
 On the Brazilian side, the Galeão airport (SBGL) observed the highest share of delayed departure flights.
 It should be noted that the SBGL is the only airport with the Apron Control service directly provided by the airport.
 Some inefficiency in the coordination between Tower and Apron or divergence at the indicator collection point for the location may be contributing to the observed performance.
 
-Departure punctuality appeared slightly higher in Brazil in 2022 in comparison to 2019 and outperforms the punctuality levels observed in Europe. 
+Departure punctuality in Brazil in 2023 reaches similar levels than in 2019 and outperformed the punctuality levels observed in Europe. 
 It is also notworthy, that in Brazil there is a higher share of flights blocking off between 15 to 5 minutes before their scheduled time.
 Further research may help to clarify the factors driving this phenomenon.
 
@@ -458,12 +460,16 @@ lbl_df <- tmp2 |>
 
 @fig-evolution-DEP-punc shows the evolution of the departure punctuality window within 15 minutes of the scheduled departure time. 
 On average, the predictability of departing traffic is higher than for the arrival (c.f. @fig-evolution-ARR-punc).
-The Brazilian study airports show a decrease of the predictability trend in line with the lower pressure on the system and airports during the pandemic phase and increased traffic levels post-pandemic.
+The trend at the Brazilian study airports shows a homogeneous behaviour for the period 2019 through 2023. 
+This included a higher departure punctuality within 15 minutes during the pandemic phase.
+There is also evidence that the increasing post-pandemic levels put a strain on the departure punctuality performance with the level of observed performance in 2023 ranging at the same levels than pre-pandemic.
 
-On the European side, punctuality levels show a sharp decrease post-COVID and are driven by the system-wide disruptions in 2022. 
-For most of the European study airports, departure predictability remained constant of improved in 2023 versus 2022. 
+On the European side, punctuality levels showed a sharp decrease post-COVID and are driven by the system-wide disruptions in 2022 and the ripple effects observed in 2023. 
+For most of the European study airports, departure predictability remained constant or improved marginally in 2023 versus 2022. 
 This still indicates that there exists constraints regarding the turnaround of aircraft.
-However, departure punctuality performance broadly coincides with the pre-pandemic levels. It is noteworthy to recall that also 2019 has seen major restrictions in the European system.
+While variances exist, on average the share of departures within 15 minutes of the scheduled departure time ranges below the pre-pandemic levels. It is noteworthy to recall that also 2019 has seen major restrictions in the European system.
+
+It is planned to investigate the underlying turnaround drivers in future editions of the comparison report.
 
 
 ```{r}
@@ -505,8 +511,8 @@ p2023 <- p3_bra_earlylate + p3_eur_earlylate
 
 ```{r}
 #| label: fig-early-vs-late-departures
-#| fig-cap: Change of share of early and late departures (2019 vs 2022)
-(p2019 / p2022) + plot_layout(guides = "collect") & 
+#| fig-cap: Change of share of early and late departures (2019 vs 2023)
+(p2019 / p2023) + plot_layout(guides = "collect") & 
   theme(legend.position = 'top')
 ```
 
@@ -521,11 +527,13 @@ Local issues (e.g. reduced facilication capacity at airports) affected air traff
 
 Arrival and departure punctuality play an important role in terms of balancing demand and capacity. 
 Strong distortions of the schedule will ultimately ripple down into reactionary delay and require a higher effort for both the arrival flow and surface movement control.
-Turnaround distortions affect therefore the planning accuracy of air navigation services and may lead to unwanted side-effects (e.g. longer sequencing and holding in the terminal airspace, passenger inconvenience due to longer taxi-times/blocked gates).
+Turnaround distortions further affect the planning accuracy of air navigation services and may lead to unwanted side-effects (e.g. longer sequencing and holding in the terminal airspace, passenger inconvenience due to longer taxi-times/blocked gates).
 
 Distinct patterns were observed in both regions that cannot only be explained by the level of traffic recovery. 
-On average, a higher share of flights arrives well ahead of schedule in Brazil. This pattern is largely unchanged when comparing 2019 and 2023. 
-The ripple effect of the low preparedness level of European airports to address the returning traffic in 2022 is well documented. It also appears that there are prevailing resource constraints for servicing the demand in 2023.
+On average, a higher share of flights arrived well ahead of schedule in Brazil. 
+This pattern is largely unchanged when comparing 2019 and 2023. 
+
+The ripple effect of the low preparedness level of European airports to address the returning traffic in 2022 is well documented. It also appeared that there were prevailing resource constraints for servicing the demand in 2023.
 This yielded a significant low performance in terms of departure punctuality exceeding levels observed in Brazil by a factor of 2-3.
 
 Distortions of the local schedule can have knock-on effects on the air navigation service provision, both in terms of surface movement and arrival sequencing.
