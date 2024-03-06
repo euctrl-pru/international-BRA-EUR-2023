@@ -34,7 +34,7 @@ Therefore, the groundwork presented in this report is rooted in commonly accepte
 The key performance indicators (KPIs) utilised in this study have been developed through a rigorous process that integrates the best available data from both the DECEA Performance Section and PRU.
 It is important to note that the comparative analysis outlined in this iteration of the report does not encompass all eleven Key Performance Areas (KPA) as presented in @fig-scope-KPAs-KPIs.
 
-From an indicator perspective and this repprt, the DECEA Performance Section and PRU have reached a consensus to concentrate on operational benchmarking and aligning their efforts with the performance indicators proposed by ICAO in conjunction with the update of the Global Air Navigation Plan (GANP).
+From an indicator perspective, the DECEA Performance Section and PRU have reached a consensus to concentrate on operational benchmarking and aligning their efforts with the performance indicators proposed by ICAO in conjunction with the update of the Global Air Navigation Plan (GANP).
 Future work may also include aspects of cost-effectiveness. 
 
 <!-- The report also presents an initial approach to quantifying potential inefficiencies in terms of fuel burn and CO2 emissions. -->
@@ -50,7 +50,7 @@ DECEA plays a pivotal role by coordinating and furnishing human resources and te
 This collaboration ensures air traffic safety while contributing to military defence efforts.
 
 DECEA is the cornerstone of the Brazilian Airspace Control System (SISCEAB).
-This department provides Air Navigation Services for the vast airspace jurisdiction covering 22 million square kilometres, including oceanic areas.
+This department provides air navigation services for the vast airspace jurisdiction covering 22 million square kilometres, including oceanic areas.
 The Brazilian airspace is further divided into five Flight Information Regions (FIR) and the areas of responsibility of these integrated Centres for Air Defence and Air Traffic Control (CINDACTA) are depicted in @fig-BRA-airspace.
 
 ```{r}
@@ -73,7 +73,7 @@ knitr::include_graphics("./figures/Europe-ECTRL.png")
 In this report, Europe, i.e. the European airspace, is defined as the area where the 41 EUROCONTROL member states provide air navigation services, excluding the oceanic areas and the Canary islands (c.f. @fig-EUR-airspace).
 In 2016, EUROCONTROL signed a comprehensive agreement with Israel and Morocco.
 Both comprehensive agreement States will be successively fully integrated into the working structures of EUROCONTROL, including performance monitoring.
-Within this report, these states are included in the reported network traffic volume.
+Within this report, these states are included in the reported network traffic volumes.
 
 EUROCONTROL is an inter-governmental organisation working towards a highly harmonised European air traffic management system.
 In general, air traffic services are provided by air navigation service providers entrusted by the different EUROCONTROL member states.
@@ -91,7 +91,7 @@ Further details on the organisation of the regional air navigation systems in Br
 
 ### Study Airports
 
-As concerns airport-related air navigation performance, this edition of the comparison report addresses the performance at a set of selected airports.
+As concerns airport-related operational air navigation performance, this edition of the comparison report addresses the performance at a set of selected airports.
 These airports represent the top-10 or most relevant airports in terms of IFR movements in both regions and allow to make meaningful comparisons.    
 In Brazil, the selected airports play a significant role for the national and regional connectivity, including the major hubs for international air traffic.
 These study airports have consolidated systems and structured processes for data collection in support of this comparison report.    
@@ -133,7 +133,7 @@ knitr::include_graphics("./figures/scope-airports.png")
 
 ### Temporal Scope
 
-This report focuses on the period from January 2019 through to December 2023.
+This report focuses on the period from January 2019 to December 2023.
 With this report, the focus is on building a timeline with comparable data to be augmented in future editions.
 
 Throughout the report, summary statistics will be given with reference to calendar years of this comparison study.
@@ -143,13 +143,13 @@ Throughout the report, summary statistics will be given with reference to calend
 The nature of the performance indicator requires the collection of data from different sources.
 DECEA Performance Section and PRU investigated the comparability of the data available in both regions, including the data pre-processes, data cleaning and aggregation, to ensure a harmonised set of data for performance comparison purposes.
 
-DECEA mainly uses the tower system's data from the main airports as a data source for performance studies.
-The control tower system collects and provides each landing and take-off operation automatically.
-This edition blended ANAC (Brazilian CAA) official and public data with DECEA's data to increase precision for specific indicators, adding a pre-processing phase to the data analysis work.
-The provided data includes such items as the times of operations, gate entry and exit, and flight origin and destination.
+DECEA mainly uses data from the tower systems of the main airports as a data source for performance studies.
+The control tower system collects and provides data for each landing and take-off operation automatically.
+This edition blended ANAC (Brazilian CAA) official and public data with DECEA's data to increase precision for specific indicators, adding a pre-processing phase to the data analytical work.
+The provided data include such items as the times of operations, gate entry and exit, and flight origin and destination.
 
 Within the European context, PRU has established a variety of performance-related data collection processes.
-For this report the main sources are the European Air Traffic Flow Management System (ETFMS [^01-intro-2]) complemented with airport operator data.
+For this report the main sources are the European Air Traffic Flow Management System (ETFMS [^01-intro-2]) complemented with airport operator reported data.
 These sources are combined to establish a flight-by-flight record.
 This ensures consistent data for arrivals and departures at the chosen study airports.
 The data is collected on a monthly basis and typically processed for the regular performance reporting under the EUROCONTROL Performance Review System and the Single European Sky Performance and Charging Scheme [@apdf_v1_2019].
@@ -160,9 +160,10 @@ The data is collected on a monthly basis and typically processed for the regular
 
 This third edition of the Brazil-Europe comparison report is organised as follows:
 
--   **Introduction** overview, purpose and scope of the comparison report; short description of data sources used Air Navigation System Characteristics high-level description of the two regional systems, i.e. areas of responsibility, organisation of ANS, and high-level air navigation system characteristics
--   **Traffic Characterisation** air traffic movements, peak day demand, and fleet composition observed at the study airports
--   **Predictability** observed arrival and departure punctuality
--   **Capacity and Throughput** assessment of the declared capacity at the study airports and the observed throughput, including runway system utilisation comparing achieved peak throughput to the declared capacity.
--   **Efficiency** analysis of taxi-in, taxi-out, and terminal airspace operations.
+-   **Introduction** -- overview, purpose and scope of the comparison report; short description of data sources used; 
+- **Air Navigation System Characteristics** -- high-level description of the two regional systems, i.e. areas of responsibility, organisation of ANS, and high-level air navigation system characteristics;
+-   **Traffic Characterisation** -- network level and airport level air traffic movements; peak day demand, and fleet composition observed at the study airports;
+-   **Predictability** observed arrival and departure punctuality;
+-   **Capacity and Throughput** assessment of the declared capacity at the study airports and the observed throughput, including runway system utilisation comparing achieved peak throughput to the declared capacity;
+-   **Efficiency** analysis of taxi-in, taxi-out, and terminal airspace operations; and
 -   **Conclusions** summary of this report and associated conclusions; and next steps.

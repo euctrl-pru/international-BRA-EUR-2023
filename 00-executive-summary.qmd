@@ -7,9 +7,8 @@ This report and previous editions are available at
 * <https://ansperformance.eu/global/brazil> or 
 * <https://performance.decea.mil.br/>.
 
-This report updates the earlier editions and assessment of both the Brazilian and European air navigation systems, extending the time frame and incorporating additional analyses. 
-The report focuses on a subset of the eleven Key Performance Areas identified by the ICAO Global Air Navigation Plan. 
-The focus of this report is on operational air navigation system performance, in particular  Predictability, Capacity and Efficiency.
+This report updates the earlier editions and assessment of the operational air navigation system performance in both regions,  Brazil and Europe, extending the time frame and incorporating additional analyses. 
+This edition focuses on a subset of the eleven Key Performance Areas identified by the ICAO Global Air Navigation Plan, in particular  Predictability, Capacity and Efficiency.
 
 ```{r}
 #| label: fig-scope-KPAs-KPIs
