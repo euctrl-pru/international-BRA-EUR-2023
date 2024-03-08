@@ -14,7 +14,7 @@ The measures reported in this comparison report are based on the observed travel
 These travel times are compared with an associated reference time for a group of flights showing similar operational characteristics. 
 The determined difference (i.e. additional time) measures the level of inefficiency.
 It must be noted that high performance operations will still yield a certain share of measured additional times. 
-Operational efficiency is therefore aiming at the minimising rather than eliminating these additional times as they cannot be zero.
+Operational efficiency is therefore aiming at minimising rather than eliminating these additional times as they cannot be zero.
 
 
 ## Additional Taxi-In Time
@@ -28,7 +28,7 @@ This report utilises another source for the movement times at Brazilian airports
 Next to the actual taxi-times, the new data source provides also gate/stand information.
 Accordingly, additional taxi-times can be now determined on a per-gate basis.
 Previous studies did not support this higher level of granularity.
-The reader needs therefore to bear in mind that the reported results and trends differ from previous reports which were based on airport-wide aggregation.
+The reader needs therefore to bear in mind that the reported results and trends differ from previous reports which were based on an  airport-wide aggregation.
 The latter may be influenced by the predominant runway system configuration and frequently used stand/parking positions.
 
 ```{r}
@@ -54,7 +54,6 @@ txit_eur2 <- read_csv("./data/BRA-EUR-EUR-TXXT-2019-2023Q2.csv", show_col_types 
   select(REG, APT = ICAO, PHASE, DATE, MVTS = N_VALID_1922, ADD_TIME = ADD_TIME_1922
          ,AVG_ADD_TIME = AVG_ADD_TIME_1922)
 ```
-
 
 ### Annual Evolution of Additional Taxi-in Times
 
@@ -101,6 +100,7 @@ plot2 <- function(.tmp){
 ```{r}
 #| label: fig-txit-annual
 #| fig-cap: Additional taxi-in time (2019-2023)
+
 txits <- bind_rows( txit_bra, txit_eur2)
 
 txits |> aggregate_by_year() |> 
@@ -110,29 +110,36 @@ txits |> aggregate_by_year() |>
    plot2() 
 ```
 
-The annual development of the additional taxi-in times at the study airports is depicted by @fig-txit-annual.
+The annual development of the average additional taxi-in times at the study airports is depicted by @fig-txit-annual.
 The indicator varies across the different airports. 
 A threshold of 2 minutes per arrival emerges as an upper bound for the taxi-in performance.
 
-Taxi-in performance in Brazil ranges in 2022 well below this 2-minute-threshold.
+On average, taxi-in performance in Brazil ranged in 2022 well below this 2-minute-threshold for the majority of the airports.
 In general, taxi-in performance at Brazilian airports improved over the period 2019 to 2022[^BRA-txit].
+However, taxi-in performance decreased in 2023 at all studied airports.
 The pandemic-related drop in surface movements and pressure on the ground infrastructure is visible for the major hubs, i.e. Sao Paulo's (SBGR), Rio de Janeiro's Galeão (SBGL), Campinas (SBKP).
 Taxi-in performance at Campinas remained fairly constant ranging around 2.5 min/arr across the years with a discernible reduction in 2021.
 The picture at SBGL and SBGR is more varied.
 Taxi-in performance improved by about 1.5 min/arr comparing the pre-pandemic year 2019 with the performance observed in 2022.
+While the observed taxi-in inefficiencies in 2023 remained stable in SBGL, an increasing trend is observed in SBGR (which is the busiest airport in Brazil).
 
 <!-- footnote on changed values for txit @ BRA ------------------- 
 ---- keep this close to the para for editing purposes -------- -->
 [^BRA-txit]: While general trends are consistent with previous reports, the changed and improved data source provides now runway and stand/gate information for taxi-in operations. This allows for a more fine-grained analysis of the additional surface movement times. Accordingly, observed (and reported) taxi-in performance values differ from the earlier reports (which are based on airport-wide reference times).
 <!--------------------------------------------------------------- -->
 
-In Europe, additional taxi-in times range generally below the 2-minute-threshold for most of the study airports [^EUR-txit]. 
+In Europe, the average additional taxi-in times ranged generally below the 2-minute-threshold for most of the study airports [^EUR-txit]. 
+Amongst the European study airports, Rome Fiumicino (LIRF) and London Heathrow (EGLL) showed regularly higher levels of inefficiency during the taxi-in phase.
 Taxi-in performance deteriorated in London Heathrow (EGLL) in 2022 ranging just under 5 minutes per arrival and exceeding the pro-COVID performance by about 2 minutes per incoming flight.
-Rome Fiumicino shows a stable taxi-in performance ranging above 2.5 minutes per arrival. This suggests complexity of the aerodrome layout and a higher effort to deconflict arrivals from other arrivals or taxiing departures. 
-Several airports in Europe show higher or less improved additonal taxi-in times during the pandemic years. 
+In 2023, the average additional taxi-in improved by about 1 minute per arrival. 
+Rome Fiumicino observed a stable taxi-in performance ranging above 2.5 minutes per arrival. 
+This suggests that the complexity of the aerodrome layout requires a higher effort to deconflict arrivals from other arrivals or taxiing departures.
+Taxi-in performance in 2023 dropped further at LIRF to just under 3 minutes per arrival.
+Several airports in Europe showed higher or less improved additional taxi-in times during the pandemic years. 
 This is related to the fact that airports closed down portions of the infrastructure (e.g. terminals) to account for the lower demand in air traffic. 
 In some cases, this resulted in less favourable runway and gate/stand combinations.
-The year 2022 is also characterised by a surge in delays due to the returning demand for air travel. 
+In Europe, the year 2022 is also characterised by a surge in delays due to the returning demand for air travel. 
+Associated ripple effects were still observed in 2023. 
 The lower punctuality also posed challenges for arriving traffic as incoming flights had to be serviced to other gates/stands to deconflict from delayed departures.
 The latter phenomenon shows more clearly for the major hubs amongst the study airports.
 
@@ -170,8 +177,11 @@ plot_monthly_txit <- function(.monthly_txit, .ncol = 2){
 txit_bra |> 
   aggregate_by_month() |> 
   rename(DATE = MOF) |> 
-  filter(DATE < lubridate::ymd("2023-01-01")) |> 
-  plot_monthly_txit()
+  filter(DATE <= max_date) |> 
+  plot_monthly_txit() + 
+  # make it nice in printout
+  theme(panel.spacing = unit(0.5, "cm")) + 
+  labs(subtitle = NULL)
   
 ```
 
@@ -181,16 +191,25 @@ txit_bra |>
 #| out-height: 12cm
 txit_eur2 |> aggregate_by_month() |>  
   rename(DATE = MOF) |>
-  plot_monthly_txit()
+  plot_monthly_txit() +
+  # make it nice in printout
+  theme(panel.spacing = unit(0.5, "cm")) + 
+  labs(subtitle = NULL)
 ```
 
 The evolution of the taxi-in times at the study airports in Brazil and Europe is shown in @fig-bra-txit-timeline and @fig-eur-txit-timeline. 
-In this graph, we can see that the oscillation of additional taxi time over the months of the year is timider on the Brazilian side, with a generalised rectification soon after the beginning of the pandemic. 
-Interestingly, even with the significant return of demand in 2022, there are no significant increases in the average additional time on a monthly level. 
-Guarulhos (SBGR) is the only airport that points in the direction of a more systematic increase in time and should be monitored for the period of 2023. 
+In @fig-bra-txit-timeline, we can see that the variation of additional taxi-in time smoothened over time on the Brazilian side.
+This effect appears to be associated broadly with the beginning of the pandemic. 
+Despite the significant return of demand in 2022 and continual growth in 2023, there are no significant monthly variations in the average additional time-in across the Brazilian airports.
+Operations at the larger airports, e.g. Guarulhos (SBGR), Rio de Janeiro (SBRJ), Brasilia (SBBR) observed a more systematic increase of the monthly average additional taxi-in times. 
+These trends should be monitored for the coming period. 
 
-The observed average additional taxi-in time varies across European airports, with variations highlighted over the months. 
-In some instances, the pandemic period is well stressed in the charts, except for Barcelona and Zurich, which inverse the demand/efficiency relationship. 
+The observed average additional taxi-in time varies across European airports on a monthly basis.
+In general, seasonality is a strong driver for month-on-month changes, as weather or seasonal traffic demand pose additional strains on the servicing of ground movements.
+
+xxxxxxxxxxxxx up to here
+
+To a certain degree, the pandemic period is discernible in the charts, except for Barcelona and Zurich, which inverse the demand/efficiency relationship. 
 Less efficient taxi-in times point to changes in the taxi-in procedures during the pandemic.
 Also noteworthy is Heathrow's behaviour, which presents apparent difficulty in re-accommodating the growing demand and has increased its average time. 
 
@@ -508,7 +527,7 @@ txot_eur |>
 The additional time in terminal airspace is calculated as the difference of the actual flying time from entering the sequencing area (i.e. 100NM radius around the airport) to the actual landing time.
 Previous research and guidance suggests that reference time can be build for flights sharing similar operational characteristics (entry sector, aircraft class, and landing runway).
 
-```{r}
+```{}
 #BRA asma times
 #asma_2019_2022_hugo <- read_csv("./hugo-data-to-check/asma_2019_2022_hugo.csv")
 asma_2019_2022_hugo <- read_csv("./data//asma_2019_2022_hugo.csv", show_col_types = FALSE)
@@ -518,16 +537,16 @@ asma_2019_2022_eur <- read_csv("./data/BRA-EUR-EUR-ASMA-EUR.csv") |>
   select(AIRPORT = ICAO, DATE = DOF, ARRS = ARRS100, A100 = TOT_A100, REF = TOT_REF100) |> 
   filter(AIRPORT %in% eur_apts)
 
-ann_asma_eur <- asma_2019_2022_eur |> 
-  group_by(AIRPORT, YEAR = year(DATE)) |> 
+ann_asma_eur <- asma_2019_2022_eur |>
+  group_by(AIRPORT, YEAR = year(DATE)) |>
   summarise(across(.cols = ARRS:REF, .fns = ~ sum(.x, na.rm = TRUE))
-            ,.groups = "drop") |> 
-  filter(between(YEAR, 2019, 2022)) |> 
-  mutate(AVG_ADD_TIME = (A100 - REF) / ARRS) |> 
+            ,.groups = "drop") |>
+  filter(between(YEAR, 2019, 2022)) |>
+  mutate(AVG_ADD_TIME = (A100 - REF) / ARRS) |>
   filter(! (AIRPORT == "LEBL" & YEAR == 2022) )
 ``` 
 
-```{r}
+```{}
 #| label: fig-asma
 #| fig-cap: Additional time in terminal airspace
 #| 
@@ -569,7 +588,7 @@ This will allow to better investigate the changes observed across the years. [^B
 
 [^BRA-asma]: The assessment of the additional time in terminal airspace  for Brazil is based on a data set starting in 2021. This may also result in reasonable small reference times and increase the measured values for Brazil. With a complemented dataset and a change of the base year for future reports, these data phenomena will be addressed.
 
-```{r}
+```{}
 #| label: fig-asma-vs-traffic-volume
 #| fig-cap: Comparison of additional time in terminal airspace
 

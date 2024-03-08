@@ -115,26 +115,39 @@ These measures included freeing slots at major hubs and the reduction of domesti
 Accordingly, the European network is characterised by a change in the level of connectivity and frequency of services between the different airports. 
 
 ```{r}
-plot_timeline_per_year <- function(.df, .fake_year = 666){
+plot_timeline_per_year <- function(.df
+                                   , .highlight = c(2019, 2023) 
+                                   , .fake_year = 666){
   df <- .df |> 
-    mutate(DATE2 = DATE, YEAR = lubridate::year(DATE) |> as.character())
+    mutate( DATE2 = DATE
+           , YEAR = lubridate::year(DATE) |> as.character()
+        #   , ALPHA = ifelse(YEAR %in% .highlight, 1, 0.8)
+           , LW    = ifelse(YEAR %in% .highlight, 0.5, 0.2)
+           ) 
+  
+  # inject "fake year" for same x-axis value
   lubridate::year(df$DATE2) = .fake_year
   
-  # df <- df |> 
-  #   mutate( 
-  #          ,ALPHA = case_when(
-  #             lubridate::year(DATE) == min(lubridate::year(DATE)) ~ 0.8
-  #            ,lubridate::year(DATE) == max(lubridate::year(DATE)) ~ 1,
-  #            .default = 0.6
-  #          )
-  #   )
+  df <- df |>
+    mutate(
+           ,ALPHA = case_when(
+              YEAR == min(YEAR) ~ 1
+             ,YEAR == max(YEAR) ~ 1,
+             .default = 0.8
+           )
+    )
   
   df |> 
     ggplot(aes(x = DATE2, y = MVTS_NORM_ROLLAVG)) +
    # geom_line(aes(group = YEAR, colour = as.factor(YEAR), alpha = ALPHA)) +
-    geom_line(aes(group = YEAR, colour = YEAR), linewidth = 1) +
+    geom_line(aes(group = YEAR, colour = YEAR
+                  ,alpha = ALPHA
+          #        ,linewidth = LW
+         #         , alpha = ifelse(YEAR %in% c(2019,2023), 1, 0.8)
+         )
+              ) +
     scale_x_datetime(labels = scales::date_format("%b")) +
-   # scale_alpha(guide = "none") +
+    scale_alpha(guide = "none", range = c(0.4,1)) +
    # scale_color_brewer() +
     labs(x = NULL, y = NULL, colour = NULL) + 
     theme(legend.position = "top")
@@ -626,17 +639,35 @@ max_year <- 2023
 #+
 #  xlim(min_year-0.5, max(tmp$YEAR)+0.5)
 
-peak_day_comb |> filter(between(YEAR , min_year, max_year)) |> 
+peak_day_comb <- peak_day_comb |> 
+  filter(between(YEAR , min_year, max_year))
+
+peak_day_comb_lbls <- peak_day_comb |> 
+  # set labels
+  mutate(CHECK = case_when(
+            ICAO %in% c("SBGR","SBSP","SBBR") ~ 2020
+            ,.default = 2023
+            )
+         ) |> 
+  filter(! CHECK == YEAR)
+
+  plot_peakday_timline <- function(.df, .df_lbls = peak_day_comb_lbls){
+    pkdaytl <- .df |> 
+      
     ggplot() + 
     geom_path(aes(x = YEAR, y = PEAK_DAY_PCT, group = ICAO, color = ICAO)) + 
-    geom_text_repel(  data = peak_day_comb |> 
-                  filter(YEAR == 2023)
+    geom_text_repel(  data = .df |> filter(YEAR == 2019)
               , aes(x = YEAR, y = PEAK_DAY_PCT, label = ICAO, color = ICAO )
               , vjust = 0.5, nudge_x = -0.5) +
     facet_wrap(. ~ REGION) + 
     scale_y_continuous(limits = c(0,NA)) +
     guides(color = FALSE) +
     labs(x = NULL, y = "peak day traffic")
+    
+    return(pkdaytl)
+  }
+  
+peak_day_comb |> plot_peakday_timline()
 ```
 
 The year-to-year change of the peak day traffic between 2019 and 2022 is shown in @fig-timeline-peak-day.
