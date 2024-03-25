@@ -423,10 +423,25 @@ Exemptions are London Heathrow (EGLL) and Rome Fiumincino (LIRF) that saw a disc
 The additional time in terminal airspace is calculated as the difference of the actual flying time from entering the sequencing area (i.e. 100NM radius around the airport) to the actual landing time.
 Previous research and guidance suggests that reference time can be build for flights sharing similar operational characteristics (entry sector, aircraft class, and landing runway).
 
-```{}
+```{r}
+asma_month_to_annual <- function(.asma_monthly){
+  
+}
+
 #BRA asma times
 #asma_2019_2022_hugo <- read_csv("./hugo-data-to-check/asma_2019_2022_hugo.csv")
 asma_2019_2022_hugo <- read_csv("./data//asma_2019_2022_hugo.csv", show_col_types = FALSE)
+asma_2023_bra <- read_csv("./data/BRA-ASMA-2023-monthly.csv") |> 
+    select(AIRPORT = ADES, DATE, N_VALID, ADD_ASMA = SUM_ADD_TIME) |> 
+    group_by(AIRPORT, YEAR = year(DATE)) |> 
+    summarise( N_VALID  = sum(N_VALID, na.rm = TRUE)
+              ,ADD_ASMA = sum(ADD_ASMA, na.rm = TRUE)
+              , .groups = "drop") |> 
+    mutate(AVG_ADD_ASMA = ADD_ASMA / N_VALID
+           ,REGION = "BRA") |> 
+    select(AIRPORT,YEAR, AVG_ADD_ASMA, N_VALID, REGION)
+
+asma_bra <- asma_2019_2022_hugo |> bind_rows(asma_2023_bra)
 
 # EUR ASMA times =============================
 asma_2019_2022_eur <- read_csv("./data/BRA-EUR-EUR-ASMA-EUR.csv") |> 
@@ -437,16 +452,20 @@ ann_asma_eur <- asma_2019_2022_eur |>
   group_by(AIRPORT, YEAR = year(DATE)) |>
   summarise(across(.cols = ARRS:REF, .fns = ~ sum(.x, na.rm = TRUE))
             ,.groups = "drop") |>
-  filter(between(YEAR, 2019, 2022)) |>
+  filter(between(YEAR, 2019, 2023)) |>
   mutate(AVG_ADD_TIME = (A100 - REF) / ARRS) |>
   filter(! (AIRPORT == "LEBL" & YEAR == 2022) )
 ``` 
 
-```{}
+```{r}
 #| label: fig-asma
 #| fig-cap: Additional time in terminal airspace
-#| 
-bra_asma <- ggplot(data = asma_2019_2022_hugo, mapping = aes(y = AIRPORT, x = AVG_ADD_ASMA, fill = as.factor(YEAR))) +
+
+bra_asma <- ggplot(data = asma_bra
+                   , mapping = aes(
+                        y = AIRPORT, x = AVG_ADD_ASMA
+                      , fill = as.factor(YEAR))
+                   ) +
 geom_col(position = position_dodge(-.9), width = 0.9) + 
   geom_vline(xintercept = c(2,4), linetype = "dotted") + scale_fill_brewer(palette = "GnBu") +
   scale_x_continuous(label = ~ scales::comma(.x, accuracy = 1), limits = c(0,7))  
@@ -484,17 +503,19 @@ This will allow to better investigate the changes observed across the years. [^B
 
 [^BRA-asma]: The assessment of the additional time in terminal airspace  for Brazil is based on a data set starting in 2021. This may also result in reasonable small reference times and increase the measured values for Brazil. With a complemented dataset and a change of the base year for future reports, these data phenomena will be addressed.
 
-```{}
+```{r}
 #| label: fig-asma-vs-traffic-volume
 #| fig-cap: Comparison of additional time in terminal airspace
 
+ann_asma_bra <- asma_bra
 
-comp_asma_bra <- asma_2019_2022_hugo |> 
-  filter(YEAR %in% c(2019, 2022)) |> 
+comp_asma_bra <- ann_asma_bra |> 
+  filter(YEAR %in% c(2019, 2023)) |> 
   select(AIRPORT, REG = REGION, YEAR, N_VALID, AVG_ADD_TIME = AVG_ADD_ASMA)
 
 comp_asma_eur <- ann_asma_eur |> mutate(REG = "EUR") |> 
-  filter(YEAR %in% c(2019, 2022)) |> 
+  mutate(YEAR = ifelse(YEAR == 2022, 2023, YEAR)) |> 
+  filter(YEAR %in% c(2019, 2023)) |> 
   select(AIRPORT, REG, YEAR, N_VALID = ARRS, AVG_ADD_TIME)
 
 comp_asma <- bind_rows(comp_asma_bra, comp_asma_eur)

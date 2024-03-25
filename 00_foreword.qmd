@@ -8,7 +8,7 @@ $$\\[1in]$$
 
 :::{layout-nrow=3}
 
-![](figures/foreword-andre.png)
+![](figures/foreword-alcides.png)
 
 $$\\[0.5in]$$
 

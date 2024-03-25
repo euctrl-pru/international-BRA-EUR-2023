@@ -53,18 +53,21 @@ This leads to a more centralised and rigid process, in which abrupt reactions in
 In Europe, there exists a mix of organisational models and labour contracts ranging from public service to fully commercial organisation.
 En gros, European providers were able to react to the lower demand levels by delaying/stopping recruitment/training and offering early retirement packages.
 
+<!-- Note: this table is imported from powerpoint - check for figures-handmade.pptx in ./figures -->
+
 ```{r}
 #| label: tbl-HLC2022
-#| tbl-cap: High Level Comparison 2022
+#| tbl-cap: High Level Comparison 2023
+#| out-width: 95%
 
-knitr::include_graphics("./figures/First-table-2022.png")
+knitr::include_graphics("./figures/HLC-table.png")
 ```
 
 Another key difference affecting performance in both regions for this report is the development of air traffic demand.
 Unlike in Europe, it is interesting to note that Brazil ended 2022 already servicing air traffic movements above the pre-pandemic (i.e. 2019) level.
 However, as will be shown later, much of this growth was due to the strong increase in general aviation and only to a lower extent in commercial aviation.\
 Overall, the volume of air traffic also rebounded in Europe.
-At the end of 2023, the level reached about XXXX of the pre-pandemc air traffic (vs about 85% in 2022).
+At the end of 2023, the level reached about 90% of the pre-pandemc air traffic (vs about 85% in 2022).
 
 Both regions operate with similar operational concepts, procedures and supporting technology.
 Yet, Brazil, with lower traffic density related to airspace use, finds probably a more challenging cost-benefit ratio to maintain communication coverage and surveillance for regions with low-traffic.
