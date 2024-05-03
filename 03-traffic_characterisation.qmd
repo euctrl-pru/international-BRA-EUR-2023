@@ -760,15 +760,17 @@ fm_apts_eur <- tfc_apts_eur |> fleet_mix_from_counts("EUR")
 #| fig-cap: Fleet mix observed at the study airports in 2023
 
 key_year <- 2022
-fm_apts <- bind_rows(fm_apts_bra, fm_apts_eur)
+fm_apts <- bind_rows(fm_apts_bra, fm_apts_eur) |> 
+  left_join(bind_rows(bra_apts_names, eur_apts_names))
 
 ggplot( data    = fm_apts %>% filter(YEAR == key_year)
-      , mapping = aes(x = ICAO, y = SHARE, fill = WTC)) +
+      , mapping = aes(y = paste(ICAO, NAME), x = SHARE, fill = WTC)) +
   geom_col(position = "stack", width = 0.9)  +
   scale_fill_manual(values = c("#56B4E9", "#009E73","#F0E442")) +
-  coord_flip() +
+  scale_y_discrete(labels = scales::label_wrap(10)) +
+  scale_x_continuous(labels = scales::percent) +
+ # geom_text(aes(x = 0.05, label = NAME), size = 3, hjust = 0) +
   facet_wrap(.~REGION, scales = "free_y") + 
-  scale_y_continuous(labels = scales::percent) +
 #  my_own_theme_minimal +
   theme( legend.position = "top"
         ,legend.title    = element_text(size = 8) 
@@ -811,14 +813,24 @@ plot_fleetmix_timeline <- function(.fleetmix){
   geom_point() +
   scale_color_manual(values = c("#56B4E9", "#009E73","#F0E442")) +
   scale_y_continuous(labels = scales::percent, limits = c(0,1)) +
-  facet_wrap(.~ICAO, ncol = 2) + 
+  facet_wrap(.~paste(ICAO, NAME), ncol = 2) + 
   labs(x = NULL, y = "share [% movements]", color = NULL)
   return(viz)
 }
 
-p_bra <- fm_apts_bra |> plot_fleetmix_timeline()
+p_bra <- fm_apts_bra |> 
+  left_join(bra_apts_names, by = join_by(ICAO)) |> 
+  plot_fleetmix_timeline()
+
+# fix for Europe LEBL and EGKK
+fix <- fm_apts_eur |> filter(ICAO %in% c("EGKK","LEBL"), YEAR == 2022) |> 
+  mutate(YEAR = 2023)
+fm_apts_eur <- fm_apts_eur |> bind_rows(fix) |> arrange(ICAO, YEAR)
+#---------------------------
 p_eur <- fm_apts_eur |> 
-  filter(between(YEAR, min_year, max_year)) |> plot_fleetmix_timeline() +
+  filter(between(YEAR, min_year, max_year)) |> 
+  left_join(eur_apts_names, by = join_by(ICAO)) |> 
+  plot_fleetmix_timeline() +
   labs(y = NULL)
 
 p_bra + p_eur + 
