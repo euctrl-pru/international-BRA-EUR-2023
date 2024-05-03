@@ -286,7 +286,8 @@ p1 <- plot_cap_panel(
           filter( YEAR >= lb & YEAR <= ub
                  , APT_ICAO %in% bra_apts)
         ) +
-  theme(axis.text.x=element_text(size=lab_size, angle = 90, vjust = 0.5))
+  theme(axis.text.x=element_text(size=lab_size, angle = 90, vjust = 0.5)) +
+  labs(title = "Gotcha!")
 
 p2 <- plot_cap_panel(eur_cap2 %>% filter(YEAR >= lb & YEAR <= ub)) +
   theme(axis.text.x=element_text(size=lab_size, angle = 90, vjust = 0.5))
