@@ -101,7 +101,10 @@ plot2 <- function(.tmp){
 #| label: fig-txit-annual
 #| fig-cap: Additional taxi-in time (2019-2023)
 
-txits <- bind_rows( txit_bra, txit_eur2)
+txits <- bind_rows( txit_bra, txit_eur2) |> 
+  # append names for labels
+  inner_join(bind_rows(bra_apts_names, eur_apts_names), by = join_by(APT == ICAO)) |> 
+  mutate(APT = paste0(APT, "\n", NAME))
 
 txits |> aggregate_by_year() |> 
   filter(between(YEAR, 2019, 2023)) |> 
@@ -178,6 +181,10 @@ txit_bra |>
   aggregate_by_month() |> 
   rename(DATE = MOF) |> 
   filter(DATE <= max_date) |> 
+  # append names for labels
+  inner_join(bra_apts_names, by = join_by(APT == ICAO)) |> 
+  mutate(APT = paste(APT, NAME)) |> 
+  # plot
   plot_monthly_txit() + 
   # make it nice in printout
   theme(panel.spacing = unit(0.5, "cm")) + 
@@ -190,7 +197,11 @@ txit_bra |>
 #| fig-cap: Evolution of average additional taxi-in time at European airports
 #| out-height: 12cm
 txit_eur2 |> aggregate_by_month() |>  
-  rename(DATE = MOF) |>
+  rename(DATE = MOF)|> 
+  # append names for labels
+  inner_join(eur_apts_names, by = join_by(APT == ICAO)) |> 
+  mutate(APT = paste(APT, NAME)) |> 
+  # plot
   plot_monthly_txit() +
   # make it nice in printout
   theme(panel.spacing = unit(0.5, "cm")) + 
@@ -241,7 +252,11 @@ return(p)
 ```{r}
 #| label: fig-txot-annual
 #| fig-cap: Average additional taxi-out time (2019-2023)
-txots <- bind_rows( txot, txot_eur)
+
+txots <- bind_rows( txot, txot_eur) |> 
+  # append names for labels
+  inner_join(bind_rows(bra_apts_names, eur_apts_names), by = join_by(APT == ICAO)) |> 
+  mutate(APT = paste0(APT, "\n", NAME))
 
 txots |> aggregate_by_year() |> 
   filter(between(YEAR, 2019, 2023)) |> 
@@ -267,6 +282,10 @@ In many instances the higher taxi-out times in 2022 and 2023 evidence the genera
 txot |> 
   aggregate_by_month() |> 
   rename(DATE = MOF) |> 
+  # append names for labels
+  inner_join(bra_apts_names, by = join_by(APT == ICAO)) |> 
+  mutate(APT = paste(APT, NAME)) |> 
+  # plot
   plot_monthly_txot()
 ```
 
@@ -289,7 +308,11 @@ Strong weather influences drove the taxi-out performance at Amsterdam Schiphol (
 
 txot_eur |>
   aggregate_by_month() |> 
-  rename(DATE = MOF) |> 
+  rename(DATE = MOF) |>
+  # append names for labels
+  inner_join(eur_apts_names, by = join_by(APT == ICAO)) |> 
+  mutate(APT = paste(APT, NAME)) |> 
+  # plot
   plot_monthly_txot()
 ```
 
@@ -461,18 +484,28 @@ ann_asma_eur <- asma_2019_2022_eur |>
 #| label: fig-asma
 #| fig-cap: Additional time in terminal airspace
 
-bra_asma <- ggplot(data = asma_bra
-                   , mapping = aes(
-                        y = AIRPORT, x = AVG_ADD_ASMA
-                      , fill = as.factor(YEAR))
-                   ) +
+bra_asma <- ggplot(
+    data = asma_bra |> 
+      # append names for labels
+        inner_join(bra_apts_names, by = join_by(AIRPORT == ICAO)) |> 
+        mutate(AIRPORT = paste0(AIRPORT, "\n", NAME))
+      #--------------- end label tweak
+  , mapping = aes(
+          y = AIRPORT, x = AVG_ADD_ASMA
+          , fill = as.factor(YEAR))
+   ) +
 geom_col(position = position_dodge(-.9), width = 0.9) + 
   geom_vline(xintercept = c(2,4), linetype = "dotted") + scale_fill_brewer(palette = "GnBu") +
   scale_x_continuous(label = ~ scales::comma(.x, accuracy = 1), limits = c(0,7))  
 
 eur_asma <- ggplot(
-    data = ann_asma_eur
-  , mapping = aes(y = AIRPORT, x = AVG_ADD_TIME, fill = as.factor(YEAR))) +
+    data = ann_asma_eur |>
+  # append names for labels
+         inner_join(eur_apts_names, by = join_by(AIRPORT == ICAO)) |> 
+          mutate(AIRPORT = paste0(AIRPORT, "\n", NAME))
+  #--------------- end label tweak
+    , mapping = aes(y = AIRPORT, x = AVG_ADD_TIME, fill = as.factor(YEAR))
+  ) +
   geom_col(position = position_dodge(-.9), width = 0.9) + 
   geom_vline(xintercept = c(2,4), linetype = "dotted") + 
   scale_fill_brewer(palette = "GnBu") +
