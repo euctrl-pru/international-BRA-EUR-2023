@@ -57,7 +57,9 @@ punc_eur <- punc_eur |>
 # punctuality plot
 punc_plot <- function(.puncdf, .debug = FALSE){
   punc_plot <- .puncdf %>% 
-  ggplot(aes(x = SHARE, y = AIRPORT)) +
+  ggplot(aes(x = SHARE
+            , y = AIRPORT )
+         ) +
   geom_col(aes(fill = SLOT))
   
   if(.debug){
@@ -129,9 +131,13 @@ On average, arrival delays of 15 minutes or more compared to the schedule ranged
 #| 
 debug_arrs <- FALSE
 
-punc <- bind_rows(punc_bra, punc_eur)
+punc <- bind_rows(punc_bra, punc_eur) 
 
 p_2019 <- punc |> prepare_punc_plot_data("ARR",2019) |> 
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |> 
   punc_plot(.debug = debug_arrs) +
   labs(caption = "arrival punctuality 2019") +
   theme(legend.position = "none")
@@ -139,7 +145,11 @@ p_2019 <- punc |> prepare_punc_plot_data("ARR",2019) |>
 # use update punc data for Brazil
 punc <- bind_rows(punc_bra2, punc_eur)
 
-p_2023 <- punc |> prepare_punc_plot_data("ARR",2023) |> 
+p_2023 <- punc |> prepare_punc_plot_data("ARR",2023) |>
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |> 
   punc_plot(.debug = debug_arrs) +
   labs(caption = "arrival punctuality 2023") +
   theme(legend.position = "none")
@@ -260,32 +270,56 @@ plot_early_vs_late <- function(.early_vs_late, .phase, .year
 }
 
 p1_bra_earlylate <- punc_bra |>
-  prepare_punc_plot_data("ARR", 2019) |> 
+  prepare_punc_plot_data("ARR", 2019) |>
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |>  
   filter(SLOT %in% c("EARLY", "LATE")) |> 
   plot_early_vs_late("ARR", 2019)
   
 p2_bra_earlylate <- punc_bra |> 
-  prepare_punc_plot_data("ARR", 2022) |> 
+  prepare_punc_plot_data("ARR", 2022) |>
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |>  
   filter(SLOT %in% c("EARLY", "LATE")) |> 
   plot_early_vs_late("ARR", 2022)
 
 p3_bra_earlylate <- punc_bra2 |> 
-  prepare_punc_plot_data("ARR", 2023) |> 
+  prepare_punc_plot_data("ARR", 2023) |>
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |> 
   filter(SLOT %in% c("EARLY", "LATE")) |> 
   plot_early_vs_late("ARR", 2023)
 
 p1_eur_earlylate <- punc_eur |> 
-  prepare_punc_plot_data("ARR", 2019) |> 
+  prepare_punc_plot_data("ARR", 2019) |>
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |> 
   filter(SLOT %in% c("EARLY", "LATE")) |> 
   plot_early_vs_late("ARR", 2019)
 
 p2_eur_earlylate <- punc_eur |> 
-  prepare_punc_plot_data("ARR", 2022) |> 
+  prepare_punc_plot_data("ARR", 2022) |>
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |> 
   filter(SLOT %in% c("EARLY", "LATE")) |> 
   plot_early_vs_late("ARR", 2022)
 
 p3_eur_earlylate <- punc_eur |> 
-  prepare_punc_plot_data("ARR", 2023) |> 
+  prepare_punc_plot_data("ARR", 2023) |>
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |> 
   filter(SLOT %in% c("EARLY", "LATE")) |> 
   plot_early_vs_late("ARR", 2023)
 
@@ -351,15 +385,27 @@ debug_deps <- FALSE
 punc <- bind_rows(punc_eur, punc_dep_bra)
 
 p_2019 <- punc |> prepare_punc_plot_data("DEP",2019) |> 
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |> 
   punc_plot(.debug = debug_deps) +
   labs(caption = "departure punctuality 2019")
 
 p_2022 <- punc |> prepare_punc_plot_data("DEP",2022) |> 
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |> 
   punc_plot(.debug = debug_deps) +
   labs(caption = "departure punctuality 2022") +
   theme(legend.position = "none")
 
 p_2023 <- punc |> prepare_punc_plot_data("DEP",2023) |> 
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |> 
   punc_plot(.debug = debug_deps) +
   labs(caption = "departure punctuality 2023") +
   theme(legend.position = "none")
@@ -474,8 +520,13 @@ It is planned to investigate the underlying turnaround drivers in future edition
 
 ```{r}
 better_limits <- c(-.03, .48)
+
 p1_bra_earlylate <- punc_bra |>
-  prepare_punc_plot_data("DEP", 2019) |> 
+  prepare_punc_plot_data("DEP", 2019) |>
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |> 
   filter(SLOT %in% c("EARLY", "LATE")) |> 
   plot_early_vs_late("DEP", 2019, better_limits)
   
@@ -485,12 +536,20 @@ p2_bra_earlylate <- punc_bra |>
   plot_early_vs_late("DEP", 2022, better_limits)
 
 p3_bra_earlylate <- punc_bra |> 
-  prepare_punc_plot_data("DEP", 2023) |> 
+  prepare_punc_plot_data("DEP", 2023) |>
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |> 
   filter(SLOT %in% c("EARLY", "LATE")) |> 
   plot_early_vs_late("DEP", 2023, better_limits)
 
 p1_eur_earlylate <- punc_eur |> 
-  prepare_punc_plot_data("DEP", 2019) |> 
+  prepare_punc_plot_data("DEP", 2019) |>
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |> 
   filter(SLOT %in% c("EARLY", "LATE")) |> 
   plot_early_vs_late("DEP", 2019, better_limits)
 
@@ -501,7 +560,11 @@ p2_eur_earlylate <- punc_eur |>
 
 p3_eur_earlylate <- punc_eur |> 
   prepare_punc_plot_data("DEP", 2023) |> 
-  filter(SLOT %in% c("EARLY", "LATE")) |> 
+  filter(SLOT %in% c("EARLY", "LATE")) |>
+  left_join(bind_rows(bra_apts_names, eur_apts_names)
+            , by = join_by(AIRPORT == ICAO)
+            ) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME)) |>  
   plot_early_vs_late("DEP", 2023, better_limits)
 
 p2019 <- p1_bra_earlylate + p1_eur_earlylate
