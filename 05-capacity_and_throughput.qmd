@@ -273,6 +273,7 @@ In 2018 CGNA had developed a refined method for the determination of the runway 
 ```{r}
 #| label: fig-capsovertime
 #| fig.cap: Evolution of Declared Capacities at study airports.
+#| fig-height: 7
 
 # filter cap plot to 2016-2019 and play with xaxis label size
 # cannot add theme(axis.text.x=..) to patchwork as only the "last" plot is "active"
@@ -282,14 +283,21 @@ ub <- 2023
 lab_size = 7
 
 p1 <- plot_cap_panel(
-        tmp %>%
+        tmp |> 
           filter( YEAR >= lb & YEAR <= ub
-                 , APT_ICAO %in% bra_apts)
+                 , APT_ICAO %in% bra_apts) |> 
+          # append names
+          inner_join(bra_apts_names, by = join_by(APT_ICAO == ICAO)) |> 
+          mutate(APT_ICAO = paste(APT_ICAO, NAME))
         ) +
-  theme(axis.text.x=element_text(size=lab_size, angle = 90, vjust = 0.5)) +
-  labs(title = "Gotcha!")
+  theme(axis.text.x=element_text(size=lab_size, angle = 90, vjust = 0.5))
 
-p2 <- plot_cap_panel(eur_cap2 %>% filter(YEAR >= lb & YEAR <= ub)) +
+p2 <- plot_cap_panel(
+        eur_cap2 %>% filter(YEAR >= lb & YEAR <= ub) |> 
+          # append names
+          inner_join(eur_apts_names, by = join_by(APT_ICAO == ICAO)) |> 
+          mutate(APT_ICAO = paste(APT_ICAO, NAME))
+        ) +
   theme(axis.text.x=element_text(size=lab_size, angle = 90, vjust = 0.5))
 
 p1 | p2
@@ -313,7 +321,7 @@ A potential area for further research could be a closer investigation of the ope
 
 ```{r}
 #| label: fig-peak-declared-cpacity
-#| fig-cap: Peak declared capacity
+#| fig-cap: !expr glue::glue("Peak declared capacity {this_year}")
 
 my_own_theme_minimal <- 
   theme_minimal() + 
@@ -337,16 +345,25 @@ cap <- bind_rows(
 cap_rwys <- bind_rows(bra_rwys, eur_rwys)  |> 
   mutate(YEAR = this_year)
 
-ggplot() + 
-     geom_col(
-        data = cap %>% inner_join(cap_rwys, by = c("APT_ICAO", "YEAR"))
-       ,mapping = aes(x = MAX_CAP, y = reorder(APT_ICAO, MAX_CAP)
-                      , fill = REGION)
-       ) +
+cap <- cap  |> 
+  inner_join(cap_rwys, by = c("APT_ICAO", "YEAR")) |>
+  inner_join(bind_rows(bra_apts_names, eur_apts_names)
+                       , by = join_by(APT_ICAO == ICAO)
+             )
+
+cap |> 
+  ggplot(aes(x = MAX_CAP, y = reorder(NAME, MAX_CAP)) ) + 
+     geom_col( aes(fill = REGION) ) +
      scale_fill_manual(values = bra_eur_colours) + 
+     geom_text(aes(x = 0, label = APT_ICAO)
+                   ,hjust = 0, color = "white", size = 3
+               ) +
      facet_grid(RWY ~., as.table = FALSE, switch = "y", scales = "free", space = "free") +
      my_own_theme_bw +
-     labs(x = paste0("Declared maximum capacity per hour (", this_year,")"), y = NULL, fill = "Region") +
+     labs(
+       # pushed into figure caption 
+       #x = paste0("Declared maximum capacity per hour (", this_year,")"), 
+       y = NULL, fill = "Region") +
      theme(legend.position = c(0.9, 0.1), axis.ticks = element_blank())
 ```
 
@@ -527,7 +544,12 @@ cap_arr  <- bind_rows(
 tmp <- cap_arr %>% 
   inner_join(thru_arr_peak, by = c("AIRPORT", "YEAR", "REGION")) %>% 
   mutate(DIFF = case_when(PEAK_ARR_THRU < ARR_CAP ~ "Capacity > Throughput"
-                          ,TRUE ~ "Throughput >= Capacity"))
+                          ,TRUE ~ "Throughput >= Capacity")) |> 
+  # append labels
+  inner_join(bind_rows(bra_apts_names, eur_apts_names), by = join_by(AIRPORT == ICAO)) |> 
+  mutate(AIRPORT = paste(AIRPORT, NAME))
+
+
 #### https://www.w3schools.com/colors
 # complementary colours
 comp_colours <- c("#98CA32", "#B8143A")   # red, green
@@ -535,6 +557,8 @@ comp_colours <- c("#AE0D7A", "#A2B814")   # purple, green
 # compound colous
 comp_colours <- c("#B2D732","#347B98")    # ligher and dark green
 comp_colours <- c("#347B98","#B2D732")    # ligher and dark green
+# ----------------------------- end color coding
+
 tmp %>%
 ggplot() + 
   geom_segment(
