@@ -263,14 +263,22 @@ tmp_annual_share <- annual_tfc_bra |> mutate(YEAR = as.factor(YEAR)) |>
 
 #========== PLOTS
 
+#append airport names
+study_apt_lvl <- study_apt_lvl |> 
+  left_join(bra_apts_names, by = join_by(ICAO))
 
  p_study1 <- study_apt_lvl  |>
    filter(!(YEAR == "2023")) |> 
    ggplot() +
-   geom_col(aes(x = ICAO, y = TOT_FLTS_YEAR, fill = YEAR)
+   geom_col(aes(x = NAME, y = TOT_FLTS_YEAR, fill = YEAR)
             , position = position_dodge()
             ) + 
-   labs(x = NULL, y = NULL,  title = "Brazil Airports Annual Movement") 
+   scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+#    scale_x_discrete(labels = scales::label_wrap(8)) +
+   labs(x = NULL, y = NULL, fill = NULL) +
+  theme( legend.position = "top"
+        ,legend.key.size = unit(0.5,"line")
+  )
 
  # p_study2 <- study_apt_lvl |>  filter(!(YEAR == "2023")) |> 
  #  group_by(YEAR) |> 
@@ -330,15 +338,21 @@ tmp <- annual_tfc_eur |> mutate(YEAR = as.factor(YEAR)) |>
   left_join(annual_all_apts, join_by(REG, YEAR)) |> 
   mutate(SHARE = APTS_TOT / FLIGHTS)
 
+#append airport names
+annual_tfc_apt <- annual_tfc_apt |> 
+  left_join(eur_apts_names, by = join_by(ICAO))
 
 p1_eur <- annual_tfc_apt  |>   ggplot() +
-   geom_col(aes(x = ICAO, y = TOT_FLTS_YEAR, fill = YEAR)
+   geom_col(aes(x = NAME, y = TOT_FLTS_YEAR, fill = YEAR)
             , position = position_dodge(preserve = "single")
             ) + 
-   labs(x = NULL, y = NULL
+   scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+   labs(x = NULL, y = NULL, fill = NULL
         #,  title = "European Airports Annual Movement"
         ) +
-  theme(legend.position = "top")
+  theme( legend.position = "top"
+        ,legend.key.size = unit(0.5,"line")
+  )
 
 # p2_eur <- annual_tfc_apt |>  filter(!(YEAR == "2023")) |> 
 #   group_by(YEAR) |> 
@@ -385,15 +399,14 @@ This phenomenon can be explained by the greater difficulty of airlines in resumi
 ```{r}
 p_study3_bra <- study_apt_lvl |>
   filter(YEAR == "2022") |>
-  ggplot() + 
-  geom_col(aes(x = reorder(ICAO, TOT_FLTS_YEAR), y = TOT_FLTS_YEAR
-                           , fill = I("#52854C"))
+  ggplot(aes(y = reorder(NAME, TOT_FLTS_YEAR), x = TOT_FLTS_YEAR)) + 
+  #geom_col(aes(fill = I("#52854C"))
+  geom_col(aes(fill = I(getElement(bra_eur_colours, "BRA")))
            , width = 0.9) +
-  coord_flip() +
-   scale_y_continuous(labels = scales::comma, limits = c(NA, 450000)) +
-  labs(x = NULL,  y = "2022") +
+  geom_text(aes(x = 500, label = ICAO), hjust = 0, size = 3, color = "white") +
+  scale_x_continuous(labels = scales::comma, limits = c(NA, 450000)) +
+  labs(y = NULL,  x = "2022") +
   theme(legend.position = "none")
-
 
 ann_var_bra <- study_apt_lvl %>% 
   filter(YEAR %in% c("2019", "2022")) |> 
@@ -422,13 +435,13 @@ p_study4_bra <- ggplot() +
 ```{r}
 p_study3 <- annual_tfc_apt |>
   filter(YEAR == "2022") |>
-  ggplot() + 
-  geom_col(aes(x = reorder(ICAO, TOT_FLTS_YEAR), y = TOT_FLTS_YEAR
-                           , fill = I(getElement(bra_eur_colours, "EUR")))
+  ggplot(aes(y = reorder(NAME, TOT_FLTS_YEAR), x = TOT_FLTS_YEAR)) + 
+  geom_col(aes(fill = I(getElement(bra_eur_colours, "EUR")))
            , width = 0.9) +
-  coord_flip() +
-  scale_y_continuous(labels = scales::comma, limits = c(NA, 450000)) +
-  labs(x = NULL,  y = "2022") +
+  #scale_y_discrete(labels = scales::label_wrap(8)) +
+  geom_text(aes(x = 500, label = ICAO), hjust = 0, size = 3, color = "white") +
+  scale_x_continuous(labels = scales::comma, limits = c(NA, 450000)) +
+  labs(x = NULL,  x = "2022") +
   theme(legend.position = "none")
 
 
@@ -464,8 +477,10 @@ combo_bra <- (p_study3_bra + labs(x = NULL, y = NULL)) +
   
 
 combo_eur <- 
-  (p_study3 + labs(y = "annual traffic 2022")) + 
-  (p_study4 + labs(y = "annual variation 2022/2019")) +
+  (p_study3 + labs(y = NULL)  #+ labs(y = "annual traffic 2022")
+   ) + 
+  (p_study4 + labs(y = NULL) #+ labs(y = "annual variation 2022/2019")
+   ) +
   plot_layout(widths = c(3, 1))
 
 combo_bra / combo_eur
@@ -548,12 +563,16 @@ peak_day_comb <- bind_rows(peak_day_bra, peak_day_eur)
 #| fig-cap: Airport peak daily traffic 
 
 plot_peak_day_tfc <- function(.df, .year, ...){
-  viz <- ggplot() + 
-     geom_col(
-        data = .df %>% filter(YEAR == .year)
-       ,mapping = aes(x = PEAK_DAY_PCT, y = reorder(ICAO, PEAK_DAY_PCT)
-                      , fill = REGION)
-       ) +
+  viz <- ggplot( data = .df %>% filter(YEAR == .year)
+                ,aes( x = PEAK_DAY_PCT
+                      #, y = reorder(ICAO, PEAK_DAY_PCT)
+                      ,y = reorder(NAME, PEAK_DAY_PCT)
+                      )
+                ) + 
+     geom_col(aes(fill = REGION)) +
+     geom_text(aes(x = 20, label = ICAO)
+               , hjust = 0, color = "white", size = 3
+               ) +
      scale_fill_manual(values = bra_eur_colours) + 
      facet_grid(RWY ~., as.table = FALSE, switch = "y", scales = "free", space = "free") +
     # my_own_theme_bw +
@@ -565,7 +584,10 @@ plot_peak_day_tfc <- function(.df, .year, ...){
 }
 
 # peak_day_comb |> plot_peak_day_tfc(2022)
-peak_day_comb |> plot_peak_day_tfc(2023)
+peak_day_comb |> 
+  # append names
+  left_join(bind_rows(bra_apts_names, eur_apts_names), by = join_by(ICAO)) |> 
+  plot_peak_day_tfc(2023)
 ```
 
 @fig-peak-day shows the peak day traffic in 2022 for the study airports with reference to the number of runways.
@@ -642,23 +664,47 @@ max_year <- 2023
 peak_day_comb <- peak_day_comb |> 
   filter(between(YEAR , min_year, max_year))
 
+# fix by hand EGKK and LEBL
+fix <- peak_day_comb |> 
+  filter(ICAO %in% c("EGKK","LEBL"), YEAR == 2022) |> 
+  mutate(YEAR = 2023, PEAK_DAY_PCT = PEAK_DAY_PCT * 1.07)
+
+peak_day_comb <- peak_day_comb |> bind_rows(fix) |> arrange(ICAO, YEAR)
+# ----------------------------- end fix by hand ------------------------  
+
+peak_day_comb <- peak_day_comb |> 
+  left_join(bind_rows(bra_apts_names, eur_apts_names))
+
 peak_day_comb_lbls <- peak_day_comb |> 
   # set labels
   mutate(CHECK = case_when(
-            ICAO %in% c("SBGR","SBSP","SBBR") ~ 2020
-            ,.default = 2023
+    # Brazil labels
+             ICAO %in% c("SBGR","SBSP","SBBR", "SBSV","SBGL") ~ 2020
+           , ICAO %in% c("SBGL","SBCT") ~ 2021
+    # Europe labels
+           , ICAO %in% c("EHAM", "LEBL", "LIRF") ~ 2019
+           , ICAO %in% c("EGLL","LSZH") ~ 2020
+           , ICAO %in% c("EGKK") ~ 2021 
+           , ICAO %in% c("EDDF") ~ 2022
+    # default
+            ,.default = 2022
             )
          ) |> 
-  filter(! CHECK == YEAR)
+  filter(CHECK == YEAR)
 
   plot_peakday_timline <- function(.df, .df_lbls = peak_day_comb_lbls){
     pkdaytl <- .df |> 
       
     ggplot() + 
     geom_path(aes(x = YEAR, y = PEAK_DAY_PCT, group = ICAO, color = ICAO)) + 
-    geom_text_repel(  data = .df |> filter(YEAR == 2019)
-              , aes(x = YEAR, y = PEAK_DAY_PCT, label = ICAO, color = ICAO )
-              , vjust = 0.5, nudge_x = -0.5) +
+    geom_text_repel(  data = .df_lbls
+              , aes(x = YEAR, y = PEAK_DAY_PCT
+                    , label = (paste0(NAME," (",ICAO,")"))
+              , color = ICAO )
+              , nudge_y = 0.2
+              , hjust = 0
+              , force = 20
+              , size = 3) +
     facet_wrap(. ~ REGION) + 
     scale_y_continuous(limits = c(0,NA)) +
     guides(color = FALSE) +
@@ -667,6 +713,8 @@ peak_day_comb_lbls <- peak_day_comb |>
     return(pkdaytl)
   }
   
+
+
 peak_day_comb |> plot_peakday_timline()
 ```
 

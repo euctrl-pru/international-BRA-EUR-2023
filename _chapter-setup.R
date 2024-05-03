@@ -44,6 +44,34 @@ bra_eur_colours <- c(BRA = "#52854C",EUR = "#4E84C4")
 bra_apts <- c("SBGR","SBGL","SBRJ","SBCF","SBBR","SBSV","SBKP","SBSP","SBCT","SBPA")
 eur_apts <- c("EGLL","EGKK","EHAM","EDDF","EDDM","LSZH","LIRF","LFPG","LEMD","LEBL")
 
+bra_apts_names <- tibble::tribble(
+  ~ICAO  , ~NAME
+  ,"SBGR", "Guarulhos"
+  ,"SBGL", "Galeão"
+  ,"SBRJ", "Rio Dumont"
+  ,"SBCF", "Belo Horizonte"
+  ,"SBBR", "Brasília"
+  ,"SBSV", "Salvador"
+  ,"SBKP", "Campinas"
+  ,"SBSP", "Congonhas"
+  ,"SBCT", "Curitiba"
+  ,"SBPA", "Porto Alegre"
+)
+
+eur_apts_names <- tibble::tribble(
+  ~ICAO  , ~NAME
+  ,"EGLL", "Heathrow"
+  ,"EGKK", "Gatwick"
+  ,"EHAM", "Amsterdam"
+  ,"EDDF", "Frankfurt"
+  ,"EDDM", "Munich"
+  ,"LSZH", "Zurich"
+  ,"LIRF", "Rome"
+  ,"LFPG", "Paris"
+  ,"LEMD", "Madrid"
+  ,"LEBL", "Barcelona"
+)
+
 # theme setting - tbd or replaced
 my_own_theme_minimal <- theme_minimal() + theme(axis.title = element_text(size = 9))
 my_own_theme_bw <- theme_bw() + theme(axis.title = element_text(size = 9))
