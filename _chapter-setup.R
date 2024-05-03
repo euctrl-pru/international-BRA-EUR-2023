@@ -48,7 +48,7 @@ bra_apts_names <- tibble::tribble(
   ~ICAO  , ~NAME
   ,"SBGR", "Guarulhos"
   ,"SBGL", "Galeão"
-  ,"SBRJ", "Rio Dumont"
+  ,"SBRJ", "Santos Dumont"
   ,"SBCF", "Belo Horizonte"
   ,"SBBR", "Brasília"
   ,"SBSV", "Salvador"
