@@ -10,7 +10,7 @@ warning: false
 book:
   title: "Operational Comparison of ANS Performance in Brazil and Europe"
   author: "DECEA Performance Section, EUROCONTROL Performance Review Unit"
-  date: 14. March 2024
+  date: 14. April 2024
   date-format: "MMMM YYYY"
   chapters:
   - index.qmd
