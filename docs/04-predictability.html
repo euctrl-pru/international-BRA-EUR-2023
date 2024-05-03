@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.549">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,16 +17,14 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
-/* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
-.hanging-indent div.csl-entry {
+.hanging div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -40,7 +38,8 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}</style>
+}
+</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -62,18 +61,12 @@ div.csl-indent {
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
-  "location": "sidebar",
+  "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "start",
-  "type": "textbox",
-  "limit": 50,
-  "keyboard-shortcut": [
-    "f",
-    "/",
-    "s"
-  ],
-  "show-item-context": false,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -82,129 +75,374 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
-    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-submit-button-title": "Submit"
   }
 }</script>
 
 
 </head>
 
-<body class="nav-sidebar floating">
+<body class="nav-sidebar floating nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-        <i class="bi bi-layout-text-sidebar-reverse"></i>
-      </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-predictability.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Predictability</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-        </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
-        <i class="bi bi-search"></i>
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./media/EUROCONTROL-logo-standard-rgb.svg" alt="" class="navbar-logo">
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-aiu-home" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">AIU Home</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-aiu-home">    
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu"><i class="bi bi-house-fill" role="img">
+</i> 
+ <span class="dropdown-text"><strong>Home</strong></span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/traffic/">
+ <span class="dropdown-text"><i class="fas fa-plane-departure"></i> <strong>Traffic</strong></span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://www.eurocontrol.int/Economics/DailyTrafficVariation-States.html"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text"> Daily Traffic Dashboard</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/traffic/statfor/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">Traffic Forecast</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/efficiency/">
+ <span class="dropdown-text"><i class="fas fa-leaf"></i> <strong>Efficiency &amp; Environment</strong></span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/efficiency/emissions/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">CO<sub>2</sub> emissions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/efficiency/hfe/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">Horizontal Flight Efficiency</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/efficiency/vfe/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">Vertical Flight Efficiency</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/efficiency/asma/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">Terminal Holdings</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/efficiency/taxiout/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">Taxi-out</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/economics/">
+ <span class="dropdown-text"><i class="fas fa-euro-sign"></i> <strong>Economics</strong></span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://www.eurocontrol.int/ServiceUnits/Dashboard/EnRouteMainDashboard.html"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">Service Units</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://www.eurocontrol.int/ServiceUnits/Dashboard/EnRouteUnitRates.html"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">Unit Rates and Costs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/ACE/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">ATM Cost Effectiveness</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/economics/finance/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">ANSPs Financial Situation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/economics/cba/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">CBA</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/dashboard/stakeholder/">
+ <span class="dropdown-text"><i class="fas fa-user-friends"></i> <strong>Stakeholder views</strong></span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/airport/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">Airport View</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/ansp/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">ANSP View</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/dashboard/stakeholder/fab/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">FAB View</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/dashboard/stakeholder/state/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">State View</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/publications/">
+ <span class="dropdown-text"><i class="fas fa-book"></i> <strong>Publications</strong></span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/data/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">Data</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/reference/">
+ <span class="dropdown-text"><i class="fas fa-hands-helping"></i> <strong>Reference</strong></span></a>
+  </li>  
+        <li class="dropdown-header"><i class="fas fa-external-link-alt"></i> <strong>External</strong></li>
+        <li>
+    <a class="dropdown-item" href="https://www.eurocontrol.int/prudata/dashboard/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">Single European Sky Portal</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://www4.icao.int/ganpportal/"><i class="bi bi-arrow-return-right" role="img">
+</i> 
+ <span class="dropdown-text">ICAO GANP</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-about" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">About</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-about">    
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/about/prc/">
+ <span class="dropdown-text">About the PRC</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/about/us/">
+ <span class="dropdown-text">About the PRU</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/post/">
+ <span class="dropdown-text">Release notes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/about/disclaimer/">
+ <span class="dropdown-text">Disclaimer</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-areas" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Areas</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-areas">    
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/traffic/">
+ <span class="dropdown-text">Traffic</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/capacity/">
+ <span class="dropdown-text">Capacity &amp; delays</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/efficiency/">
+ <span class="dropdown-text">Efficiency &amp; environment</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/economics/">
+ <span class="dropdown-text">Economics</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-views" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Views</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-views">    
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/dashboard/stakeholder/airport/">
+ <span class="dropdown-text">Airports</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/ansp/">
+ <span class="dropdown-text">Air Navigation Service Provider</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/fab/">
+ <span class="dropdown-text">Functional Airspace Block</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/dashboard/stakeholder/state/">
+ <span class="dropdown-text">State</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://ansperformance.eu/publications/">
+ <span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://ansperformance.eu/data/">
+ <span class="menu-text">Data</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-reference" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Reference</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-reference">    
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/data/">
+ <span class="dropdown-text">Data downloads</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/definition/">
+ <span class="dropdown-text">Definitions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/methodology/">
+ <span class="dropdown-text">Methodology</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/acronym/">
+ <span class="dropdown-text">Acronyms</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://ansperformance.eu/bibliography/">
+ <span class="dropdown-text">Bibliography</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li>
+    <a class="dropdown-item" href="https://www4.icao.int/ganpportal/">
+ <span class="dropdown-text"><i class="fas fa-xs fa-external-link-alt"></i> ICAO GANP</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-ses" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">SES</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-ses">    
+        <li>
+    <a class="dropdown-item" href="https://www.eurocontrol.int/prudata/dashboard/">
+ <span class="dropdown-text"><i class="fas fa-xs fa-external-link-alt"></i> Single European Sky (SES) Portal</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Predictability</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
       </button>
     </div>
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
-    <div class="sidebar-title mb-0 py-0">
-      <a href="./">Operational Comparison of ANS Performance in Brazil and Europe</a> 
-    </div>
-      </div>
-        <div class="mt-2 flex-shrink-0 align-items-center">
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+      <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-        </div>
+      </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Preface</span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./00_foreword.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Foreword</span></a>
+  <a href="./00_foreword.html" class="sidebar-item-text sidebar-link">Foreword</a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./00-executive-summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Executive Summary</span></a>
+  <a href="./00-executive-summary.html" class="sidebar-item-text sidebar-link">Executive Summary</a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  <a href="./01-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-system_overview.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Air Navigation System Characterisation</span></span></a>
+  <a href="./02-system_overview.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Air Navigation System Characterisation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-traffic_characterisation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Traffic Characterisation</span></span></a>
+  <a href="./03-traffic_characterisation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Traffic Characterisation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-predictability.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Predictability</span></span></a>
+  <a href="./04-predictability.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Predictability</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05-capacity_and_throughput.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Capacity and Throughput</span></span></a>
+  <a href="./05-capacity_and_throughput.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Capacity and Throughput</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./06-efficiency.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Efficiency</span></span></a>
+  <a href="./06-efficiency.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Efficiency</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./08-conclusions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conclusions</span></span></a>
+  <a href="./08-conclusions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conclusions</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./99-references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">References</span></a>
+  <a href="./99-references.html" class="sidebar-item-text sidebar-link">References</a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#arrival-punctuality" id="toc-arrival-punctuality" class="nav-link active" data-scroll-target="#arrival-punctuality"><span class="header-section-number">4.1</span> Arrival Punctuality</a></li>
-  <li><a href="#departure-punctuality" id="toc-departure-punctuality" class="nav-link" data-scroll-target="#departure-punctuality"><span class="header-section-number">4.2</span> Departure Punctuality</a></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">4.3</span> Summary</a></li>
+  <li><a href="#arrival-punctuality" id="toc-arrival-punctuality" class="nav-link active" data-scroll-target="#arrival-punctuality"><span class="toc-section-number">4.1</span>  Arrival Punctuality</a></li>
+  <li><a href="#departure-punctuality" id="toc-departure-punctuality" class="nav-link" data-scroll-target="#departure-punctuality"><span class="toc-section-number">4.2</span>  Departure Punctuality</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="toc-section-number">4.3</span>  Summary</a></li>
   </ul>
 </nav>
     </div>
@@ -213,7 +451,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Predictability</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Predictability</span></h1>
 </div>
 
 
@@ -226,123 +464,116 @@ div.csl-indent {
   </div>
   
 
-
 </header>
 
-
 <p>The preceding sections have demonstrated that both air navigation systems exhibit unique reactions to the broader developments in air transport. Predictability plays a crucial role in these systems, impacting their functioning during both the strategic phase, where airline schedules are formulated, and the operational phase, where Air Navigation Service Providers (ANSPs) and stakeholders manage the delicate balance between demand and capacity. Enhanced predictability stands to be advantageous for ANSPs, mainly when serving airspace users, as it contributes to highly efficient operations, even during periods of peak demand. This chapter focuses on arrival and departure punctuality observed at the study airports as a driving factor for predictability.</p>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
 <section id="arrival-punctuality" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="arrival-punctuality"><span class="header-section-number">4.1</span> Arrival Punctuality</h2>
-<p><a href="#fig-arrival-punc" class="quarto-xref">Figure&nbsp;<span>4.1</span></a> shows the evolution of arrival punctuality for the study airports in Brazil and Europe. When comparing both regions in 2019 and 2023, Brazil’s share of early arrivals (earlier than 15 minutes before the scheduled arrival) is significantly higher than the same European portion. The share of early arrivals accounts for 20-25% across all Brazilian airports. In Europe, flights tend not to arrive significantly earlier than their scheduled time. On average, early arrival ranges between 8-15% in Europe in 2019. Recent studies conducted by the CGNA/DECEA show that air operators in Brazil declare flight times significantly longer than observed. A similar behaviour is also observed in Europe. Built-in buffer times help to achieve a high “on-time-performance” record and appeal to passengers favouring a timely arrival performance. Furthermore, both regions have regulations for passenger compensation in place which are triggered in the case of arrival delays. DECEA has already established a forum with the air operator regulator to discuss and propose solutions.</p>
+<p><a href="#fig-arrival-punc">Figure&nbsp;<span class="quarto-unresolved-ref">fig-arrival-punc</span></a> shows the evolution of arrival punctuality for the study airports in Brazil and Europe. When comparing both regions in 2019 and 2023, Brazil’s share of early arrivals (earlier than 15 minutes before the scheduled arrival) is significantly higher than the same European portion. The share of early arrivals accounts for 20-25% across all Brazilian airports. In Europe, flights tend not to arrive significantly earlier than their scheduled time. On average, early arrival ranges between 8-15% in Europe in 2019. Recent studies conducted by the CGNA/DECEA show that air operators in Brazil declare flight times significantly longer than observed. A similar behaviour is also observed in Europe. Built-in buffer times help to achieve a high “on-time-performance” record and appeal to passengers favouring a timely arrival performance. Furthermore, both regions have regulations for passenger compensation in place which are triggered in the case of arrival delays. DECEA has already established a forum with the air operator regulator to discuss and propose solutions.</p>
 <p>European airports saw their share of punctual flights in 2022 and 2023 decrease broadly compared to 2019, even with a more proportional distribution than the Brazilian system. For European operators, there were two primary factors contributing the the lower performance in these two years. The most significant is the returning and steadily growing demand, showing that the network of flights has little ability to absorb the delay of one specific delayed flight. A pattern already observed pre-pandemic and requiring to investigate how to increase capacity across the operational aviation value chain. The knock-on effect was amplified by local resource constraints in terms of passenger and turn-around facilitation. The incrasing traffic demand posed challenges at many airports in Europe. Delayed arrivals accumulated further reactionary delay and ultimately passed the delay systematically on to next flights. Further constraints were linked to air space and flow restrictions resulting from the geo-political conflict surrounding the Russian invasion in Ukraine. On average, arrival delays of 15 minutes or more compared to the schedule ranged between 25-35% across the Europen study airports in 2022.</p>
+<div class="cell">
+
+</div>
 <div id="fig-arrival-punc" class="quarto-layout-panel">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-arrival-punc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row">
-<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<div class="cell-output-display">
-<div>
 <figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="cell-output-display">
 <p><img src="04-predictability_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
 </div>
 </div>
 </div>
-</div>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-arrival-punc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.1: Evolution of arrival punctuality at study airports (2019 vs 2023)
-</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.1: Evolution of arrival punctuality at study airports (2019 vs 2023)</figcaption><p></p>
 </figure>
 </div>
 <div class="cell" data-fig-caption="Evolution of arrival punctuality window">
 <div class="cell-output-display">
-<div id="fig-evolution-ARR-punc" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-evolution-ARR-punc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="04-predictability_files/figure-html/fig-evolution-ARR-punc-1.png" id="fig-evolution-ARR-punc" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-evolution-ARR-punc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.2
-</figcaption>
+<div id="fig-evolution-ARR-punc" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-predictability_files/figure-html/fig-evolution-ARR-punc-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.2: <strong>?(caption)</strong></figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>On average, the share of flights arriving within -/+ 15 minutes of their scheduled time varies wider amongst the European study airports (c.f <a href="#fig-evolution-ARR-punc" class="quarto-xref">Figure&nbsp;<span>4.2</span></a>). The observed punctuality (and associated predictability) within the Brazilian system shows a more homogenuous pattern with a general trend towards 60% or more over the past two years.</p>
+<p>On average, the share of flights arriving within -/+ 15 minutes of their scheduled time varies wider amongst the European study airports (c.f <a href="#fig-evolution-ARR-punc">Figure&nbsp;<span class="quarto-unresolved-ref">fig-evolution-ARR-punc</span></a>). The observed punctuality (and associated predictability) within the Brazilian system shows a more homogenuous pattern with a general trend towards 60% or more over the past two years.</p>
+<div class="cell">
+
+</div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-early-vs-late-arrivals" class="quarto-figure quarto-figure-center quarto-float anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-early-vs-late-arrivals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="04-predictability_files/figure-html/fig-early-vs-late-arrivals-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-early-vs-late-arrivals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.3: Change of share of early and late arrivals (2019 vs 2022)
-</figcaption>
+<div id="fig-early-vs-late-arrivals" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-predictability_files/figure-html/fig-early-vs-late-arrivals-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.3: Change of share of early and late arrivals (2019 vs 2022)</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p><a href="#fig-early-vs-late-arrivals" class="quarto-xref">Figure&nbsp;<span>4.3</span></a> compares the share of early and late arrivals at each study airport in 2019 and 2022. From a high-level perspective, air traffic tends to arrive well ahead of schedule in Brazil, while Europe observes a higher share of delayed arrivals. Guarulhos (SBGR) remained the Brazilian airport with the highest share of early flights in 2022 (i.e.&nbsp;33%), followed by Campinas (SBKP) with 30%. Both airports are essential hubs in the country, and anticipation can be a consequence sought by air operators for better accommodation of the flight network. However, for flow control, this lack of precision is equally problematic, affecting the optimal allocation of resources for the provision of air traffic control and flow service. In turn, Madrid (LEMD) was the European element with the most significant share of early arrivals (i.e.&nbsp;22%) in 2022. Pre-pandemic such a share was observed at London Heathrow in 2019. These shares still range about 11% lower than the highest shares in Brazil. The distorted nature of the European network in 2022 becomes apparent when observing the share of delayed flights. For example services at London Gatwick (EGKK) faced a share of 39% of delayed flights. Airport operators were identified as the major contributors to primary delays (ground handling, staff shortage), followed by ATFM delays. However, the aforementioned reactionary effect was the main driver of knock-on delays <span class="citation" data-cites="CODA-2023">(<a href="99-references.html#ref-CODA-2023" role="doc-biblioref">EUROCONTROL Central Office of Delay Analysis 2023</a>)</span> <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p><a href="#fig-early-vs-late-arrivals">Figure&nbsp;<span class="quarto-unresolved-ref">fig-early-vs-late-arrivals</span></a> compares the share of early and late arrivals at each study airport in 2019 and 2022. From a high-level perspective, air traffic tends to arrive well ahead of schedule in Brazil, while Europe observes a higher share of delayed arrivals. Guarulhos (SBGR) remained the Brazilian airport with the highest share of early flights in 2022 (i.e.&nbsp;33%), followed by Campinas (SBKP) with 30%. Both airports are essential hubs in the country, and anticipation can be a consequence sought by air operators for better accommodation of the flight network. However, for flow control, this lack of precision is equally problematic, affecting the optimal allocation of resources for the provision of air traffic control and flow service. In turn, Madrid (LEMD) was the European element with the most significant share of early arrivals (i.e.&nbsp;22%) in 2022. Pre-pandemic such a share was observed at London Heathrow in 2019. These shares still range about 11% lower than the highest shares in Brazil. The distorted nature of the European network in 2022 becomes apparent when observing the share of delayed flights. For example services at London Gatwick (EGKK) faced a share of 39% of delayed flights. Airport operators were identified as the major contributors to primary delays (ground handling, staff shortage), followed by ATFM delays. However, the aforementioned reactionary effect was the main driver of knock-on delays <span class="citation" data-cites="CODA-2023">(<a href="#ref-CODA-2023" role="doc-biblioref">EUROCONTROL Central Office of Delay Analysis 2023</a>)</span> <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
 </section>
 <section id="departure-punctuality" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="departure-punctuality"><span class="header-section-number">4.2</span> Departure Punctuality</h2>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
 <div id="fig-departure-punc" class="quarto-layout-panel">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-departure-punc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row">
-<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<div class="cell-output-display">
-<div>
 <figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="cell-output-display">
 <p><img src="04-predictability_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.4: Evolution of departure punctuality at study airports (2019 vs 2023)</figcaption><p></p>
 </figure>
 </div>
-</div>
-</div>
-</div>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-departure-punc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.4: Evolution of departure punctuality at study airports (2019 vs 2023)
-</figcaption>
-</figure>
-</div>
-<p>The preceding section highlighted how the general traffic conditions in the previous years influenced the dependability of arrival schedules. In this section, we assess the degree of departure punctuality measured as the difference between the scheduled (i.e.&nbsp;planned) departure versus the observed actual off-block time. <a href="#fig-departure-punc" class="quarto-xref">Figure&nbsp;<span>4.4</span></a> shows the overall departure punctuality at Brazilian and European airports in 2019 compared to 2022. Despite traffic levels in 2022 still ranging below their 2019 pre-pandemic levels, the departure punctuality in 2022 was - on average - lower than before COVID.</p>
+<p>The preceding section highlighted how the general traffic conditions in the previous years influenced the dependability of arrival schedules. In this section, we assess the degree of departure punctuality measured as the difference between the scheduled (i.e.&nbsp;planned) departure versus the observed actual off-block time. <a href="#fig-departure-punc">Figure&nbsp;<span class="quarto-unresolved-ref">fig-departure-punc</span></a> shows the overall departure punctuality at Brazilian and European airports in 2019 compared to 2022. Despite traffic levels in 2022 still ranging below their 2019 pre-pandemic levels, the departure punctuality in 2022 was - on average - lower than before COVID.</p>
 <p>The difference in departure and arrival punctuality between 2023 and 2019 was significantly more pronounced for Europe indicating an increased strain on the turnaround processes. There has been a significant increase in poor performance days, with departure punctuality falling below 50% and arrival punctuality dropping below 60%, occurring more frequently than in 2019. On the Brazilian side, the Galeão airport (SBGL) observed the highest share of delayed departure flights. It should be noted that the SBGL is the only airport with the Apron Control service directly provided by the airport. Some inefficiency in the coordination between Tower and Apron or divergence at the indicator collection point for the location may be contributing to the observed performance.</p>
 <p>Departure punctuality in Brazil in 2023 reaches similar levels than in 2019 and outperformed the punctuality levels observed in Europe. It is also notworthy, that in Brazil there is a higher share of flights blocking off between 15 to 5 minutes before their scheduled time. Further research may help to clarify the factors driving this phenomenon.</p>
+<div class="cell">
+
+</div>
 <div class="cell" data-fig-caption="Evolution of arrival punctuality window">
 <div class="cell-output-display">
-<div id="fig-evolution-DEP-punc" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-evolution-DEP-punc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="04-predictability_files/figure-html/fig-evolution-DEP-punc-1.png" id="fig-evolution-DEP-punc" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-evolution-DEP-punc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.5
-</figcaption>
+<div id="fig-evolution-DEP-punc" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-predictability_files/figure-html/fig-evolution-DEP-punc-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.5: <strong>?(caption)</strong></figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p><a href="#fig-evolution-DEP-punc" class="quarto-xref">Figure&nbsp;<span>4.5</span></a> shows the evolution of the departure punctuality window within 15 minutes of the scheduled departure time. On average, the predictability of departing traffic is higher than for the arrival (c.f. <a href="#fig-evolution-ARR-punc" class="quarto-xref">Figure&nbsp;<span>4.2</span></a>). The trend at the Brazilian study airports shows a homogeneous behaviour for the period 2019 through 2023. This included a higher departure punctuality within 15 minutes during the pandemic phase. There is also evidence that the increasing post-pandemic levels put a strain on the departure punctuality performance with the level of observed performance in 2023 ranging at the same levels than pre-pandemic.</p>
+<p><a href="#fig-evolution-DEP-punc">Figure&nbsp;<span class="quarto-unresolved-ref">fig-evolution-DEP-punc</span></a> shows the evolution of the departure punctuality window within 15 minutes of the scheduled departure time. On average, the predictability of departing traffic is higher than for the arrival (c.f. <a href="#fig-evolution-ARR-punc">Figure&nbsp;<span class="quarto-unresolved-ref">fig-evolution-ARR-punc</span></a>). The trend at the Brazilian study airports shows a homogeneous behaviour for the period 2019 through 2023. This included a higher departure punctuality within 15 minutes during the pandemic phase. There is also evidence that the increasing post-pandemic levels put a strain on the departure punctuality performance with the level of observed performance in 2023 ranging at the same levels than pre-pandemic.</p>
 <p>On the European side, punctuality levels showed a sharp decrease post-COVID and are driven by the system-wide disruptions in 2022 and the ripple effects observed in 2023. For most of the European study airports, departure predictability remained constant or improved marginally in 2023 versus 2022. This still indicates that there exists constraints regarding the turnaround of aircraft. While variances exist, on average the share of departures within 15 minutes of the scheduled departure time ranges below the pre-pandemic levels. It is noteworthy to recall that also 2019 has seen major restrictions in the European system.</p>
 <p>It is planned to investigate the underlying turnaround drivers in future editions of the comparison report.</p>
 <div class="cell">
-<div class="cell-output-display">
-<div id="fig-early-vs-late-departures" class="quarto-figure quarto-figure-center quarto-float anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-early-vs-late-departures-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="04-predictability_files/figure-html/fig-early-vs-late-departures-1.png" class="img-fluid figure-img" width="672">
+
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-early-vs-late-departures-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.6: Change of share of early and late departures (2019 vs 2023)
-</figcaption>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-early-vs-late-departures" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-predictability_files/figure-html/fig-early-vs-late-departures-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.6: Change of share of early and late departures (2019 vs 2023)</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>The change of the share of early and late departures in 2019 and 2022 is shown in <a href="#fig-early-vs-late-departures" class="quarto-xref">Figure&nbsp;<span>4.6</span></a>. This presentation highlights the earlier observations. On average, European airports observed a higher share of delayed departures by a factor of 2-3 in comparison to Brazil. While the picture varies, the distored nature of the traffic in 2022 is visible in the higher share of delay departures in 2022 in Europe in comparison to the pre-pandemic levels in 2019. This put a strain on the schedule stability across Europe. Local issues (e.g.&nbsp;reduced facilication capacity at airports) affected air traffic services in terms of surface movement, but also rippled into the network affecting the sequencing of arrivals and departure traffic.</p>
+<p>The change of the share of early and late departures in 2019 and 2022 is shown in <a href="#fig-early-vs-late-departures">Figure&nbsp;<span class="quarto-unresolved-ref">fig-early-vs-late-departures</span></a>. This presentation highlights the earlier observations. On average, European airports observed a higher share of delayed departures by a factor of 2-3 in comparison to Brazil. While the picture varies, the distored nature of the traffic in 2022 is visible in the higher share of delay departures in 2022 in Europe in comparison to the pre-pandemic levels in 2019. This put a strain on the schedule stability across Europe. Local issues (e.g.&nbsp;reduced facilication capacity at airports) affected air traffic services in terms of surface movement, but also rippled into the network affecting the sequencing of arrivals and departure traffic.</p>
 </section>
 <section id="summary" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="summary"><span class="header-section-number">4.3</span> Summary</h2>
@@ -352,8 +583,8 @@ Figure&nbsp;4.6: Change of share of early and late departures (2019 vs 2023)
 <p>Distortions of the local schedule can have knock-on effects on the air navigation service provision, both in terms of surface movement and arrival sequencing. More research is needed to investigate and understand the underlying drivers and to what extent regional connectivity influences the observed patterns.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
-<div id="ref-CODA-2023" class="csl-entry" role="listitem">
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-CODA-2023" class="csl-entry" role="doc-biblioentry">
 EUROCONTROL Central Office of Delay Analysis. 2023. <span>“All-Causes Delays to Air Transport in Europe, Annual 2022.”</span> <a href="https://www.eurocontrol.int/publication/all-causes-delays-air-transport-europe-annual-2022">https://www.eurocontrol.int/publication/all-causes-delays-air-transport-europe-annual-2022</a>.
 </div>
 </div>
@@ -393,23 +624,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
-      }
-    }
-    return false;
-  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
+    target: function(trigger) {
+      return trigger.previousElementSibling;
     }
   });
   clipboard.on('success', function(e) {
@@ -445,9 +662,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+  function tippyHover(el, contentFn) {
     const config = {
       allowHTML: true,
+      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -457,17 +675,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start',
+      placement: 'bottom-start'
     };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -482,238 +691,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
-        }
-      }
-    }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
-          } else {
-            container.appendChild(child.cloneNode(true));
-            break;
-          }
-        }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
-        }
-        return container.innerHTML
-      } else {
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(note);
-        }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      // TODO in 1.5, we should make sure this works without a callout special case
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
-      }
-    }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
-          }
-        } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
-          .then(res => res.text())
-          .then(html => {
-            const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
-            if (note !== null) {
-              const html = processXRef(id, note);
-              instance.setContent(html);
-            } 
-          }).finally(() => {
-            instance.enable();
-            instance.show();
-          });
-        }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            div.style.left = 0;
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -755,18 +732,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./03-traffic_characterisation.html" class="pagination-link  aria-label=" &lt;span="" characterisation&lt;="" span&gt;"="">
+      <a href="./03-traffic_characterisation.html" class="pagination-link">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Traffic Characterisation</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./05-capacity_and_throughput.html" class="pagination-link" aria-label="<span class='chapter-number'>5</span>&nbsp; <span class='chapter-title'>Capacity and Throughput</span>">
+      <a href="./05-capacity_and_throughput.html" class="pagination-link">
         <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Capacity and Throughput</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
-
 
 
 
