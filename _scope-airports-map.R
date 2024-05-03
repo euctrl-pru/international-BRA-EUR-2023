@@ -58,6 +58,14 @@ eur_chart <- ggplot2::ggplot() +
            ,ylim = c(35, NA)
            , expand = FALSE
            ) +
+  geom_label_repel(data = this_airports |> filter(grepl(pattern = "^(E|L)", x = ICAO))
+                   , aes(x = LON, y = LAT
+                         , label = paste(ICAO, NAME)
+                   )
+                   , max.overlaps = Inf
+                   , force = 50
+                   # , nudge_x = 5
+  ) +
   theme_void()
 
 bra_chart + eur_chart
