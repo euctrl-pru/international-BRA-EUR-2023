@@ -187,13 +187,9 @@ p_eur <- tfc_eur |> plot_timeline_per_year() + labs(subtitle = "Europe")
 p_bra / p_eur + plot_layout(guides = "collect") & theme(legend.position = "top")
 ```
 
-
-
 * For Brazil, traffic in the first half of 2023 exceeded the pre-pandemic traffic level
 * On a network level, the continual recovery of the traffic is on-going in Europe.
 * The first half of 2023 saw traffic levels at about 90-95% of the pre-pandemic network traffic and started following a classical *seasonal* pattern. However, traffic recovery in Europe is not at the same level for each pre-pandemic service/connection. The recovery also resulted in a light modification of network connectivity. The Russian invasion of Ukraine resulted in the closure of a significant portion of the airspace (about 20%). However, the overall impact of the closure on air traffic - on a network level - was relatively small.
-
-
 
 This high-level network perspective shows that traffic in both regions is comparable to pre-pandemic levels.
 It will be interesting to observe the further evolution and growth of air traffic.
@@ -215,8 +211,6 @@ p_share_of_network <- function(.annual_share_of_network_df){
     labs(x = NULL, y = "share of overall network traffic")
   return(p_share)
 }
-
-
 
 # BRAZIL ========= Airport Level Study
 # Cleaning/prep process in Hugos-prep.qmd file(code lines 1826 to 1881)
@@ -268,6 +262,13 @@ study_apt_lvl <- study_apt_lvl |>
   left_join(bra_apts_names, by = join_by(ICAO))
 
  p_study1 <- study_apt_lvl  |>
+   mutate(
+     NAME = case_match(NAME
+                       , "Belo Horizonte" ~ "B.Horizonte"
+                       , "Rio Dumont"     ~ "R.Dumont"
+                       , "Porto Alegre"   ~ "P.Alegre"
+                       , .default = NAME)
+     ) |> 
    filter(!(YEAR == "2023")) |> 
    ggplot() +
    geom_col(aes(x = NAME, y = TOT_FLTS_YEAR, fill = YEAR)
@@ -288,7 +289,11 @@ study_apt_lvl <- study_apt_lvl |>
  #   labs(x = NULL, y = NULL,) 
  # 
  #  p_study1 / p_study2 
- 
+ ```
+ ```{r}
+ #| label: fig-bra-apt-tfc
+ #| fig.cap: Brazilian airport level traffic
+ #| 
  (p_share_of_network(tmp_annual_share) + 
     scale_x_discrete(guide = guide_axis(n.dodge = 2)) 
   ) + p_study1 + 
@@ -362,8 +367,11 @@ p1_eur <- annual_tfc_apt  |>   ggplot() +
 #    labs(x = NULL, y = NULL,) 
 
 # p1_eur / p2_eur
+```
 
-
+```{r}
+#| label: fig-eur-apt-level-tfc
+#| fig-cap: Europeaan airport level traffic
 
 # patch the 2 plots
 (p_share_of_network(tmp) + 
@@ -758,6 +766,7 @@ fm_apts_eur <- tfc_apts_eur |> fleet_mix_from_counts("EUR")
 ```{r}
 #| label: fig-fleet-mix
 #| fig-cap: Fleet mix observed at the study airports in 2023
+#| fig-height: 7
 
 key_year <- 2022
 fm_apts <- bind_rows(fm_apts_bra, fm_apts_eur) |> 

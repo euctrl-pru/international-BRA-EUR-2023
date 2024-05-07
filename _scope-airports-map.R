@@ -25,9 +25,12 @@ this_airports <- readr::read_csv("./data/airport-LAT-LON-NAME.csv", show_col_typ
 worldmap <- ggplot2::borders("world2", colour="lightblue", fill="lightblue")
 ggplot2::ggplot() + worldmap + theme_void()
 
+library(ggplot2)
+library(ggrepel)
 library(rnaturalearth)
 library(rnaturalearthdata)
 library(patchwork)
+library(ggrepel)
 
 world   <- ne_countries(scale = "medium", returnclass = "sf")
 bra_map <- world |> dplyr::filter(admin == "Brazil")
@@ -38,16 +41,29 @@ eur_map <- ne_countries(
               ,"Germany","Belgium","Netherlands","Luxembourg"
               ,"Austria","Switzerland", "Italy"), scale = "medium")
 
+bra_apts_coord <- this_airports |> 
+  filter(grepl(pattern = "^SB", x = ICAO)) |> 
+  mutate(NUDGE_X = case_when(
+    ICAO %in% c("SBSV") ~ -20
+    ,.default = -10)
+  )
+
 bra_chart <- ggplot2::ggplot() +
   geom_sf(data = bra_map) +
   geom_point(data = this_airports |> filter(grepl(pattern = "^SB", x = ICAO))
              , aes(x = LON, y = LAT)) +
   geom_label_repel(data = this_airports |> filter(grepl(pattern = "^SB", x = ICAO))
                    , aes(x = LON, y = LAT
-                         , label = paste(ICAO, NAME)
+                         , label = stringr::str_wrap(paste(ICAO, NAME), 8)
                    )
+                   
+                   ,position = ggpp::position_nudge_center(x = -2, y = 2,
+                                                    center_x = 0, center_y = 0),
+                  # label.size = NA,
+                   label.padding = 0.2
+                   
                    , max.overlaps = Inf
-                   , force = 50
+                   # , force = 1
                    # , nudge_x = 5
   ) +
   theme_void()
@@ -62,11 +78,14 @@ eur_chart <- ggplot2::ggplot() +
                    , aes(x = LON, y = LAT
                          , label = paste(ICAO, NAME)
                    )
-                   , max.overlaps = Inf
+                   , max.overlaps = 0
                    , force = 50
                    # , nudge_x = 5
   ) +
   theme_void()
 
-bra_chart + eur_chart
+bra_chart
+
+  eur_chart
+
 
