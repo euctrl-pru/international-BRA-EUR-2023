@@ -16,7 +16,6 @@ The determined difference (i.e. additional time) measures the level of inefficie
 It must be noted that high performance operations will still yield a certain share of measured additional times. 
 Operational efficiency is therefore aiming at minimising rather than eliminating these additional times as they cannot be zero.
 
-
 ## Additional Taxi-In Time
 
 The additional taxi-in time measures the travel time of an arriving aircraft from its touchdown, i.e. the actual landing time, to its stand/gate position, i.e. actual in-block time).
@@ -91,7 +90,7 @@ plot2 <- function(.tmp){
         ,legend.key.size = unit(0.3, "cm")
         ) +
   labs(x = NULL, y = "average additional taxi-in time [min/arr]"
-       ,fill = "year") +
+       ,fill = NULL) +
   scale_fill_brewer(palette = "GnBu")
   
   return(viz)
@@ -99,7 +98,8 @@ plot2 <- function(.tmp){
 ```
 ```{r}
 #| label: fig-txit-annual
-#| fig-cap: Additional taxi-in time (2019-2023)
+#| fig-cap: Additional taxi-in time [min/arr] (2019-2023)
+#| fig-height: 4
 
 txits <- bind_rows( txit_bra, txit_eur2) |> 
   # append names for labels
@@ -110,7 +110,9 @@ txits |> aggregate_by_year() |>
   filter(between(YEAR, 2019, 2023)) |> 
    rename(REGION = REG) |> 
    mutate(YEAR = as.factor(YEAR)) |>  
-   plot2() 
+   plot2() + 
+      labs(y = NULL # remove xaxis label as info in Fig. caption
+                  )
 ```
 
 The annual development of the average additional taxi-in times at the study airports is depicted by @fig-txit-annual.
@@ -156,7 +158,7 @@ While the overall trend is consistent, previous reports may show differnt values
 ```{r}
 #| label: fig-bra-txit-timeline
 #| fig-cap: Evolution of average additional taxi-in time at Brazilian airports
-#| out-height: 12cm
+#| fig-height: 4
 
 aggregate_by_month <- function(.df){
   .df |> 
@@ -195,7 +197,8 @@ txit_bra |>
 ```{r}
 #| label: fig-eur-txit-timeline
 #| fig-cap: Evolution of average additional taxi-in time at European airports
-#| out-height: 12cm
+#| fig-height: 4
+#| 
 txit_eur2 |> aggregate_by_month() |>  
   rename(DATE = MOF)|> 
   # append names for labels
@@ -240,6 +243,7 @@ plot_monthly_txot <-  function(.txot, .ncol = 2){
   p <-  .txot |> 
   ggplot() +
   geom_line(aes(x = DATE, y = AVG_ADD_TIME, group = APT)) +
+  scale_y_continuous(breaks = c(0,5,10)) +
   facet_wrap(.~ APT, ncol = .ncol) +
   labs(subtitle = "additional taxi-out times"
        , x = NULL, y = "avg. add. taxi-out time [min/dep]")
@@ -251,8 +255,9 @@ return(p)
 
 ```{r}
 #| label: fig-txot-annual
-#| fig-cap: Average additional taxi-out time (2019-2023)
-
+#| fig-cap: Average additional taxi-out time [min/dep] (2019-2023)
+#| fig-height: 4
+#| 
 txots <- bind_rows( txot, txot_eur) |> 
   # append names for labels
   inner_join(bind_rows(bra_apts_names, eur_apts_names), by = join_by(APT == ICAO)) |> 
@@ -262,7 +267,7 @@ txots |> aggregate_by_year() |>
   filter(between(YEAR, 2019, 2023)) |> 
    rename(REGION = REG) |> 
    mutate(YEAR = as.factor(YEAR)) |>  
-   plot2() 
+   plot2() + labs(y = NULL) # remove xaxis label ~ Fig caption
 ```
 
 On average, higher additional times for taxi-out are observed across all airports (c.f. @fig-txot-annual).
@@ -278,6 +283,7 @@ In many instances the higher taxi-out times in 2022 and 2023 evidence the genera
 ```{r}
 #| label: fig-txot-monthly
 #| fig-cap: Brazil - Monthly Evolution of taxi-out times
+#| fig-height: 4
 
 txot |> 
   aggregate_by_month() |> 
@@ -286,7 +292,7 @@ txot |>
   inner_join(bra_apts_names, by = join_by(APT == ICAO)) |> 
   mutate(APT = paste(APT, NAME)) |> 
   # plot
-  plot_monthly_txot()
+  plot_monthly_txot() + labs(subtitle = NULL)
 ```
 
 Moving from the annual overview to the monthly level a more finegrained pattern emerges.
@@ -300,6 +306,7 @@ Strong weather influences drove the taxi-out performance at Amsterdam Schiphol (
 ```{r}
 #| label: fig-txot-eur-monthly
 #| fig-cap: Europe - Monthly Evolution of taxi-out times
+#| fig-height: 4
 
 # txot_eur <- arrow::read_parquet("./data-pbwg/taxi_times_airport_monthly_EUR.parquet") |> 
 #   filter(PHASE == "DEP", REG == "EUR") |> 
@@ -313,7 +320,7 @@ txot_eur |>
   inner_join(eur_apts_names, by = join_by(APT == ICAO)) |> 
   mutate(APT = paste(APT, NAME)) |> 
   # plot
-  plot_monthly_txot()
+  plot_monthly_txot() + labs(subtitle = NULL)
 ```
 
 ## Mapping Additional Taxi-in and Taxi-out Times
@@ -400,12 +407,13 @@ plot_mapping_year1_year2 <- function(.tmp_map){
     ggplot2::scale_colour_manual(values = c("lightblue","blue")) +
     ggrepel::geom_label_repel(aes(label = LABEL)
                      , nudge_x = -1
-                     , force = 10
+                     , force = 100
                      , max.overlaps = Inf
-                     , box.padding = 1
+                     , box.padding = .25
                      , na.rm = TRUE
                      , colour = "grey70", segment.colour = "grey70"
-                     ,size = 4) + 
+                     ,size = 3 # set small font size
+                     ) + 
     ggplot2::scale_x_continuous(limits = c(0,NA)) +
     ggplot2::scale_y_continuous(limits= c(0, NA)) +
     ggplot2::facet_grid(. ~REG) +
@@ -415,9 +423,11 @@ plot_mapping_year1_year2 <- function(.tmp_map){
           ,legend.text     = ggplot2::element_text(size = 8)
           ,legend.key.size = ggplot2::unit(0.3, "cm")
     ) +
+    ggplot2::guides(shape = FALSE) +
     ggplot2::labs(   x = "average additional taxi-out time [min/dep]"
           , y = "average additional taxi-in time [min/arr]"
-          ,fill = "year") #+
+          ,color = NULL # "year"
+          ) #+
     #scale_fill_brewer(palette = "GnBu")
   return(my_mapping)
 }
@@ -483,7 +493,8 @@ ann_asma_eur <- asma_2019_2022_eur |>
 ```{r}
 #| label: fig-asma
 #| fig-cap: Additional time in terminal airspace
-
+#| fig-height: 4
+#| 
 bra_asma <- ggplot(
     data = asma_bra |> 
       # append names for labels
@@ -513,7 +524,10 @@ eur_asma <- ggplot(
 
 (bra_asma | eur_asma) + 
   plot_layout(guides = "collect") & 
-      theme(legend.position = "top") & 
+      theme(legend.position = "top"
+        ,legend.text     = element_text(size = 8)
+        ,legend.key.size = unit(0.3, "cm")
+        ) & 
       labs(x = NULL, y = NULL, color = NULL , fill = NULL )
 ```
 
