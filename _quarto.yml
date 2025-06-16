@@ -12,8 +12,6 @@ book:
   author: "DECEA Performance Section, EUROCONTROL Performance Review Unit"
   date: 14. April 2024
   date-format: "MMMM YYYY"
-  search:
-    location: sidebar
   chapters:
   - index.qmd
   - 00_foreword.qmd
