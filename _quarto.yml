@@ -27,7 +27,7 @@ book:
   - 99-references.qmd
   navbar:
     background: dark
-    search: false
+    search: true
     title: false
     logo: "media/EUROCONTROL-logo-standard-rgb.png"
     right:
