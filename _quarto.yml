@@ -26,95 +26,97 @@ book:
   - 08-conclusions.qmd
   - 99-references.qmd
   navbar:
+  # Note: You need to install: ```quarto install extension mcanouil/quarto-iconify```
+  # For the icons to work. 
     background: dark
     search: true
     title: false
     logo: "media/EUROCONTROL-logo-standard-rgb.png"
-    right:
+    right: 
       - text: "Home"
-        href: index.qmd
+        href: https://ansperformance.eu/
       - text: "Performance areas"
         menu:
           - text: "{{< iconify fa6-solid th >}}&nbsp;Balanced scorecard"
             href: "https://www.eurocontrol.int/Economics/BalancedScorecard.html"
           - text: "{{< iconify fa6-solid plane-departure >}}&nbsp;Traffic"
-            href: traffic.qmd
+            href: https://ansperformance.eu/traffic/
           - text: "&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Daily traffic dashboard</span>"
             href: "https://www.eurocontrol.int/Economics/DailyTrafficVariation-States.html"
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Service units</span>"
             href: "https://www.eurocontrol.int/ServiceUnits/Dashboard/EnRouteMainDashboard.html"
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Traffic forecast</span>"
-            href: traffic/statfor.qmd
+            href: https://ansperformance.eu/traffic/statfor/
           - text: "{{< iconify fa6-solid calendar >}}&nbsp;Punctuality"
-            href: traffic/punctuality.qmd
+            href: https://ansperformance.eu/traffic/punctuality/
           - text: "&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Daily punctuality dashboard</span>"
             href: "https://www.eurocontrol.int/Economics/DailyPunctuality-States.html"
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Network punctuality</span>"
-            href: traffic/punctuality.qmd#eurocontrol-area-network-view-1
+            href: https://ansperformance.eu/traffic/punctuality/#eurocontrol-area-network-view-1
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>State & airport punctuality</span>"
-            href: traffic/punctuality.qmd#state-view-1
+            href: https://ansperformance.eu/traffic/punctuality/#state-view-1
           - text: "{{< iconify fa6-solid clock >}}&nbsp;En-route & airport delays"
-            href: capacity.qmd
+            href: https://ansperformance.eu/capacity/
           - text: "&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Daily ATFM delays dashboard</span>"
             href: "https://www.eurocontrol.int/Economics/DailyDelay-States.html"
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>En-route ATFM delays</span>"
-            href: capacity/atfm_ert.qmd
+            href: https://ansperformance.eu/capacity/atfm_ert/
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Airport ATFM delays</span>"
-            href: capacity/atfm_apt.qmd
+            href: https://ansperformance.eu/capacity/atfm_apt/
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>All-causes delays</span>"
-            href: capacity/tot_dly.qmd
+            href: https://ansperformance.eu/capacity/tot_dly
           - text: "{{< iconify fa6-solid leaf >}}&nbsp;Efficiency & environment"
-            href: efficiency.qmd
+            href: https://ansperformance.eu/efficiency/
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>CO<sub>2</sub> emissions</span>"
-            href: efficiency/emissions.qmd
+            href: https://ansperformance.eu/efficiency/emissions/
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Horizontal flight efficiency</span>"
-            href: efficiency/hfe.qmd
+            href: https://ansperformance.eu/efficiency/hfe/
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Vertical flight efficiency</span>"
-            href: efficiency/vfe.qmd
+            href: https://ansperformance.eu/efficiency/vfe/
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Terminal holdings</span>"
-            href: efficiency/asma.qmd
+            href: https://ansperformance.eu/efficiency/asma/
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Taxi-out</span>"
-            href: efficiency/taxiout.qmd
+            href: https://ansperformance.eu/efficiency/taxiout/
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Taxi-in</span>"
-            href: efficiency/taxiin.qmd
+            href: https://ansperformance.eu/efficiency/taxiin/
           - text: "{{< iconify fa6-solid euro-sign >}}&nbsp;Economics"
-            href: economics.qmd
+            href: https://ansperformance.eu/economics/
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>ATM cost-effectiveness (ACE)</span>"
-            href: economics/ace-overview.qmd
+            href: https://ansperformance.eu/economics/ace-overview/
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Unit rates and costs</span>"
             href: "https://www.eurocontrol.int/ServiceUnits/Dashboard/EnRouteUnitRates.html"
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Service units</span>"
             href: "https://www.eurocontrol.int/ServiceUnits/Dashboard/EnRouteMainDashboard.html"
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>ANSPs financial dashboard</span>"
-            href: economics/finance.qmd
+            href: https://ansperformance.eu/economics/finance/
           - text: "&nbsp;&nbsp;&nbsp;<span style='font-weight: normal'>Standard Inputs for Economic Analyses</span>"
-            href: economics/cba.qmd
+            href: https://ansperformance.eu/economics/cba/
 
       - text: "Stakeholder views"
         menu:
           - text: "{{< iconify fa6-solid plane-arrival >}}&nbsp;Airports"
-            href: dashboard/stakeholder/airport.qmd
+            href: https://ansperformance.eu/dashboard/stakeholder/airport/
           - text: "{{< iconify fa6-solid compass >}}&nbsp;Air navigation service provider"
-            href: dashboard/stakeholder/ansp.qmd
+            href: https://ansperformance.eu/dashboard/stakeholder/ansp/
           - text: "{{< iconify fa6-solid globe >}}&nbsp;States"
-            href: dashboard/stakeholder/state.qmd
+            href: https://ansperformance.eu/dashboard/stakeholder/state/
 
       - text: "Data"
-        href: data.qmd
+        href: https://ansperformance.eu/data/
 
       - text: "Publications"
-        href: publications.qmd
+        href: https://ansperformance.eu/publications/
 
       - text: "Reference"
         menu:
           - text: "{{< iconify fa6-solid marker >}}&nbsp;Definitions"
-            href: definition.qmd
+            href: https://ansperformance.eu/definition/
           - text: "{{< iconify fa6-solid wrench >}}&nbsp;Methodology"
-            href: methodology.qmd
+            href: https://ansperformance.eu/methodology/
           - text: "{{< iconify fa6-solid quote-left >}}&nbsp;Acronyms"
-            href: acronym.qmd
+            href: https://ansperformance.eu/acronym/
           - text: "{{< iconify fa6-solid book >}}&nbsp;Bibliography"
-            href: bibliography.qmd
+            href: https://ansperformance.eu/bibliography/
 
       - text: "Links"
         menu:
@@ -127,22 +129,22 @@ book:
           - text: "Connectivity dashboard <i class='fas fa-xs fa-external-link-alt'></i>"
             href: "https://ext.eurocontrol.int/connectivity_web/from"
           - text: "PRC Transformation Strategy"
-            href: transformation.qmd
+            href: https://ansperformance.eu/transformation/
           - text: "PRC Open Performance Data Initiative"
             href: "https://opdi.aero"
 
       - text: "About"
         menu:
           - text: "About the PRC"
-            href: about/prc.qmd
+            href: https://ansperformance.eu/about/prc/
           - text: "About the AIU"
-            href: about/aiu.qmd
+            href: https://ansperformance.eu/about/aiu/
           - text: "About the PRU"
-            href: about/us.qmd
+            href: https://ansperformance.eu/about/us/
           - text: "Release notes"
-            href: post.qmd
+            href: https://ansperformance.eu/post/
           - text: "Disclaimer"
-            href: about/disclaimer.qmd
+            href: https://ansperformance.eu/about/disclaimer/
   
 appendices:
   - A1-appendix.qmd
