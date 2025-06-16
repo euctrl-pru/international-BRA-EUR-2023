@@ -30,186 +30,114 @@ book:
     search: false
     title: false
     logo: "media/EUROCONTROL-logo-standard-rgb.svg"
-    left:
-    - text: "AIU Home"
-      menu:
-        - text: "**Home**"
-          icon: "house-fill"
-          href: "https://ansperformance.eu"
-          # ---
-        - text: "<i class='fas fa-plane-departure'></i> **Traffic**"
-          href: "https://ansperformance.eu/traffic/"
-    
-        - text: "</i> Daily Traffic Dashboard</i>"
-          icon: "arrow-return-right"
-          href: "https://www.eurocontrol.int/Economics/DailyTrafficVariation-States.html"
-    
-        - text: "Traffic Forecast"
-          icon: "arrow-return-right"
-          href: "https://ansperformance.eu/traffic/statfor/"
-          # ---
-        - text: "<i class='fas fa-leaf'></i> **Efficiency & Environment**"
-          href: "https://ansperformance.eu/efficiency/"
-        - text: "CO<sub>2</sub> emissions"
-          icon: "arrow-return-right"
-          href: "https://ansperformance.eu/efficiency/emissions/"
-        - text: "Horizontal Flight Efficiency"
-          icon: "arrow-return-right"
-          href: "https://ansperformance.eu/efficiency/hfe/"
-    
-        - text: "Vertical Flight Efficiency"
-          icon: "arrow-return-right"
-          href: "https://ansperformance.eu/efficiency/vfe/"
-    
-        - text: "Terminal Holdings"
-          icon: "arrow-return-right"
-          href: "https://ansperformance.eu/efficiency/asma/"
-    
-        - text: "Taxi-out"
-          icon: "arrow-return-right"
-          href: "https://ansperformance.eu/efficiency/taxiout/"
-    
-         # ---
-        - text: "<i class='fas fa-euro-sign'></i> **Economics**"
-          href: "https://ansperformance.eu/economics/"
-    
-        - text: "Service Units"
-          icon: "arrow-return-right"
-          href: "https://www.eurocontrol.int/ServiceUnits/Dashboard/EnRouteMainDashboard.html"
-    
-        - text: "Unit Rates and Costs"
-          icon: "arrow-return-right"
-          href: "https://www.eurocontrol.int/ServiceUnits/Dashboard/EnRouteUnitRates.html"
-    
-        - text: "ATM Cost Effectiveness"
-          icon: "arrow-return-right"
-          href: "https://ansperformance.eu/ACE/"
-    
-        - text: "ANSPs Financial Situation"
-          icon: "arrow-return-right"
-          href: "https://ansperformance.eu/economics/finance/"
-    
-        - text: "CBA"
-          icon: "arrow-return-right"
-          href: "https://ansperformance.eu/economics/cba/"
-    
-          # ---
-        - text: "<i class='fas fa-user-friends'></i> **Stakeholder views**"
-          href: "https://ansperformance.eu/dashboard/stakeholder/"
-    
-        - text: "Airport View"
-          icon: "arrow-return-right"
-          href: "https://ansperformance.eu/airport/"
-    
-        - text: "ANSP View"
-          icon: "arrow-return-right"
-          href: "https://ansperformance.eu/ansp/"
-    
-        - text: "FAB View"
-          icon: "arrow-return-right"
-          href: "https://ansperformance.eu/dashboard/stakeholder/fab/"
-    
-        - text: "State View"
-          icon: "arrow-return-right"
-          href: "https://ansperformance.eu/dashboard/stakeholder/state/"
-    
-          # ---
-        - text: "<i class='fas fa-book'></i> **Publications**"
-          href: "https://ansperformance.eu/publications/"
-    
-        - text: "Data"
-          icon: "arrow-return-right"
-          href: "https://ansperformance.eu/data/"
-    
-          # ---
-        - text: "<i class='fas fa-hands-helping'></i> **Reference**"
-          href: "https://ansperformance.eu/reference/"
-    
-          # ---
-        - text: "<i class='fas fa-external-link-alt'></i> **External**"
-    
-        - text: "Single European Sky Portal"
-          icon: "arrow-return-right"
-          href: "https://www.eurocontrol.int/prudata/dashboard/"
-    
-        - text: "ICAO GANP"
-          icon: "arrow-return-right"
-          href: "https://www4.icao.int/ganpportal/"
-    
-    - text: "About"
-      menu:
-        - text: "About the PRC"
-          href: "https://ansperformance.eu/about/prc/"
-    
-        - text: "About the PRU"
-          href: "https://ansperformance.eu/about/us/"
-    
-        - text: "Release notes"
-          href: "https://ansperformance.eu/post/"
-    
-        - text: "Disclaimer"
-          href: "https://ansperformance.eu/about/disclaimer/"
-    
-    - text: "Areas"
-      menu:
-        - text: "Traffic"
-          href: "https://ansperformance.eu/traffic/"
-    
-        - text: "Capacity & delays"
-          href: "https://ansperformance.eu/capacity/"
-    
-        - text: "Efficiency & environment"
-          href: "https://ansperformance.eu/efficiency/"
-    
-        - text: "Economics"
-          href: "https://ansperformance.eu/economics/"
-    
-    - text: "Views"
-      menu:
-        - text: "Airports"
-          href: "https://ansperformance.eu/dashboard/stakeholder/airport/"
-    
-        - text: "Air Navigation Service Provider"
-          href: "https://ansperformance.eu/ansp/"
-    
-        - text: "Functional Airspace Block"
-          href: "https://ansperformance.eu/fab/"
-    
-        - text: "State"
-          href: "https://ansperformance.eu/dashboard/stakeholder/state/"
-    
-    - text: "Publications"
-      href: "https://ansperformance.eu/publications/"
-    
-    - text: "Data"
-      href: "https://ansperformance.eu/data/"
-    
-    - text: "Reference"
-      menu:
-        - text: "Data downloads"
-          href: "https://ansperformance.eu/data/"
-    
-        - text: "Definitions"
-          href: "https://ansperformance.eu/definition/"
-    
-        - text: "Methodology"
-          href: "https://ansperformance.eu/methodology/"
-    
-        - text: "Acronyms"
-          href: "https://ansperformance.eu/acronym/"
-    
-        - text: "Bibliography"
-          href: "https://ansperformance.eu/bibliography/"
-    
-        - text: "---"
-    
-        - text: "<i class='fas fa-xs fa-external-link-alt'></i> ICAO GANP"
-          href: "https://www4.icao.int/ganpportal/"
-    
-    - text: "SES"
-      menu:
-        - text: "<i class='fas fa-xs fa-external-link-alt'></i> Single European Sky (SES) Portal"
-          href: "https://www.eurocontrol.int/prudata/dashboard/"
+    right:
+      - text: "Home"
+        href: "/#/"
+      - text: "Performance areas"
+        menu:
+          - text: "Balanced scorecard"
+            href: "https://www.eurocontrol.int/Economics/BalancedScorecard.html"
+          - text: "Traffic"
+            menu:
+              - text: "Daily traffic dashboard"
+                href: "https://www.eurocontrol.int/Economics/DailyTrafficVariation-States.html"
+              - text: "Service units"
+                href: "https://www.eurocontrol.int/ServiceUnits/Dashboard/EnRouteMainDashboard.html"
+              - text: "Traffic forecast"
+                href: "/traffic/statfor/"
+          - text: "Punctuality"
+            menu:
+              - text: "Daily punctuality dashboard"
+                href: "https://www.eurocontrol.int/Economics/DailyPunctuality-States.html"
+              - text: "Network punctuality"
+                href: "/traffic/punctuality/#eurocontrol-area-network-view-1"
+              - text: "State & airport punctuality"
+                href: "/traffic/punctuality/#state-view-1"
+          - text: "En-route & airport delays"
+            menu:
+              - text: "Daily ATFM delays dashboard"
+                href: "https://www.eurocontrol.int/Economics/DailyDelay-States.html"
+              - text: "En-route ATFM delays"
+                href: "/capacity/atfm_ert/"
+              - text: "Airport ATFM delays"
+                href: "/capacity/atfm_apt/"
+              - text: "All-causes delays"
+                href: "/capacity/tot_dly/"
+          - text: "Efficiency & environment"
+            menu:
+              - text: "CO₂ emissions"
+                href: "/efficiency/emissions/"
+              - text: "Horizontal flight efficiency"
+                href: "/efficiency/hfe/"
+              - text: "Vertical flight efficiency"
+                href: "/efficiency/vfe/"
+              - text: "Terminal holdings"
+                href: "/efficiency/asma/"
+              - text: "Taxi-out"
+                href: "/efficiency/taxiout/"
+              - text: "Taxi-in"
+                href: "/efficiency/taxiin/"
+          - text: "Economics"
+            menu:
+              - text: "ATM cost-effectiveness (ACE)"
+                href: "/economics/ace-overview/"
+              - text: "Unit rates and costs"
+                href: "https://www.eurocontrol.int/ServiceUnits/Dashboard/EnRouteUnitRates.html"
+              - text: "Service units"
+                href: "https://www.eurocontrol.int/ServiceUnits/Dashboard/EnRouteMainDashboard.html"
+              - text: "ANSPs financial dashboard"
+                href: "/economics/finance/"
+              - text: "Standard Inputs for Economic Analyses"
+                href: "/economics/cba/"
+      - text: "Stakeholder views"
+        menu:
+          - text: "Airports"
+            href: "/dashboard/stakeholder/airport/"
+          - text: "Air navigation service provider"
+            href: "/dashboard/stakeholder/ansp/"
+          - text: "States"
+            href: "/dashboard/stakeholder/state/"
+      - text: "Data"
+        href: "/data/"
+      - text: "Publications"
+        href: "/publications/"
+      - text: "Reference"
+        menu:
+          - text: "Definitions"
+            href: "/definition/"
+          - text: "Methodology"
+            href: "/methodology/"
+          - text: "Acronyms"
+            href: "/acronym/"
+          - text: "Bibliography"
+            href: "/bibliography/"
+      - text: "Links"
+        menu:
+          - text: "EUROCONTROL"
+            href: "https://www.eurocontrol.int/"
+          - text: "Single European Sky (SES) portal"
+            href: "https://www.eurocontrol.int/prudata/dashboard/"
+          - text: "ICAO GANP"
+            href: "https://www4.icao.int/ganpportal/"
+          - text: "Connectivity dashboard"
+            href: "https://ext.eurocontrol.int/connectivity_web/from"
+          - text: "PRC Transformation Strategy"
+            href: "/transformation/"
+          - text: "PRC Open Performance Data Initiative"
+            href: "https://opdi.aero"
+      - text: "About"
+        menu:
+          - text: "About the PRC"
+            href: "/about/prc/"
+          - text: "About the AIU"
+            href: "/about/aiu/"
+          - text: "About the PRU"
+            href: "/about/us/"
+          - text: "Release notes"
+            href: "/post/"
+          - text: "Disclaimer"
+            href: "/about/disclaimer/"
+  
 appendices:
   - A1-appendix.qmd
   
